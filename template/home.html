@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+{% if username %}
+<div class="blog-menu">
+    <a href="/"><button class="blog-button button-col-red">[ <i class="fa fa-home" aria-hidden="true"></i> ]</button></a>
+    <a href="/newpost"><button class="blog-button button-col-blue">/ <i class="fa fa-pencil-square-o" aria-hidden="true"></i> /</button></a>
+    <a href="/mypost"><button class="blog-button button-col-green">/ <i class="fa fa-align-justify" aria-hidden="true"></i> /</button></a>
+    <a href="/setting"><button class="blog-button button-col-orange">/ <i class="fa fa-cogs" aria-hidden="true"></i> /</button></a>
+    <hr>
+</div>
+{% else %}
+<div class="blog-menu">
+    <a href="/"><button class="blog-button button-col-black">[ <i class="fa fa-home" aria-hidden="true"></i> ]</button></a>
+    <a href="/signin"><button class="blog-button button-col-black">/ <i class="fa fa-sign-in" aria-hidden="true"></i> /</button></a>
+    <a href="/signup"><button class="blog-button button-col-black">/ <i class="fa fa-user-plus" aria-hidden="true"></i> /</button></a>
+    <hr>
+</div>
+{% endif %}
+{% if posts.count() %}
+{% for post in posts %}
+{% if username %}
+<div class="blog-div div-border-red">
+	<div class="blog-header"><a href="/post/{{post.key().id()}}"><span class="button-col-red">{{post.post_subject}}</span></a>
+		<button class="blog-button button-col-red">[ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{count_comments(post.key().id(), comments)}} ]</button>
+        <button class="blog-button button-col-red">[ <i class="fa fa-check" aria-hidden="true"></i> : {{count_likes(post.key().id(), liked_post)}} ]</button>
+{% else %}
+<div class="blog-div div-border-black">
+    <div class="blog-header"><a href="/post/{{post.key().id()}}"><span class="button-col-black">{{post.post_subject}}</span></a>
+		<button class="blog-button button-col-black">[ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{count_comments(post.key().id(), comments)}} ]</button>
+		<button class="blog-button button-col-black">[ <i class="fa fa-check" aria-hidden="true"></i> : {{count_likes(post.key().id(), liked_post)}} ]</button>
+{% endif %}
+		<hr>
+    </div>
+    <div class="blog-content">
+        {% if post.post_content|length > 300 %}
+        <pre>{{post.post_content[:300]|safe}}...</pre>
+        <h5><a href="/post/{{post.key().id()}}">[ <i class="fa fa-folder-open-o" aria-hidden="true"></i> READ-MORE ]</a></h5>
+        {% else %}
+        <pre>{{post.post_content|safe}}</pre>
+        {% endif %}
+        <hr>
+    </div>
+    <div class="blog-footer-post">
+        <span class="max-width-div-post">
+		{% if username and not post.user_id == user_id %}
+		{% if user_liked_post(post.key().id(), liked_post) %}
+		<a href="/post/{{post.key().id()}}/dislike">
+			[ <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> DISLIKE ]
+		</a>
+		{% else %}
+		<a href="/post/{{post.key().id()}}/like">
+			[ <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> LIKE ]
+		</a>
+		{% endif %}
+		{% endif %}
+		[ <i class="fa fa-calendar" aria-hidden="true"></i> {{post.created.strftime("%b %d, %Y")}} ]
+		</span>
+		<span class="min-width-div-post">
+		{% if username and not post.user_id == user_id %}
+		{% if user_liked_post(post.key().id(), liked_post) %}
+		<a href="/post/{{post.key().id()}}/dislike">
+			[ <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> DISLIKE ]
+		</a>
+		{% else %}
+		<a href="/post/{{post.key().id()}}/like">
+			[ <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> LIKE ]
+		</a>
+		{% endif %}
+		<br>
+		{% endif %}
+		[ <i class="fa fa-calendar" aria-hidden="true"></i> {{post.created.strftime("%b %d, %Y")}} ]
+		</span>
+    </div>
+</div>
+{% if comments %}
+{% for comment in comments %}
+{% if comment.post_id == post.key().id()|string() %}
+{% if username %}
+<div class="blog-div div-border-red">
+{% else %}
+<div class="blog-div div-border-black">
+{% endif %}
+    <h3 class="blog-remove-margin">
+        {{comment.name}}
+    </h3>
+    <p>
+        {{comment.comment_content}}
+    </p>
+    <div class="blog-footer-comment">
+		<span class="max-width-div-comment">
+        {% if not comment.user_id == post.user_id %}
+        <span class="blog-float-left"><a href="/comment/{{comment.key().id()}}/edit">[ <i class="fa fa-pencil" aria-hidden="true"></i> EDIT ]</a></span>
+        <span class="blog-float-left"><a href="/comment/{{comment.key().id()}}/delete">[ <i class="fa fa-trash" aria-hidden="true"></i> DELETE ]</a></span>
+        {% endif %}
+        [ <i class="fa fa-envelope-o" aria-hidden="true"></i>{{comment.email}} ]
+		[ <i class="fa fa-clock-o" aria-hidden="true"></i>{{comment.created.strftime("%H:%M %x")}} ]
+		</span>
+		<span class="min-width-div-comment">
+        {% if not comment.user_id == post.user_id %}
+        <span><a href="/comment/{{comment.key().id()}}/edit">[ <i class="fa fa-pencil" aria-hidden="true"></i> EDIT ]</a></span>
+        <span><a href="/comment/{{comment.key().id()}}/delete">[ <i class="fa fa-trash" aria-hidden="true"></i> DELETE ]</a></span>
+        {% endif %}
+		<br>
+		[ <i class="fa fa-envelope-o" aria-hidden="true"></i> {{comment.email}} ]
+		<br>
+		[ <i class="fa fa-clock-o" aria-hidden="true"></i> {{comment.created.strftime("%H:%M %x")}} ]
+		</span>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% else %}
+<h2 align="center">[ EMPTY ]</h2>
+{% endif %}
+{% endblock %}

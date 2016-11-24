@@ -1,0 +1,284 @@
+@media screen and (min-width: 470px) {
+    body {
+		font-family: "courier new", courier, monospace;
+		margin: 2% 5% 2% 5%;
+	}
+	.blog-sign-out, 
+	.blog-footer-post {
+		text-align: right;
+	}
+	.max-width-div-post {
+		display: block;
+	}
+	.min-width-div-post {
+		display: none;
+	}
+}
+@media screen and (max-width: 471px) {
+    body {
+		font-family: "courier new", courier, monospace;
+		margin: 2% 3% 2% 3%;
+	}
+	.blog-sign-out, 
+	.blog-footer-post {
+		text-align: center;
+	}
+	.min-width-div-post {
+		display: block;
+	}
+	.max-width-div-post {
+		display: none;
+	}
+}
+@media screen and (max-width: 900px) {
+	.max-width-div-comment {
+		display: none;
+	}
+	.min-width-div-comment {
+		display: block;
+	}
+	.blog-footer-comment {
+		text-align: center;
+	}
+}
+@media screen and (min-width: 901px) {
+	.max-width-div-comment {
+		display: block;
+	}
+	.min-width-div-comment {
+		display: none;
+	}
+	.blog-footer-comment {
+		text-align: right;
+	}
+}
+a {
+	text-decoration: none;
+}
+pre {
+	white-space: pre-wrap;
+}
+.blog-menu {
+	text-align: right;
+}
+.blog-menu button
+{
+	font-size: 30px;
+}
+.blog-table {
+	width: 100%
+}
+.blog-table input {
+	font-size: 30px;
+	width: 30px;
+}
+.blog-div {
+    margin-top: 30px;
+	margin-bottom: 30px;
+	padding: 10px;
+}
+.blog-div button 
+{
+	font-size: 22px;
+	float: right;
+}
+.div-border-red
+{
+	border: 1px solid #C0392B;
+	border-radius: 5px;
+}
+.div-border-black
+{
+	border: 1px solid black;
+	border-radius: 5px;
+}
+.div-border-green
+{
+	border: 1px solid #16A085;
+	border-radius: 5px;
+}
+.div-border-purple
+{
+	border: 1px solid #8E44AD;
+	border-radius: 5px;
+}
+.comment-textarea
+{
+	width: 100%;
+	max-width: 800px;
+    resize: none;
+    height: 100px;
+    font-size: 22px;
+    display: block;
+}
+.form-textarea {
+    width: 100%;
+	max-width: 800px;
+    resize: none;
+    height: 500px;
+    font-size: 22px;
+    display: block;
+}
+.form-input {
+	font-size: 22px;
+	max-width: 400px;
+	width: 100%
+}
+.blog-form  {
+    font-size: 22px;
+}
+.blog-form input {
+	font-size: 22px;
+	margin-bottom: 10px;
+}
+.blog-form pre {
+	margin: 0;
+	display: block;
+}
+.blog-form button {
+	color: red;
+}
+.blog-header {
+    font-size: 24px;
+    font-weight: bold;
+}
+.blog-header button {
+    text-align: right;
+}
+.blog-content {
+    font-size: 22px;
+    margin-top: 10px;
+}
+.blog-error {
+	color: red;
+}
+.blog-float-right
+{
+	float: right;
+}
+.blog-float-left
+{
+	float: left;
+}
+.blog-remove-margin
+{
+	margin: 0;
+}
+.blog-button
+{
+	border: none;
+	padding: 0;
+	outline: 0;
+	color: #2980B9; 
+	cursor: pointer;
+	font-size: 24px;
+	background-color: transparent;
+    vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
+	transition: all 0.1s;
+}
+.blog-button:disabled {
+	color: #9F9F9F;
+}
+.button-col-black {
+    color: #000;
+	cursor: pointer;
+}
+.button-col-black:active {
+    transform: translateY(4px);
+}
+.button-col-purple {
+    color: #8E44AD;
+	cursor: pointer;
+}
+.button-col-purple:hover {
+    color: #A569BD;
+}
+.button-col-purple:active {
+    color: #BB8FCE; transform: translateY(4px);
+}
+.button-col-red {
+    color: #C0392B;
+	cursor: pointer;
+}
+.button-col-red:hover {
+    color: #CD6155;
+}
+.button-col-red:active {
+    color: #D98880; transform: translateY(4px);
+}
+.button-col-blue {
+    color: #2980B9;
+	cursor: pointer;
+}
+.button-col-blue:hover {
+    color: #5499C7;
+}
+.button-col-blue:active {
+    color: #7FB3D5; transform: translateY(4px);
+}
+.button-col-green {
+    color: #16A085;
+	cursor: pointer;
+}
+.button-col-green:hover {
+    color: #45B39D;
+}
+.button-col-green:active {
+    color: #73C6B6; transform: translateY(4px);
+}
+.button-col-orange {
+    color: #E67E22;
+	cursor: pointer;
+}
+.button-col-orange:hover {
+    color: #EB984E;
+}
+.button-col-orange:active {
+    color: #F0B27A; transform: translateY(4px);
+}
+.style-col-black {
+    color: #000000;
+}
+.style-col-purple {
+    color: #8E44AD;
+}
+.style-col-red {
+    color: #C0392B;
+}
+.style-col-green {
+    color: #16A085;
+}
+.style-col-blue {
+    color: #2980B9;
+}
+.style-col-orange {
+    color: #E67E22;
+}
+.style-col-black,
+.style-col-purple,
+.style-col-red,
+.style-col-green,
+.style-col-blue,
+.style-col-orange
+{
+	background-color: transparent;
+}
+.style-col-black hr {
+    border: 1px solid #000000; 
+}
+.style-col-purple hr {
+    border: 1px solid #8E44AD; 
+}
+.style-col-red hr {
+    border: 1px solid #C0392B; 
+}
+.style-col-green hr {
+    border: 1px solid #16A085; 
+}
+.style-col-blue hr {
+    border: 1px solid #2980B9; 
+}
+.style-col-orange hr {
+    border: 1px solid #E67E22; 
+}
