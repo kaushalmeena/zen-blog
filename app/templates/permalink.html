@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user %}
+<div class="blog-menu">
+  <a href="/">
+    <button class="blog-button button-col-red">
+      / <i class="fa fa-home" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/new-post">
+    <button class="blog-button button-col-blue">
+      [ <i class="fa fa-pencil-square-o" aria-hidden="true"></i> ]
+    </button>
+  </a>
+  <a href="/my-post">
+    <button class="blog-button button-col-green">
+      / <i class="fa fa-align-justify" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/setting">
+    <button class="blog-button button-col-orange">
+      / <i class="fa fa-cogs" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <hr>
+</div>
+{% else %}
+<div class="blog-menu">
+ <a href="/">
+    <button class="blog-button button-col-black">
+      [ <i class="fa fa-home" aria-hidden="true"></i> ]
+    </button>
+  </a>
+  <a href="/sign-in">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-sign-in" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/sign-up">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-user-plus" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <hr>
+</div>
+{% endif %}
+{% if user %}
+<div class="blog-div border-{{page_color}}">
+  <div class="blog-header">
+    <span class="button-col-{{page_color}}">{{post.subject}}</span>
+    <button class="blog-button button-col-{{page_color}}">
+      [ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{post.comments.count()}} ]
+    </button>
+    <button class="blog-button button-col-{{page_color}}">
+      [ <i class="fa fa-check" aria-hidden="true"></i> : {{post.liked_by.count()}} ]
+    </button>
+    <hr>
+  </div>
+  <div class="blog-content">
+    <pre>{{post.content|safe}}</pre>
+    <hr>
+  </div>
+  <div class="blog-footer-post">
+    {% if user and not post.user_id == user.id %}
+    {% if user_liked_post(post.id, liked_posts) %}
+    <a href="/post/{{post.id}}/dislike">
+      [ <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> DISLIKE ]
+    </a>
+    {% else %}
+    <a href="/post/{{post.id}}/like">
+      [ <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> LIKE ]
+    </a>
+    {% endif %}
+    {% endif %}
+    [ <i class="fa fa-calendar" aria-hidden="true"></i> {{post.created.strftime("%b %d, %Y")}} ]
+  </div>
+  <div class="blog-header">
+    <span class="button-col-{{page_color}}">COMMENTS :</span>
+    <hr>
+  </div>
+  {% if post.comments.count() %}
+  {% for comment in post.comments %}
+  <div class="blog-div border-{{page_color}}">
+    <h3 class="margin-zero">
+      {{comment.name}}
+    </h3>
+    <p>
+      {{comment.content}}
+    </p>
+    <div class="blog-footer-comment">
+        {% if not comment.user_id == post.user_id %}
+        <span class="blog-float-left">
+          <a href="/comment/{{comment.id}}/edit">
+            [ <i class="fa fa-pencil" aria-hidden="true"></i> EDIT ]
+          </a>
+        </span>
+        <span class="blog-float-left">
+          <a href="/comment/{{comment.id}}/delete">
+            [ <i class="fa fa-trash" aria-hidden="true"></i> DELETE ]
+          </a>
+        </span>
+        {% endif %}
+        [ <i class="fa fa-envelope-o" aria-hidden="true"></i> {{comment.email}} ]
+        [ <i class="fa fa-clock-o" aria-hidden="true"></i> {{comment.created.strftime("%H:%M %x")}} ]
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <h2 class="text-align-center">[ EMPTY ]</h2>
+  {% endif %}
+  {% if user and show_form %}
+  <div class="blog-form">
+    <form method="POST">
+      <br>
+      <pre>POST-COMMENT :</pre>
+      <hr>
+      <input hidden name="post_id" value="{{post.id}}" readonly>
+      <pre>NAME :</pre>
+      <input class="form-input" name="input_name" type="text" value="{{input_name}}" required>
+      <pre>E-MAIL :</pre>
+      <input class="form-input" name="input_email" type="email" value="{{input_email}}" required>
+      <span class="blog-error">{{err_email}}</span>
+      <pre>COMMENT :</pre>
+      <textarea class="comment-textarea" name="content" required>{{content}}</textarea>
+      <br>
+      <br>
+      <input class="blog-button button-col-{{page_color}}" type="submit" value="[ SUBMIT ]">
+    </form>
+  </div>
+  {% endif %}
+  {% endblock %}
