@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="blog-form">
+  <form method="POST">
+    <pre>SUBJECT :</pre>
+    <input class="form-input" name="subject" autocomplete="false" type="text" value="{{subject}}">
+    <span class="blog-error">{{err_subject}}</span>
+    <pre>CONTENT :</pre>
+    <textarea class="post-textarea" name="content">{{content}}</textarea>
+    <h3 class="blog-error">{{err_content}}</h3>
+    <br>
+    <input class="blog-button button-col-blue" type="submit" value="[ SUBMIT ]">
+  </form>
+</div>
+{% endblock %}

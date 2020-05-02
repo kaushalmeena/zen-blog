@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="blog-menu">
+  <a href="/">
+    <button class="blog-button button-col-red">
+      / <i class="fa fa-home" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/new-post">
+    <button class="blog-button button-col-blue">
+      / <i class="fa fa-pencil-square-o" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/my-post">
+    <button class="blog-button button-col-green">
+      / <i class="fa fa-align-justify" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/setting">
+    <button class="blog-button button-col-orange">
+      / <i class="fa fa-cogs" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <hr>
+</div>
+<div class="page-content">
+  <h3 class="text-align-center">Welcome, {{user.username}}</h1>
+</div>
+{% endblock %}

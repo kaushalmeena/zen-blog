@@ -1,5 +1,11 @@
 {
   "name": "myapp-blog",
   "description": "A simple multi user blog where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.",
-  "repository": "https://github.com/kaushalmeena1996/myapp-blog"
+  "repository": "https://github.com/kaushalmeena1996/myapp-blog",
+  "env": {
+    "SECRET_KEY": {
+      "description": "SECRET string provider for creating hashes.",
+      "generator": "secret"
+    }
+  }
 }

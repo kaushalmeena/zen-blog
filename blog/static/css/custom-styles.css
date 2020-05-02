@@ -1,0 +1,313 @@
+@media (max-width: 900px) {
+  .blog-footer-comment {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .blog-app {
+    max-width: none;
+  }
+  .blog-header {
+    flex-direction: column;
+  }
+  .blog-footer-post {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 400px) {
+}
+
+body {
+  font-family: "courier new", courier, monospace;
+  background-image: url("/static/img/symphony.png");
+}
+
+a {
+  text-decoration: none;
+}
+
+.blog-app {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 800px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 25px;
+}
+
+.blog-menu {
+  text-align: right;
+}
+
+.blog-menu button {
+  font-size: 30px;
+}
+
+.blog-table {
+  width: 100%;
+}
+
+.blog-table input {
+  font-size: 30px;
+  width: 30px;
+}
+
+.blog-div {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+
+.blog-div button {
+  font-size: 22px;
+}
+
+.blog-form {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.blog-form input {
+  font-size: 22px;
+}
+
+.blog-header {
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.blog-content {
+  font-size: 22px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.blog-footer-post {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.blog-footer-comment {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.blog-error {
+  color: red;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.blog-button {
+  border: none;
+  padding: 0;
+  outline: 0;
+  font-size: 24px;
+  cursor: pointer;
+  background-color: transparent;
+  vertical-align: middle;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.1s;
+}
+
+.blog-button:disabled {
+  color: #9f9f9f;
+}
+
+.blog-textarea {
+  width: 100%;
+  max-width: 800px;
+  resize: none;
+  font-size: 22px;
+}
+
+.border-red {
+  border: 1px solid #c0392b;
+  border-radius: 5px;
+}
+
+.border-black {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.border-green {
+  border: 1px solid #16a085;
+  border-radius: 5px;
+}
+
+.border-purple {
+  border: 1px solid #8e44ad;
+  border-radius: 5px;
+}
+
+.button-col-black {
+  color: #000;
+  cursor: pointer;
+}
+
+.button-col-black:active {
+  transform: translateY(4px);
+}
+
+.button-col-purple {
+  color: #8e44ad;
+  cursor: pointer;
+}
+
+.button-col-purple:hover {
+  color: #a569bd;
+}
+
+.button-col-purple:active {
+  color: #bb8fce;
+  transform: translateY(4px);
+}
+
+.button-col-red {
+  color: #c0392b;
+  cursor: pointer;
+}
+
+.button-col-red:hover {
+  color: #cd6155;
+}
+
+.button-col-red:active {
+  color: #d98880;
+  transform: translateY(4px);
+}
+
+.button-col-blue {
+  color: #2980b9;
+  cursor: pointer;
+}
+
+.button-col-blue:hover {
+  color: #5499c7;
+}
+
+.button-col-blue:active {
+  color: #7fb3d5;
+  transform: translateY(4px);
+}
+
+.button-col-green {
+  color: #16a085;
+  cursor: pointer;
+}
+
+.button-col-green:hover {
+  color: #45b39d;
+}
+
+.button-col-green:active {
+  color: #73c6b6;
+  transform: translateY(4px);
+}
+
+.button-col-orange {
+  color: #e67e22;
+  cursor: pointer;
+}
+
+.button-col-orange:hover {
+  color: #eb984e;
+}
+
+.button-col-orange:active {
+  color: #f0b27a;
+  transform: translateY(4px);
+}
+
+.theme-col-black {
+  color: #000000;
+}
+
+.theme-col-purple {
+  color: #8e44ad;
+}
+
+.theme-col-red {
+  color: #c0392b;
+}
+
+.theme-col-green {
+  color: #16a085;
+}
+
+.theme-col-blue {
+  color: #2980b9;
+}
+
+.theme-col-orange {
+  color: #e67e22;
+}
+
+.theme-col-black hr {
+  border: 1px solid #000000;
+}
+
+.theme-col-purple hr {
+  border: 1px solid #8e44ad;
+}
+
+.theme-col-red hr {
+  border: 1px solid #c0392b;
+}
+
+.theme-col-green hr {
+  border: 1px solid #16a085;
+}
+
+.theme-col-blue hr {
+  border: 1px solid #2980b9;
+}
+
+.theme-col-orange hr {
+  border: 1px solid #e67e22;
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.comment-textarea {
+  height: 100px;
+}
+
+.post-textarea {
+  height: 500px;
+}
+
+.page-content {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.form-input {
+  font-size: 22px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.margin-zero {
+  margin: 0;
+}

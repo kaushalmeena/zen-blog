@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+{% if posts %}
+{% for post in posts %}
+<div class="blog-div border-{{page_color}}">
+  <div class="blog-header">
+    <a href="/post/{{post.id}}">
+      <span class="button-col-{{page_color}}">{{post.subject}}</span>
+    </a>
+    <div class="blog-button-group">
+      <button class="blog-button button-col-{{page_color}}">
+        [ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{post.comments|length}} ]
+      </button>
+      <button class="blog-button button-col-{{page_color}}">
+        [ <i class="fa fa-check" aria-hidden="true"></i> : {{post.liked_by|length}} ]
+      </button>
+    </div>
+  </div>
+  <div class="blog-content">
+    {% if post.content|length < 300 %}
+    {{post.content[:300]|safe}}...
+    <a href="/post/{{post.id}}">
+      <button class="blog-button button-col-{{page_color}}">
+        [ <i class="fa fa-folder-open-o" aria-hidden="true"></i> READ-MORE ]
+      </button>
+    </a>
+    {% else %}
+    {{post.content|safe}}
+    {% endif %}
+  </div>
+  <hr>
+  <div class="blog-footer-post">
+    {% if user and not post.user_id == user.id %}
+    {% if post in user.liked_posts %}
+    <a href="/post/{{post.id}}/dislike">
+      [ <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> DISLIKE ]
+    </a>
+    {% else %}
+    <a href="/post/{{post.id}}/like">
+      [ <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> LIKE ]
+    </a>
+    {% endif %}
+    {% endif %}
+    <span>
+      [ <i class="fa fa-calendar" aria-hidden="true"></i> {{post.created.strftime("%b %d, %Y")}} ]
+    </span>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="text-align-center">[ EMPTY ]</div>
+{% endif %}
+{% endblock %}

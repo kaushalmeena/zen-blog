@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="blog-menu">
+  <a href="/">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-home" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/sign-in">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-sign-in" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/sign-up">
+    <button class="blog-button button-col-black">
+      [ <i class="fa fa-user-plus" aria-hidden="true"></i> ]
+    </button>
+  </a>
+  <hr>
+</div>
+<div class="blog-form">
+  <form method="POST">
+    <br>
+    <pre>(*) marked fields are necessary.</pre>
+    <br>
+    <label for="username">
+      <pre>USERNAME* :</pre>
+    </label>
+    <input id="username" name="username" type="text" value="{{username}}" required>
+    <span class="blog-error">{{err_username}}</span>
+    <label for="password">
+      <pre>PASSWORD* :</pre>
+    </label>
+    <input id="password" name="password" type="password" value="{{password}}" required>
+    <span class="blog-error">{{err_password}}</span>
+    <label for="verify">
+      <pre>VERIFY* :</pre>
+    </label>
+    <input id="verify" name="verify" type="password" value="{{verify}}" required>
+    <span class="blog-error">{{err_verify}}</span>
+    <label for="name">
+      <pre>NAME :</pre>
+    </label>
+    <input id="name" name="name" type="text" value="{{name}}">
+    <label for="email">
+      <pre>E-MAIL :</pre>
+    </label>
+    <input id="email" name="email" type="email" value="{{email}}">
+    <span class="blog-error">{{err_email}}</span>
+    <br>
+    <br>
+    <input class="blog-button button-col-black" type="submit" value="[ SUBMIT ]">
+    <br>
+  </form>
+</div>
+{% endblock %}

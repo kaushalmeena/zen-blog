@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MYAPP-BLOG:{{page_title}}</title>
+  <!-- https://fontawesome.com/v4.7.0/ -->
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+  <!-- CUSTOM-STYLES -->
+  <link rel="stylesheet" href="/static/css/custom-styles.css">
+  <link rel="stylesheet" href="/static/css/custom2.css">
+  <!-- FAVICON -->
+  <link rel="icon" href="/static/img/favicon.ico">
+</head>
+
+<body>
+  <div class="website-container theme-col-{{page_color}}">
+    {% include "header.html" %}
+    <hr class="border">
+    {% block content %}{% endblock %}
+    <hr class="border">
+  </div>
+  <!-- CUSTOM-SCRIPTS -->
+  <script src="/static/js/custom-scripts.js"></script>
+</body>
+
+</html>

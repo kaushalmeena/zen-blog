@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="blog-menu">
+  <a href="/">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-home" aria-hidden="true"></i> /
+    </button>
+  </a>
+  <a href="/sign-in">
+    <button class="blog-button button-col-black">
+      [ <i class="fa fa-sign-in" aria-hidden="true"></i> ]
+    </button>
+  </a>
+  <a href="/sign-up">
+    <button class="blog-button button-col-black">
+      / <i class="fa fa-user-plus" aria-hidden="true"></i> /
+    </button>
+  </a>
+</div>
+<hr>
+<div class="blog-form">
+  <form method="POST">
+    <div class="blog-label">USERNAME :</div>
+    <div class="blog-input">
+      <input name="username" type="text" value="{{username}}" required>
+    </div>
+    <div class="blog-error">{{err_username}}</div>
+    <div class="blog-label">PASSWORD :</div>
+    <div class="blog-input">
+      <input name="password" type="password" value="{{password}}" required>
+    </div>
+    <div class="blog-error">{{err_password}}</div>
+    <div class="blog-error">{{err_login}}</div>
+    <input class="blog-button button-col-black" type="submit" value="[ SUBMIT ]">
+  </form>
+</div>
+{% endblock %}

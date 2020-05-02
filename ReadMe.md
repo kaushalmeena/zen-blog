@@ -53,10 +53,11 @@ Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 ## Deployment
 
-To push to heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), afterwards you can run these commands:
+To push to Heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli),and then set config vars for API keys:
 
 ```bash
 $ heroku create
+$ heroku config:set GITHUB_USERNAME=joesmith
 $ git push heroku master
 $ heroku open
 ```
