@@ -1,103 +1,53 @@
-<div class="website-title">
-  [ MYAPP-BLOG ]
+{% block header %}
+<div class="website-title enclose-square">
+  MYAPP-BLOG
 </div>
+{%- macro render_class(title) -%}
+enclose-{{'square' if page_title==title else 'slash'}}
+{%- endmacro -%}
 {% if user %}
-<div class="navbar">
-  {% if page_template == 'home.html' %}
-  <button class="blog-button button-col-red">
-    / <i class="fa fa-home" aria-hidden="true"></i> /
-  </button>
-  {% else %}
-  <a href="/">
-    <button class="blog-button button-col-red">
-      [ <i class="fa fa-home" aria-hidden="true"></i> ]
-    </button>
+<nav class="navbar">
+  <a class="button-red font-size-30" href="{{ url_for('app.home') }}">
+    <span class="{{ render_class('HOME') }}"><i class="fa fa-home" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  {% if page_template == 'new-post' %}
-  <button class="blog-button button-col-blue">
-    [ <i class="fa fa-pencil-square-o" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/new-post">
-    <button class="blog-button button-col-blue">
-      / <i class="fa fa-pencil-square-o" aria-hidden="true"></i> /
-    </button>
+  <a class="button-blue font-size-30" href="/new-post">
+    <span class="{{ render_class('NEW-POST') }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  {% if page_template == 'my-post.html' %}
-  <button class="blog-button button-col-green">
-    [ <i class="fa fa-align-justify" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/my-post">
-    <button class="blog-button button-col-green">
-      / <i class="fa fa-align-justify" aria-hidden="true"></i> /
-    </button>
+  <a class="button-green font-size-30" href="/my-post">
+    <span class="{{ render_class('MY-POST') }}"><i class="fa fa-align-justify" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  {% if page_template == 'setting.html' %}
-  <button class="blog-button button-col-orange">
-    [ <i class="fa fa-cogs" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/setting">
-    <button class="blog-button button-col-orange">
-      / <i class="fa fa-cogs" aria-hidden="true"></i> /
-    </button>
+  <a class="button-orange font-size-30" href="/setting">
+    <span class="{{ render_class('SETTING') }}"><i class="fa fa-cogs" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  <hr>
-</div>
+</nav>
 {% else %}
-<div class="navbar">
-  {% if page_template == 'home.html' %}
-  <button class="button">
-    [ <i class="fa fa-home" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/">
-    <button class="button">
-      / <i class="fa fa-home" aria-hidden="true"></i> /
-    </button>
+<nav class="navbar">
+  <a class="button-black font-size-30" href="{{ url_for('app.home') }}">
+    <span class="{{ render_class('HOME') }}"><i class="fa fa-home" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  {% if page_template == 'sign-in.html' %}
-  <button class="button">
-    [ <i class="fa fa-sign-in" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/sign-in">
-    <button class="button">
-      / <i class="fa fa-sign-in" aria-hidden="true"></i> /
-    </button>
+  <a class="button-black font-size-30" href="/sign-in">
+    <span class="{{ render_class('SIGN-IN') }}"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-  {% if page_template == 'sign-up.html' %}
-  <button class="button">
-    [ <i class="fa fa-user-plus" aria-hidden="true"></i> ]
-  </button>
-  {% else %}
-  <a href="/sign-up">
-    <button class="button">
-      / <i class="fa fa-user-plus" aria-hidden="true"></i> /
-    </button>
+  <a class="button-black font-size-30" href="/sign-up">
+    <span class="{{ render_class('SIGN-UP') }}"><i class="fa fa-user-plus" aria-hidden="true"></i></span>
   </a>
-  {% endif %}
-</div>
+</nav>
+{% endif %}
 <div class="page-title-container">
-  <div class="page-title">
-    / {{page_title}} /
+  <div class="page-title enclose-slash">
+    {{page_title}}
   </div>
-  {% if not user %}
+  {% if not user -%}
   <div class="signed-in-container">
-    <span>
-      [ <i class="fa fa-user" aria-hidden="true"></i> kkmn ]
+    <span class="enclose-square">
+      <i class="fa fa-user" aria-hidden="true"></i>
+      <span>kkm</span>
     </span>
-    <a href="/sign-out">
-      [ <i class="fa fa-sign-out" aria-hidden="true"></i> SIGN-OUT ]
+    <a class="enclose-square" href="/sign-out">
+      <i class="fa fa-sign-out" aria-hidden="true"></i>
+      <span>SIGN-OUT</span>
     </a>
   </div>
-  {% endif %}
+  {%- endif %}
 </div>
-{% endif %}
+{% endblock %}

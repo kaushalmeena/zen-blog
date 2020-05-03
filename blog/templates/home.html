@@ -5,13 +5,13 @@
 <div class="blog-div border-{{page_color}}">
   <div class="blog-header">
     <a href="/post/{{post.id}}">
-      <span class="button-col-{{page_color}}">{{post.subject}}</span>
+      <span class="button-{{page_color}}">{{post.subject}}</span>
     </a>
     <div class="blog-button-group">
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{post.comments|length}} ]
       </button>
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-check" aria-hidden="true"></i> : {{post.liked_by|length}} ]
       </button>
     </div>
@@ -20,7 +20,7 @@
     {% if post.content|length < 300 %}
     {{post.content[:300]|safe}}...
     <a href="/post/{{post.id}}">
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-folder-open-o" aria-hidden="true"></i> READ-MORE ]
       </button>
     </a>
@@ -48,6 +48,6 @@
 </div>
 {% endfor %}
 {% else %}
-<div class="text-align-center">[ EMPTY ]</div>
+<div class="text-align-center font-size-24">[ EMPTY ]</div>
 {% endif %}
 {% endblock %}

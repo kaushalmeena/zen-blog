@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYAPP-BLOG:{{page_title}}</title>
   <!-- https://fontawesome.com/v4.7.0/ -->
-  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <!-- CUSTOM-FAVICON -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
   <!-- CUSTOM-STYLES -->
-  <link rel="stylesheet" href="/static/css/custom-styles.css">
-  <link rel="stylesheet" href="/static/css/custom2.css">
-  <!-- FAVICON -->
-  <link rel="icon" href="/static/img/favicon.ico">
+  <link rel="stylesheet" type=text/css href="{{ url_for('static', filename='css/custom-styles.css') }}">
+  <title>BLOG : {{page_title}}</title>
 </head>
 
 <body>
-  <div class="website-container theme-col-{{page_color}}">
+  <div class="website-container theme-{{page_color}}">
     {% include "header.html" %}
-    <hr class="border">
-    {% block content %}{% endblock %}
-    <hr class="border">
+    <hr class="theme-border">
+    {% with messages = get_flashed_messages() -%}
+    {% if messages -%}
+    <ul class=flashes>
+      {%- for message in messages %}
+      <li>{{ message }}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    {%- endwith %}
+    {% block content %}
+    {% endblock %}
+    <hr class="theme-border">
   </div>
   <!-- CUSTOM-SCRIPTS -->
-  <script src="/static/js/custom-scripts.js"></script>
+  <script src="{{ url_for('static', filename='js/custom-scripts.js') }}"></script>
 </body>
 
 </html>

@@ -1,37 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="blog-menu">
-  <a href="/">
-    <button class="blog-button button-col-black">
-      / <i class="fa fa-home" aria-hidden="true"></i> /
-    </button>
-  </a>
-  <a href="/sign-in">
-    <button class="blog-button button-col-black">
-      [ <i class="fa fa-sign-in" aria-hidden="true"></i> ]
-    </button>
-  </a>
-  <a href="/sign-up">
-    <button class="blog-button button-col-black">
-      / <i class="fa fa-user-plus" aria-hidden="true"></i> /
-    </button>
-  </a>
-</div>
-<hr>
-<div class="blog-form">
+<div class="form-container">
   <form method="POST">
-    <div class="blog-label">USERNAME :</div>
-    <div class="blog-input">
-      <input name="username" type="text" value="{{username}}" required>
+    <div class="form-field">
+      {{ form.username.label }}
+      <div class="form-input">
+        {{ form.username }}
+        {%- if form.username.errors -%}
+        <ul class="errors">
+          {% for error in form.username.errors %}
+          <li>{{ error }}</li>{% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
     </div>
-    <div class="blog-error">{{err_username}}</div>
-    <div class="blog-label">PASSWORD :</div>
-    <div class="blog-input">
-      <input name="password" type="password" value="{{password}}" required>
+    <div class="form-field">
+      {{ form.password.label }}
+      <div class="form-input">
+        {{ form.password }}
+        {%- if form.username.errors -%}
+        <ul class="errors">
+          {% for error in form.password.errors %}
+          <li>{{ error }}</li>{% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
     </div>
-    <div class="blog-error">{{err_password}}</div>
-    <div class="blog-error">{{err_login}}</div>
-    <input class="blog-button button-col-black" type="submit" value="[ SUBMIT ]">
+    <div class="margin-top-20 margin-bottom-20">
+      <button type="submit" class="theme-button font-size-22 enclose-square">
+        SUBMIT
+      </button>
+    </div>
+    <div class="margin-top-10">
+      <span>Don't have an account?</span>
+      <a class="theme-button font-weight-bold enclose-square" href="{{ url_for('app.sign_up') }}">SIGN-UP</a>
+    </div>
   </form>
 </div>
 {% endblock %}

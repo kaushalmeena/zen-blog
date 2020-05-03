@@ -3,12 +3,12 @@
 {% if user %}
 <div class="blog-div border-{{page_color}}">
   <div class="blog-header">
-    <span class="button-col-{{page_color}}">{{post.subject}}</span>
+    <span class="button-{{page_color}}">{{post.subject}}</span>
     <div class="blog-button-group">
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{post.comments.count()}} ]
       </button>
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-check" aria-hidden="true"></i> : {{post.liked_by.count()}} ]
       </button>
     </div>
@@ -32,7 +32,7 @@
       [ <i class="fa fa-calendar" aria-hidden="true"></i> {{post.created.strftime("%b %d, %Y")}} ]
     </span>
   </div>
-  <span class="button-col-{{page_color}}">COMMENTS :</span>
+  <span class="button-{{page_color}}">COMMENTS :</span>
   <hr>
   {% if post.comments %}
   {% for comment in post.comments %}
@@ -76,7 +76,7 @@
       <textarea class="comment-textarea" name="content" required>{{content}}</textarea>
       <br>
       <br>
-      <input class="blog-button button-col-{{page_color}}" type="submit" value="[ SUBMIT ]">
+      <input class="blog-button button-{{page_color}}" type="submit" value="[ SUBMIT ]">
     </form>
   </div>
   {% endif %}

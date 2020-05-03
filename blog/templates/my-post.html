@@ -5,13 +5,13 @@
 <div class="blog-div border-{{page_color}}">
   <div class="blog-header">
     <a href="/post/{{post.id}}">
-      <span class="button-col-{{page_color}}">{{post.subject}}</span>
+      <span class="button-{{page_color}}">{{post.subject}}</span>
     </a>
     <div class="blog-button-group">
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-comment-o" aria-hidden="true"></i> : {{post.comments.count()}} ]
       </button>
-      <button class="blog-button button-col-{{page_color}}">
+      <button class="blog-button button-{{page_color}}">
         [ <i class="fa fa-check" aria-hidden="true"></i> : {{post.liked_by.count()}} ]
       </button>
     </div>
