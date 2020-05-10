@@ -17,6 +17,7 @@ load_dotenv()
 class BaseConfig:
     """Contains base configuration to be inherited by both dev/prod configurations."""
 
+    POSTS_PER_PAGE = 20
     SQLALCHEMY_DATABASE_URI = sqlite_uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

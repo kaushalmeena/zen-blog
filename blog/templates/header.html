@@ -2,34 +2,40 @@
 <div class="website-title enclose-square">
   MYAPP-BLOG
 </div>
-{%- macro render_class(title) -%}
-enclose-{{'square' if page_title==title else 'slash'}}
-{%- endmacro -%}
 {% if user %}
 <nav class="navbar">
-  <a class="button-red font-size-30" href="{{ url_for('app.home') }}">
-    <span class="{{ render_class('HOME') }}"><i class="fa fa-home" aria-hidden="true"></i></span>
+  <a class="button-red" href="{{ url_for('app.home') }}" title="HOME" role="button">
+    <span class="enclose-{{'square' if page_title=='HOME' else 'slash'}} display-inline-flex">
+      <i class="fa fa-home" aria-hidden="true"></i>
+    </span>
   </a>
-  <a class="button-blue font-size-30" href="/new-post">
-    <span class="{{ render_class('NEW-POST') }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+  <a class="button-green" href="{{ url_for('app.new_post') }}" title="NEW-POST" role="button">
+    <span class="enclose-{{'square' if page_title=='NEW-POST' else 'slash'}} display-inline-flex">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </span>
   </a>
-  <a class="button-green font-size-30" href="/my-post">
-    <span class="{{ render_class('MY-POST') }}"><i class="fa fa-align-justify" aria-hidden="true"></i></span>
-  </a>
-  <a class="button-orange font-size-30" href="/setting">
-    <span class="{{ render_class('SETTING') }}"><i class="fa fa-cogs" aria-hidden="true"></i></span>
+  <a class="button-blue" href="{{ url_for('app.saved_posts') }}" title="SAVED-POSTS" role="button">
+    <span class="enclose-{{'square' if page_title=='SAVED-POSTS' else 'slash'}} display-inline-flex">
+      <i class="fa fa-bookmark" aria-hidden="true"></i>
+    </span>
   </a>
 </nav>
 {% else %}
 <nav class="navbar">
-  <a class="button-black font-size-30" href="{{ url_for('app.home') }}">
-    <span class="{{ render_class('HOME') }}"><i class="fa fa-home" aria-hidden="true"></i></span>
+  <a class="button-black" href="{{ url_for('app.home') }}" title="HOME" role="button">
+    <span class="enclose-{{'square' if page_title=='HOME' else 'slash'}} display-inline-flex">
+      <i class="fa fa-home" aria-hidden="true"></i>
+    </span>
   </a>
-  <a class="button-black font-size-30" href="/sign-in">
-    <span class="{{ render_class('SIGN-IN') }}"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
+  <a class="button-black" href="{{ url_for('app.sign_in') }}" title="SIGN-IN" role="button">
+    <span class="enclose-{{'square' if page_title=='SIGN-IN' else 'slash'}} display-inline-flex">
+      <i class="fa fa-sign-in" aria-hidden="true"></i>
+    </span>
   </a>
-  <a class="button-black font-size-30" href="/sign-up">
-    <span class="{{ render_class('SIGN-UP') }}"><i class="fa fa-user-plus" aria-hidden="true"></i></span>
+  <a class="button-black" href="{{ url_for('app.sign_up') }}" title="SIGN-UP" role="button">
+    <span class="enclose-{{'square' if page_title=='SIGN-UP' else 'slash'}} display-inline-flex">
+      <i class="fa fa-user-plus" aria-hidden="true"></i>
+    </span>
   </a>
 </nav>
 {% endif %}
@@ -37,13 +43,13 @@ enclose-{{'square' if page_title==title else 'slash'}}
   <div class="page-title enclose-slash">
     {{page_title}}
   </div>
-  {% if not user -%}
+  {% if user -%}
   <div class="signed-in-container">
-    <span class="enclose-square">
+    <a class="enclose-square" href="{{ url_for('app.profile') }}">
       <i class="fa fa-user" aria-hidden="true"></i>
-      <span>kkm</span>
-    </span>
-    <a class="enclose-square" href="/sign-out">
+      <span>{{user.username}}</span>
+    </a>
+    <a class="enclose-square" href="{{ url_for('app.sign_out') }}">
       <i class="fa fa-sign-out" aria-hidden="true"></i>
       <span>SIGN-OUT</span>
     </a>

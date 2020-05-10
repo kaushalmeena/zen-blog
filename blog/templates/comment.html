@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="page-container">
+  <form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-field">
+      {{ form.body.label }}
+      <div class="form-input">
+        {{ form.body }}
+        {%- if form.body.errors -%}
+        <ul class="error-list">
+          {% for error in form.body.errors %}
+          <li>{{ error }}</li>{% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+    <div class="margin-top-20 margin-bottom-20">
+      <button type="submit" class="theme-button font-size-22 enclose-square">
+        SUBMIT
+      </button>
+    </div>
+  </form>
+</main>
+{% endblock %}

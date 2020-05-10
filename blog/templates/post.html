@@ -4,12 +4,12 @@
   <form method="POST">
     {{ form.csrf_token }}
     <div class="form-field">
-      {{ form.username.label }}
+      {{ form.title.label }}
       <div class="form-input">
-        {{ form.username }}
-        {%- if form.username.errors -%}
+        {{ form.title }}
+        {%- if form.title.errors -%}
         <ul class="error-list">
-          {% for error in form.username.errors %}
+          {% for error in form.title.errors %}
           <li>{{ error }}</li>
           {% endfor %}
         </ul>
@@ -17,12 +17,12 @@
       </div>
     </div>
     <div class="form-field">
-      {{ form.password.label }}
+      {{ form.body.label }}
       <div class="form-input">
-        {{ form.password }}
-        {%- if form.password.errors -%}
+        {{ form.body }}
+        {%- if form.body.errors -%}
         <ul class="error-list">
-          {% for error in form.password.errors %}
+          {% for error in form.body.errors %}
           <li>{{ error }}</li>
           {% endfor %}
         </ul>
@@ -33,10 +33,6 @@
       <button type="submit" class="theme-button font-size-22 enclose-square">
         SUBMIT
       </button>
-    </div>
-    <div class="margin-top-10">
-      <span>Don't have an account?</span>
-      <a class="theme-button enclose-square" href="{{ url_for('app.sign_up') }}"><b>SIGN-UP</b></a>
     </div>
   </form>
 </main>

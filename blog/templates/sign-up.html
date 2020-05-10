@@ -1,56 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="blog-menu">
-  <a href="/">
-    <button class="blog-button button-black">
-      / <i class="fa fa-home" aria-hidden="true"></i> /
-    </button>
-  </a>
-  <a href="/sign-in">
-    <button class="blog-button button-black">
-      / <i class="fa fa-sign-in" aria-hidden="true"></i> /
-    </button>
-  </a>
-  <a href="/sign-up">
-    <button class="blog-button button-black">
-      [ <i class="fa fa-user-plus" aria-hidden="true"></i> ]
-    </button>
-  </a>
-  <hr>
-</div>
-<div class="blog-form">
+<main class="page-container">
   <form method="POST">
-    <br>
-    <pre>(*) marked fields are necessary.</pre>
-    <br>
-    <label for="username">
-      <pre>USERNAME* :</pre>
-    </label>
-    <input id="username" name="username" type="text" value="{{username}}" required>
-    <span class="blog-error">{{err_username}}</span>
-    <label for="password">
-      <pre>PASSWORD* :</pre>
-    </label>
-    <input id="password" name="password" type="password" value="{{password}}" required>
-    <span class="blog-error">{{err_password}}</span>
-    <label for="verify">
-      <pre>VERIFY* :</pre>
-    </label>
-    <input id="verify" name="verify" type="password" value="{{verify}}" required>
-    <span class="blog-error">{{err_verify}}</span>
-    <label for="name">
-      <pre>NAME :</pre>
-    </label>
-    <input id="name" name="name" type="text" value="{{name}}">
-    <label for="email">
-      <pre>E-MAIL :</pre>
-    </label>
-    <input id="email" name="email" type="email" value="{{email}}">
-    <span class="blog-error">{{err_email}}</span>
-    <br>
-    <br>
-    <input class="blog-button button-black" type="submit" value="[ SUBMIT ]">
-    <br>
+    {{ form.csrf_token }}
+    <div class="form-field">
+      {{ form.username.label }}
+      <div class="form-input">
+        {{ form.username }}
+        {%- if form.username.errors -%}
+        <ul class="error-list">
+          {% for error in form.username.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+    <div class="form-field">
+      {{ form.password.label }}
+      <div class="form-input">
+        {{ form.password }}
+        {%- if form.password.errors -%}
+        <ul class="error-list">
+          {% for error in form.password.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+    <div class="form-field">
+      {{ form.confirm.label }}
+      <div class="form-input">
+        {{ form.confirm }}
+        {%- if form.confirm.errors -%}
+        <ul class="error-list">
+          {% for error in form.confirm.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+    <div class="margin-top-20 margin-bottom-20">
+      <button type="submit" class="theme-button font-size-22 enclose-square">
+        SUBMIT
+      </button>
+    </div>
+    <div class="margin-top-10">
+      <span>Already have an account?</span>
+      <a class="theme-button enclose-square" href="{{ url_for('app.sign_in') }}"><b>SIGN-IN</b></a>
+    </div>
   </form>
-</div>
+</main>
 {% endblock %}

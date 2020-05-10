@@ -16,15 +16,7 @@
   <div class="website-container theme-{{page_color}}">
     {% include "header.html" %}
     <hr class="theme-border">
-    {% with messages = get_flashed_messages() -%}
-    {% if messages -%}
-    <ul class=flashes>
-      {%- for message in messages %}
-      <li>{{ message }}</li>
-      {%- endfor %}
-    </ul>
-    {%- endif %}
-    {%- endwith %}
+    {% include "messages.html" %}
     {% block content %}
     {% endblock %}
     <hr class="theme-border">

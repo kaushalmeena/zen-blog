@@ -1,7 +1,6 @@
 # comment.py
 """Python script for comment model."""
 
-
 from blog import db
 
 from flask_login import UserMixin
@@ -10,12 +9,18 @@ from sqlalchemy.sql import func
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
 # Like association table
 likes = db.Table(
     "likes",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
-    db.Column("post_id", db.Integer, db.ForeignKey("post.id")),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("post_id", db.Integer, db.ForeignKey("post.id"), primary_key=True),
+)
+
+# Save association table
+saves = db.Table(
+    "saves",
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("post_id", db.Integer, db.ForeignKey("post.id"), primary_key=True),
 )
 
 
@@ -28,15 +33,21 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(32), nullable=False, unique=True)
     password_hash = db.Column(db.String(256), nullable=False)
     posts = db.relationship("Post", backref="user")
-    liked_posts = db.relationship("Post", secondary=likes, backref="liked_by")
+    comments = db.relationship("Comment", backref="user")
+    liked_posts = db.relationship(
+        "Post", secondary=likes, backref="liked_by", lazy="dynamic"
+    )
+    saved_posts = db.relationship(
+        "Post", secondary=saves, backref="saved_by", lazy="dynamic",
+    )
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password = generate_password_hash(password, method="sha256")
+        self.password_hash = generate_password_hash(password, method="sha256")
 
     def check_password(self, password):
         """Check hashed password."""
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
 
 class Post(db.Model):
