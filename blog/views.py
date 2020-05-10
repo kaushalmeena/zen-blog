@@ -2,7 +2,7 @@
 
 from blog import db, login_manager
 from blog.forms import CommentForm, PostForm, SignInForm, SignUpForm
-from blog.models import Comment, Post, User, likes, func
+from blog.models import Comment, Post, User, func, likes
 
 from flask import (
     Blueprint,
