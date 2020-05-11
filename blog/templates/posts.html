@@ -1,6 +1,6 @@
 {% block posts %}
 {% if pagination.items -%}
-{% for post in pagination.items %}
+{%- for post in pagination.items %}
 <div class="post-container theme-border">
   <div class="post-header">
     <div class="post-title-container">
@@ -14,7 +14,7 @@
         </a>
       </div>
     </div>
-    {% if user and not user.id == post.user_id -%}
+    {%- if user and not user.id == post.user_id -%}
     <div class="post-button-container">
       {% if post not in user.saved_posts -%}
       <a class="theme-button" href="{{ url_for('app.save_post', post_id=post.id) }}">
@@ -31,45 +31,45 @@
   <div class="post-footer">
     <span class="post-date">{{post.created.strftime("%b %d, %Y")}}</span>
     <div class="post-button-container">
-      <span class="display-inline-flex" title="Likes">
+      <span class="display-inline-flex" title="Like-Count">
         <i class="fa fa-heart" aria-hidden="true"></i>
         <span>{{post.liked_by|length}}</span>
       </span>
-      <span class="display-inline-flex" title="Comments">
+      <span class="display-inline-flex" title="Comment-Count">
         <i class="fa fa-comment" aria-hidden="true"></i>
         <span>{{post.comments|length}}</span>
       </span>
     </div>
   </div>
 </div>
-{% endfor %}
+{%- endfor %}
 <div class="pagination-container">
   {% if pagination.has_prev -%}
-  <a class="theme-button" href="{{ url_for(page_route, query, page=pagination.prev_num) }}">
+  <button type="button" class="theme-button" onclick="searchPosts('{{pageRoute}}', '{{pagination.prev_num}}')">
     <i class="fa fa-arrow-left" aria-hidden="true"></i>
     <span>PREV-PAGE</span>
-  </a>
+  </button>
   {%- else -%}
-  <span class="color-grey cursor-not-allowed">
+  <button type="button" class="theme-button disabled" disabled>
     <i class="fa fa-arrow-left" aria-hidden="true"></i>
     <span>PREV-PAGE</span>
-  </span>
+  </button>
   {%- endif %}
   {% if pagination.has_next -%}
-  <a class="theme-button" href="{{ url_for(page_route, query, page=pagination.next_num) }}">
+  <button type="button" class="theme-button" onclick="searchPosts('{{pageRoute}}', '{{pagination.next_num}}')">
     <span>NEXT-PAGE</span>
     <i class="fa fa-arrow-right" aria-hidden="true"></i>
-  </a>
+  </button>
   {%- else -%}
-  <span class="color-grey cursor-not-allowed">
+  <button type="button" class="theme-button disabled" disabled>
     <span>NEXT-PAGE</span>
     <i class="fa fa-arrow-right" aria-hidden="true"></i>
-  </span>
+  </button>
   {%- endif %}
 </div>
-{% else %}
+{%- else -%}
 <div class="text-align-center">
   <span class="font-size-24">[ EMPTY ]</span>
 </div>
-{% endif %}
+{%- endif %}
 {% endblock %}

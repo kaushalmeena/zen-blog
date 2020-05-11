@@ -1,9 +1,9 @@
-function searchPosts(route = "/", page = 1) {
+function searchPosts(route = "/", page = "1") {
   var params = {
     page
   };
   var input = document.getElementById("search");
-  if (input) {
+  if (input && input.value) {
     params.query = input.value;
   }
   var queryString = Object.keys(params)

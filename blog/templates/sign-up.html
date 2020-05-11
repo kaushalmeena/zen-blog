@@ -9,9 +9,9 @@
         {{ form.username }}
         {%- if form.username.errors -%}
         <ul class="error-list">
-          {% for error in form.username.errors %}
+          {%- for error in form.username.errors %}
           <li>{{ error }}</li>
-          {% endfor %}
+          {%- endfor %}
         </ul>
         {%- endif %}
       </div>
@@ -22,9 +22,9 @@
         {{ form.password }}
         {%- if form.password.errors -%}
         <ul class="error-list">
-          {% for error in form.password.errors %}
+          {%- for error in form.password.errors %}
           <li>{{ error }}</li>
-          {% endfor %}
+          {%- endfor %}
         </ul>
         {%- endif %}
       </div>
@@ -35,15 +35,15 @@
         {{ form.confirm }}
         {%- if form.confirm.errors -%}
         <ul class="error-list">
-          {% for error in form.confirm.errors %}
+          {%- for error in form.confirm.errors %}
           <li>{{ error }}</li>
-          {% endfor %}
+          {%- endfor %}
         </ul>
         {%- endif %}
       </div>
     </div>
-    <div class="margin-top-20 margin-bottom-20">
-      <button type="submit" class="theme-button font-size-22 enclose-square">
+    <div class="form-submit">
+      <button type="submit" class="theme-button enclose-square">
         SUBMIT
       </button>
     </div>

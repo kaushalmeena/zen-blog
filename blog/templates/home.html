@@ -3,12 +3,12 @@
 <main class="page-container">
   <div class="search-container">
     <div class="search-button">
-      <button type="button" class="theme-button font-size-22" title="Search" onclick="searchPosts()">
-        <i class="fa fa-search" aria-hidden="true"></i>
+      <button type="button" class="theme-button" onclick="searchPosts()">
+        <i class="fa fa-search" aria-hidden="true" title="Search"></i>
       </button>
     </div>
     <div class="search-input">
-      <input id="search" type="text" autocomplete="off" onkeyup="detectEnterKeyPress(event)" />
+      <input id="search" type="text" onkeyup="detectEnterKeyPress(event)" value="{{query}}" />
     </div>
   </div>
   {% include "posts.html" %}

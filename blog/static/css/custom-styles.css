@@ -82,11 +82,16 @@ a {
 }
 
 .message-list {
-  font-size: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 18px;
 }
 
 .error-list {
+  margin-top: 5px;
+  margin-bottom: 5px;
   color: #c0392b;
+  font-size: 18px;
 }
 
 .page-container {
@@ -117,6 +122,15 @@ a {
   font-size: 18px;
   max-width: 600px;
   width: 100%;
+}
+
+.form-submit {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.form-submit button {
+  font-size: 22px;
 }
 
 .post-container {
@@ -216,6 +230,10 @@ a {
   font-size: 24;
 }
 
+.search-button button {
+  font-size: 22px;
+}
+
 .search-input {
   margin-left: 10px;
   flex-grow: 1;
@@ -256,6 +274,10 @@ a {
   font-size: 20px;
 }
 
+.pagination-container button {
+  font-size: 20px;
+}
+
 .enclose-slash::before {
   content: "/";
 }
@@ -272,8 +294,19 @@ a {
   content: "]";
 }
 
-.divider {
-  border-width: 2px;
+.disabled {
+  color: #7f8c8d !important;
+  cursor: not-allowed;
+  transition: none !important;
+}
+
+.disabled:hover {
+  color: #7f8c8d !important;
+}
+
+.disabled:active {
+  color: #7f8c8d !important;
+  transform: none !important;
 }
 
 .button-black,
@@ -442,10 +475,6 @@ a {
   border: 1px solid #7f8c8d;
 }
 
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
-
 .text-align-center {
   text-align: center;
 }
@@ -458,50 +487,10 @@ a {
   font-size: 24px;
 }
 
-.font-size-22 {
-  font-size: 22px;
-}
-
 .font-size-20 {
   font-size: 20px;
 }
 
-.font-size-16 {
-  font-size: 16px;
-}
-
-.font-size-14 {
-  font-size: 14px;
-}
-
-.font-size-12 {
-  font-size: 12px;
-}
-
-.margin-top-20 {
-  margin-top: 20px;
-}
-
-.margin-bottom-20 {
-  margin-bottom: 20px;
-}
-
-.margin-left-10 {
-  margin-left: 10px;
-}
-
-.margin-right-10 {
-  margin-right: 10px;
-}
-
 .margin-top-10 {
   margin-top: 10px;
-}
-
-.margin-bottom-10 {
-  margin-bottom: 10px;
-}
-
-.min-width-600 {
-  margin-bottom: 600px;
 }

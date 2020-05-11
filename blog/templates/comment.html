@@ -9,14 +9,15 @@
         {{ form.body }}
         {%- if form.body.errors -%}
         <ul class="error-list">
-          {% for error in form.body.errors %}
-          <li>{{ error }}</li>{% endfor %}
+          {%- for error in form.body.errors %}
+          <li>{{ error }}</li>
+          {%- endfor %}
         </ul>
         {%- endif %}
       </div>
     </div>
-    <div class="margin-top-20 margin-bottom-20">
-      <button type="submit" class="theme-button font-size-22 enclose-square">
+    <div class="form-submit">
+      <button type="submit" class="theme-button enclose-square">
         SUBMIT
       </button>
     </div>

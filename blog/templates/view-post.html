@@ -12,11 +12,11 @@
       </div>
     </div>
     <div class="post-button-container">
-      <span class="display-inline-flex" title="Likes">
+      <span class="display-inline-flex" title="Like-Count">
         <i class="fa fa-heart" aria-hidden="true"></i>
         <span>{{post.liked_by|length}}</span>
       </span>
-      <span class="display-inline-flex" title="Comments">
+      <span class="display-inline-flex" title="Comment-Count">
         <i class="fa fa-comment" aria-hidden="true"></i>
         <span>{{post.comments|length}}</span>
       </span>
@@ -24,7 +24,7 @@
   </div>
   <div class="post-footer">
     <span class="post-date">{{post.created.strftime("%b %d, %Y")}}</span>
-    {% if user and post.user_id == user.id -%}
+    {%- if user and post.user_id == user.id -%}
     <div class="post-action-container">
       <a class="button-green" href="{{ url_for('app.edit_post', post_id=post.id) }}" role="button">
         <i class="fa fa-pencil-square-o" aria-hidden="true" title="Edit"></i>
@@ -60,12 +60,10 @@
     {{post.body}}
   </div>
   <div class="post-comments">
-    <div class="font-size-20">
-      <b>COMMENTS</b>
-    </div>
+    <span class="font-size-20"><b>COMMENTS</b></span>
     <hr>
-    {% if post.comments %}
-    {% for comment in post.comments %}
+    {% if post.comments -%}
+    {%- for comment in post.comments %}
     <div class="comment-container theme-border">
       <div class="comment-header">
         <div class="comment-title-container">
@@ -73,7 +71,7 @@
             <i><b>{{comment.user.username}}</b></i>
           </a>
         </div>
-        {% if user and comment.user_id == user.id -%}
+        {%- if user and comment.user_id == user.id -%}
         <div class="comment-button-container">
           <a class="button-green" href="{{ url_for('app.edit_comment', comment_id=comment.id) }}" role="button">
             <i class="fa fa-pencil-square-o" aria-hidden="true" title="Edit"></i>
@@ -91,12 +89,12 @@
         <span class="comment-date">{{comment.created.strftime("%b %d, %Y")}}</span>
       </div>
     </div>
-    {% endfor %}
-    {% else %}
+    {%- endfor %}
+    {%- else -%}
     <div class="text-align-center">
       <span class="font-size-24">[ EMPTY ]</span>
     </div>
-    {% endif %}
+    {%- endif %}
     <hr>
     <form method="POST">
       {{ form.csrf_token }}
@@ -106,14 +104,15 @@
           {{ form.body }}
           {%- if form.body.errors -%}
           <ul class="error-list">
-            {% for error in form.body.errors %}
-            <li>{{ error }}</li>{% endfor %}
+            {%- for error in form.body.errors %}
+            <li>{{ error }}</li>
+            {%- endfor %}
           </ul>
           {%- endif %}
         </div>
       </div>
-      <div class="margin-top-20 margin-bottom-20">
-        <button type="submit" class="theme-button font-size-22 enclose-square">
+      <div class="form-submit">
+        <button type="submit" class="theme-button enclose-square">
           SUBMIT
         </button>
       </div>
