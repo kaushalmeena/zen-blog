@@ -1,5 +1,4 @@
-# comment.py
-"""Python script for comment model."""
+"""Contains models for blog app."""
 
 from blog import db
 
