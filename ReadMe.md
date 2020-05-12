@@ -4,7 +4,7 @@ A simple multi user blog where users can sign in and post blog posts as well as 
 
 ## Requirements
 
-To install and run these examples you need:
+To install and run this project you need:
 
 - [Python 3.7+](https://www.python.org/downloads/ "Python 3.7+")
 - [Poetry](https://python-poetry.org/ "Poetry")
@@ -32,14 +32,14 @@ $ poetry install
 To run the project simply run:
 
 ```bash
-$ poetry run dev
+$ poetry run python wsgi.py
 ```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 ## Deployment
 
-To push to Heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), afterwards, you can run these commands:
+To push to Heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) afterwards, you can run these commands:
 
 ```bash
 $ heroku create
