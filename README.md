@@ -2,7 +2,7 @@
 
 A simple multi user blog where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.
 
-## Getting Started
+## Local Development
 
 These instructions will get you a copy of the project up and running on your local machine for development purposes. See deployment for notes on how to deploy the project on a live system.
 
@@ -60,7 +60,7 @@ or
 
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/) - Python web framework
 - [Poetry](https://python-poetry.org/) - For dependency management
-
+ 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
