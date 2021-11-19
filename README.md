@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 To install and run this project you need:
 
-- [Python 3.7+](https://www.python.org/downloads/ "Python 3.7+")
+- [Python 3.10+](https://www.python.org/downloads/ "Python 3.10+")
 - [Poetry](https://python-poetry.org/ "Poetry")
 - [git](https://git-scm.com/downloads "git") (only to clone this repository)
 
