@@ -12,7 +12,7 @@ app = create_app(app_config)
 
 def start():
     """Start blog web server."""
-    app.run()
+    app.run(port=4000)
 
 
 if __name__ == "__main__":
