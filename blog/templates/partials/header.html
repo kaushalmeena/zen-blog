@@ -1,0 +1,53 @@
+{% block header %}
+<div class="website-title enclose-square">
+  MYAPP-BLOG
+</div>
+{% if user -%}
+<nav class="navbar">
+  <a title="HOME" class="button-red enclose-{{'square' if page_title=='HOME' else 'slash'}}"
+    href="{{ url_for('app.home') }}" role="button">
+    <span class="material-icons">home</span>
+  </a>
+  <a title="NEW-POST" class="button-green enclose-{{'square' if page_title=='NEW-POST' else 'slash'}}"
+    href="{{ url_for('app.new_post') }}" role="button">
+    <span class="material-icons">edit</span>
+  </a>
+  <a title="SAVED-POSTS" class="button-blue enclose-{{'square' if page_title=='SAVED-POSTS' else 'slash'}}"
+    href="{{ url_for('app.saved_posts') }}" role="button">
+    <span class="material-icons">bookmark</span>
+  </a>
+</nav>
+{%- else -%}
+<nav class="navbar">
+  <a title="HOME" class="button-black enclose-{{'square' if page_title=='HOME' else 'slash'}}"
+    href="{{ url_for('app.home') }}" role="button">
+    <span class="material-icons">home</span>
+  </a>
+  <a title="SIGN-IN" class="button-black enclose-{{'square' if page_title=='SIGN-IN' else 'slash'}}"
+    href="{{ url_for('app.sign_in') }}" role="button">
+    <span class="material-icons">login</span>
+  </a>
+  <a title="SIGN-UP" class="button-black enclose-{{'square' if page_title=='SIGN-UP' else 'slash'}}"
+    href="{{ url_for('app.sign_up') }}" role="button">
+    <span class="material-icons">person_add</span>
+  </a>
+</nav>
+{%- endif %}
+<div class="page-title-container">
+  <div class="page-title enclose-slash">
+    {{page_title}}
+  </div>
+  {% if user -%}
+  <div class="signed-in-container">
+    <a class="theme-button enclose-square" href="{{ url_for('app.profile') }}">
+      <span class="material-icons">person</span>
+      <span>{{user.username}}</span>
+    </a>
+    <a class="theme-button enclose-square" href="{{ url_for('app.sign_out') }}">
+      <span class="material-icons">logout </span>
+      <span>SIGN-OUT</span>
+    </a>
+  </div>
+  {%- endif %}
+</div>
+{% endblock %}

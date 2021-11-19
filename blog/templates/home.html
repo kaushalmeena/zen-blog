@@ -1,16 +1,16 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 {% block content %}
 <main class="page-container">
   <div class="search-container">
-    <div class="search-button">
-      <button type="button" class="theme-button" onclick="searchPosts()">
-        <i class="fa fa-search" aria-hidden="true" title="Search"></i>
+    <div class="search-input-container">
+      <input id="searchInput" type="text" onkeyup="detectEnterKeyPress(event)" value="{{query}}" />
+    </div>
+    <div class="search-button-container">
+      <button title="Search posts" type="button" class="theme-button enclose-square" onclick="searchPosts()">
+        SEARCH
       </button>
     </div>
-    <div class="search-input">
-      <input id="search" type="text" onkeyup="detectEnterKeyPress(event)" value="{{query}}" />
-    </div>
   </div>
-  {% include "posts.html" %}
+  {% include "partials/posts.html" %}
 </main>
 {% endblock %}

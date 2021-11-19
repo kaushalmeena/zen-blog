@@ -32,7 +32,7 @@ def load_user(user_id):
 def unauthorized():
     """Redirect unauthorized users to Login page."""
     flash("You must be logged in to view that page.")
-    return redirect("/login")
+    return redirect("/sign-in")
 
 
 @app_blueprint.route("/")
@@ -53,7 +53,6 @@ def home():
     template_params = {
         "pagination": pagination,
         "query": query,
-        "page-route": "app.home",
         "page_title": "HOME",
     }
 
