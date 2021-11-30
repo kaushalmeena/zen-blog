@@ -32,7 +32,7 @@ def load_user(user_id):
 def unauthorized():
     """Redirect unauthorized users to Login page."""
     flash("You must be logged in to view that page.")
-    return redirect("/sign-in")
+    return redirect("/sign-in/")
 
 
 @app_blueprint.route("/")
@@ -65,7 +65,7 @@ def home():
     return render_template("home.html", **template_params)
 
 
-@app_blueprint.route("/sign-in", methods=["GET", "POST"])
+@app_blueprint.route("/sign-in/", methods=["GET", "POST"])
 def sign_in():
     """SIGN-IN page which allows users to login."""
     if current_user.is_authenticated:
@@ -90,7 +90,7 @@ def sign_in():
         )
 
 
-@app_blueprint.route("/sign-up", methods=["GET", "POST"])
+@app_blueprint.route("/sign-up/", methods=["GET", "POST"])
 def sign_up():
     """SIGN-UP page which allows users to register."""
     if current_user.is_authenticated:
@@ -117,7 +117,7 @@ def sign_up():
         )
 
 
-@app_blueprint.route("/new-post", methods=["GET", "POST"])
+@app_blueprint.route("/new-post/", methods=["GET", "POST"])
 @login_required
 def new_post():
     """NEW-POST page which allows users to create new blog posts."""
@@ -141,7 +141,7 @@ def new_post():
     )
 
 
-@app_blueprint.route("/post/<int:post_id>/edit", methods=["GET", "POST"])
+@app_blueprint.route("/post/<int:post_id>/edit/", methods=["GET", "POST"])
 @login_required
 def edit_post(post_id):
     """EDIT-POST page helps in editing of blog post."""
@@ -171,7 +171,7 @@ def edit_post(post_id):
         return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>/delete")
+@app_blueprint.route("/post/<int:post_id>/delete/")
 @login_required
 def delete_post(post_id):
     """DELETE-POST handler helps in deleting of blog post."""
@@ -188,7 +188,7 @@ def delete_post(post_id):
         return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/comment/<int:comment_id>/edit", methods=["GET", "POST"])
+@app_blueprint.route("/comment/<int:comment_id>/edit/", methods=["GET", "POST"])
 @login_required
 def edit_comment(comment_id):
     """EDIT-COMMENT page helps in editing of comment."""
@@ -216,7 +216,7 @@ def edit_comment(comment_id):
         return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/comment/<int:comment_id>/delete")
+@app_blueprint.route("/comment/<int:comment_id>/delete/")
 @login_required
 def delete_comment(comment_id):
     """DELETE-COMMENT handler helps in deleting of comment."""
@@ -233,7 +233,7 @@ def delete_comment(comment_id):
     return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>", methods=["GET", "POST"])
+@app_blueprint.route("/post/<int:post_id>/", methods=["GET", "POST"])
 @login_required
 def view_post(post_id):
     """VIEW-POST page displays post information alongwith comments."""
@@ -261,7 +261,7 @@ def view_post(post_id):
         return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>/like")
+@app_blueprint.route("/post/<int:post_id>/like/")
 @login_required
 def like_post(post_id):
     """Handle LIKING of a blog post."""
@@ -283,7 +283,7 @@ def like_post(post_id):
     return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>/dislike")
+@app_blueprint.route("/post/<int:post_id>/dislike/")
 @login_required
 def dislike_post(post_id):
     """Handle DISLIKING of a blog post."""
@@ -305,7 +305,7 @@ def dislike_post(post_id):
     return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>/save")
+@app_blueprint.route("/post/<int:post_id>/save/")
 @login_required
 def save_post(post_id):
     """Handle SAVING of a blog post."""
@@ -327,7 +327,7 @@ def save_post(post_id):
     return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/post/<int:post_id>/unsave")
+@app_blueprint.route("/post/<int:post_id>/unsave/")
 @login_required
 def unsave_post(post_id):
     """Handle UN-SAVING of a blog post."""
@@ -349,7 +349,7 @@ def unsave_post(post_id):
     return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/saved_posts")
+@app_blueprint.route("/saved-posts/")
 @login_required
 def saved_posts():
     """SAVED-POSTS page which displays the saved blog posts."""
@@ -369,7 +369,7 @@ def saved_posts():
     )
 
 
-@app_blueprint.route("/user/<int:user_id>")
+@app_blueprint.route("/user/<int:user_id>/")
 @login_required
 def view_user(user_id):
     """VIEW-USER page which displays posts of specified user."""
@@ -416,7 +416,7 @@ def view_user(user_id):
         return redirect(next_page or url_for("app.home"))
 
 
-@app_blueprint.route("/profile")
+@app_blueprint.route("/profile/")
 @login_required
 def profile():
     """PROFILE page which displays posts of current logged in user."""
@@ -455,7 +455,7 @@ def profile():
     )
 
 
-@app_blueprint.route("/sign-out")
+@app_blueprint.route("/sign-out/")
 @login_required
 def sign_out():
     """Logout the user and redirects to HOME page."""
