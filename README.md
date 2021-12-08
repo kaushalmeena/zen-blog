@@ -56,11 +56,6 @@ $ heroku open
 or
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-## Built With
-
-- [Flask](https://flask.palletsprojects.com/en/1.1.x/) - Python web framework
-- [Poetry](https://python-poetry.org/) - For dependency management
  
 ## License
 
