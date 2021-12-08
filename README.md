@@ -46,6 +46,7 @@ Your app should now be running on [localhost:5000](http://localhost:5000/).
 To push to Heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) afterwards, you can run these commands:
 
 ```bash
+$ heroku login
 $ heroku create
 $ heroku config:set SECRET_KEY='<YOUR-SECRET-KEY-HERE>'
 $ git push heroku master
