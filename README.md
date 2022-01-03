@@ -1,6 +1,6 @@
 # Blog
 
-A simple multi user blog where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.
+A simple multi user blogging site where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.
 
 ## Getting Started
 

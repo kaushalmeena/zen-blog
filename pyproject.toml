@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "myapp-blog"
 version = "1.0.0"
-description = "A simple multi user blog where users can sign in, post blog posts and as well as 'Like' and 'Comment' on other posts made on the blog."
+description = "A simple multi user blogging site where users can sign in, post blog posts and as well as 'Like' and 'Comment' on other posts made on the blog."
 authors = ["kaushalmeena <kaushal.meena1996@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/kaushalmeena/myapp-blog"

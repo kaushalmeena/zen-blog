@@ -1,6 +1,6 @@
 {
   "name": "myapp-blog",
-  "description": "A simple multi user blog where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.",
+  "description": "A simple multi user blogging site where users can sign in and post blog posts as well as 'Like' and 'Comment' on other posts made on the blog.",
   "repository": "https://github.com/kaushalmeena/myapp-blog",
   "env": {
     "SECRET_KEY": {
