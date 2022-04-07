@@ -80,7 +80,7 @@ def sign_in():
             if user and user.check_password(password=form.password.data):
                 login_user(user)
                 next_page = request.args.get("next")
-                flash("Sucessfully logged in.")
+                flash("Successfully logged in.")
                 return redirect(next_page or url_for("app.home"))
 
             flash("Invalid username or password.")
@@ -94,7 +94,7 @@ def sign_in():
 def sign_up():
     """SIGN-UP page which allows users to register."""
     if current_user.is_authenticated:
-        flash("You have alredy logged in.")
+        flash("You have already logged in.")
         return redirect(url_for("app.home"))
     else:
         form = SignUpForm()
@@ -106,8 +106,8 @@ def sign_up():
                 db.session.add(user)
                 db.session.commit()
                 login_user(user)
-                flash("Sucessfully registered.")
-                flash("Sucessfully logged in.")
+                flash("Successfully registered.")
+                flash("Successfully logged in.")
                 return redirect(url_for("app.home"))
 
             flash("A user already exists with that email address.")
@@ -129,7 +129,7 @@ def new_post():
         )
         db.session.add(post)
         db.session.commit()
-        flash("Post sucessfully created.")
+        flash("Post successfully created.")
         return redirect(url_for("app.home"))
 
     return render_template(
@@ -154,7 +154,7 @@ def edit_post(post_id):
             post.body = form.data.get("body")
             db.session.add(post)
             db.session.commit()
-            flash("Post sucessfully edited.")
+            flash("Post successfully edited.")
             return redirect(url_for("app.view_post", post_id=post_id))
 
         return render_template(
@@ -180,7 +180,7 @@ def delete_post(post_id):
     if post:
         db.session.delete(post)
         db.session.commit()
-        flash("Post sucessfully deleted.")
+        flash("Post successfully deleted.")
         return redirect(url_for("app.home"))
     else:
         flash("Blog post not found.")
@@ -200,7 +200,7 @@ def edit_comment(comment_id):
             comment.body = form.data.get("body")
             db.session.add(comment)
             db.session.commit()
-            flash("Comment sucessfully edited.")
+            flash("Comment successfully edited.")
             return redirect(url_for("app.view_post", post_id=comment.post_id))
 
         return render_template(
@@ -225,7 +225,7 @@ def delete_comment(comment_id):
     if comment:
         db.session.delete(comment)
         db.session.commit()
-        flash("Comment sucessfully deleted.")
+        flash("Comment successfully deleted.")
     else:
         flash("Comment not found.")
 
@@ -245,7 +245,7 @@ def view_post(post_id):
             comment = Comment(user=current_user, post=post, body=form.data.get("body"))
             db.session.add(comment)
             db.session.commit()
-            flash("Comment sucessfully posted.")
+            flash("Comment successfully posted.")
 
         return render_template(
             "view-post.html",
@@ -273,7 +273,7 @@ def like_post(post_id):
                 current_user.liked_posts.append(post)
                 db.session.add(current_user)
                 db.session.commit()
-                flash("Post sucessfully liked.")
+                flash("Post successfully liked.")
         else:
             flash("You can't like your own post.")
     else:
@@ -295,7 +295,7 @@ def dislike_post(post_id):
                 current_user.liked_posts.remove(post)
                 db.session.add(current_user)
                 db.session.commit()
-                flash("Post sucessfully disliked.")
+                flash("Post successfully disliked.")
         else:
             flash("You can't dislike your own post.")
     else:
@@ -317,7 +317,7 @@ def save_post(post_id):
                 current_user.saved_posts.append(post)
                 db.session.add(current_user)
                 db.session.commit()
-                flash("Post sucessfully saved.")
+                flash("Post successfully saved.")
         else:
             flash("You can't save your own post.")
     else:
@@ -339,7 +339,7 @@ def unsave_post(post_id):
                 current_user.saved_posts.remove(post)
                 db.session.add(current_user)
                 db.session.commit()
-                flash("Post sucessfully unsaved.")
+                flash("Post successfully unsaved.")
         else:
             flash("You can't unsave your own post.")
     else:
@@ -460,7 +460,7 @@ def profile():
 def sign_out():
     """Logout the user and redirects to HOME page."""
     logout_user()
-    flash("Sucessfully logged out.")
+    flash("Successfully logged out.")
     return redirect(url_for("app.home"))
 
 
