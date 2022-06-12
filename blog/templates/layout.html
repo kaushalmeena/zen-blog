@@ -1,30 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- FAVICON -->
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='images/favicon.ico') }}"
+    />
+    <!-- STYLES -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='library/material-icons/material-icons.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/index.css') }}"
+    />
+    <title>BLOG : {{ page_title }}</title>
+  </head>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- FAVICON -->
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-  <!-- STYLES -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='library/material-icons/material-icons.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
-  <title>BLOG : {{page_title}}</title>
-</head>
-
-<body>
-  <a class="github-corner" href="https://github.com/kaushalmeena/myapp-blog">
-    <img src="{{ url_for('static', filename='images/github-corner.svg') }}" alt="Github-Corner" />
-  </a>
-  <div class="website-container theme-{{page_color}}">
-    {% include "partials/header.html" %}
-    <hr class="theme-border">
-    {% include "partials/messages.html" %}
-    {% block content %}
-    {% endblock %}
-    <hr class="theme-border">
-  </div>
-  <!-- SCRIPTS -->
-  <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
-</body>
-
+  <body>
+    <a class="github-corner" href="https://github.com/kaushalmeena/myapp-blog">
+      <img
+        src="{{ url_for('static', filename='images/github-corner.svg') }}"
+        alt="Github-Corner"
+      />
+    </a>
+    <div class="website-container theme-{{ page_color }}">
+      {% include "partials/header.html" %}
+      <hr class="theme-border" />
+      {% include "partials/messages.html" %}
+      {% block content %}
+      {% endblock %}
+      <hr class="theme-border" />
+    </div>
+    <!-- SCRIPTS -->
+    <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+  </body>
 </html>

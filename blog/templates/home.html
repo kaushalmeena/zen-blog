@@ -3,10 +3,20 @@
 <main class="page-container">
   <div class="search-container">
     <div class="search-input-container">
-      <input id="searchInput" type="text" onkeyup="detectEnterKeyPress(event)" value="{{query}}" />
+      <input
+        id="searchInput"
+        type="text"
+        onkeyup="detectEnterKeyPress(event)"
+        value="{{ query }}"
+      />
     </div>
     <div class="search-button-container">
-      <button title="Search posts" type="button" class="theme-button enclose-square" onclick="searchPosts()">
+      <button
+        title="Search posts"
+        type="button"
+        class="theme-button enclose-square"
+        onclick="searchPosts()"
+      >
         SEARCH
       </button>
     </div>

@@ -4,24 +4,35 @@
 <div class="post-container theme-border">
   <div class="post-header">
     <div class="post-title-container">
-      <a class="post-title" href="{{ url_for('app.view_post', post_id=post.id) }}">
-        <b>{{post.title}}</b>
+      <a
+        class="post-title"
+        href="{{ url_for('app.view_post', post_id=post.id) }}"
+      >
+        <b>{{ post.title }}</b>
       </a>
       <div class="post-author-container">
         <span>by</span>
         <a href="{{ url_for('app.view_user', user_id=post.user.id) }}">
-          <i><b>{{post.user.username}}</b></i>
+          <i><b>{{ post.user.username }}</b></i>
         </a>
       </div>
     </div>
     {%- if user and not user.id == post.user_id -%}
     <div class="post-button-container">
       {% if post not in user.saved_posts -%}
-      <a title="Save this post" class="theme-button" href="{{ url_for('app.save_post', post_id=post.id) }}">
+      <a
+        title="Save this post"
+        class="theme-button"
+        href="{{ url_for('app.save_post', post_id=post.id) }}"
+      >
         <span class="material-icons">bookmark_border</span>
       </a>
       {%- else -%}
-      <a title="Un-Save this post" class="theme-button" href="{{ url_for('app.unsave_post', post_id=post.id) }}">
+      <a
+        title="Un-Save this post"
+        class="theme-button"
+        href="{{ url_for('app.unsave_post', post_id=post.id) }}"
+      >
         <span class="material-icons">bookmark</span>
       </a>
       {%- endif %}
@@ -29,15 +40,15 @@
     {%- endif %}
   </div>
   <div class="post-footer">
-    <span class="post-date">{{post.created.strftime("%b %d, %Y")}}</span>
+    <span class="post-date">{{ post.created.strftime("%b %d, %Y") }}</span>
     <div class="post-button-container">
       <span title="Likes in this post" class="display-inline-flex">
         <span class="material-icons">thumb_up</span>
-        <span>{{post.liked_by|length}}</span>
+        <span>{{ post.liked_by|length }}</span>
       </span>
       <span title="Comments in this post" class="display-inline-flex">
         <span class="material-icons">forum</span>
-        <span>{{post.comments|length}}</span>
+        <span>{{ post.comments|length }}</span>
       </span>
     </div>
   </div>
@@ -45,14 +56,19 @@
 {%- endfor %}
 <div class="pagination-container">
   {% if pagination.has_prev -%}
-  <button type="button" class="theme-button enclose-square"
-    onclick="searchPosts('{{pageRoute}}', '{{pagination.prev_num}}')">
+  <button
+    type="button"
+    class="theme-button enclose-square"
+    onclick="searchPosts('{{ pageRoute }}', '{{ pagination.prev_num }}')"
+  >
     PREV-PAGE
   </button>
-  {%- endif %}
-  {% if pagination.has_next -%}
-  <button type="button" class="theme-button enclose-square"
-    onclick="searchPosts('{{pageRoute}}', '{{pagination.next_num}}')">
+  {%- endif %} {% if pagination.has_next -%}
+  <button
+    type="button"
+    class="theme-button enclose-square"
+    onclick="searchPosts('{{ pageRoute }}', '{{ pagination.next_num }}')"
+  >
     NEXT-PAGE
   </button>
   {%- endif %}

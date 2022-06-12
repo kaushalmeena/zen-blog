@@ -3,97 +3,132 @@
 <main class="page-container">
   <div class="post-header">
     <div class="post-title-container">
-      <span class="post-title"><b>{{post.title}}</b></span>
+      <span class="post-title"><b>{{ post.title }}</b></span>
       <div class="post-author-container">
         <span>by</span>
         <a href="{{ url_for('app.view_user', user_id=post.user.id) }}">
-          <i><b>{{post.user.username}}</b></i>
+          <i><b>{{ post.user.username }}</b></i>
         </a>
       </div>
     </div>
     <div class="post-button-container">
       <span title="Likes on this post" class="display-inline-flex">
         <span class="material-icons">thumb_up</span>
-        <span>{{post.liked_by|length}}</span>
+        <span>{{ post.liked_by|length }}</span>
       </span>
       <span title="Comments on this post" class="display-inline-flex">
         <span class="material-icons">forum</span>
-        <span>{{post.comments|length}}</span>
+        <span>{{ post.comments|length }}</span>
       </span>
     </div>
   </div>
   <div class="post-footer">
-    <span class="post-date">{{post.created.strftime("%b %d, %Y")}}</span>
+    <span class="post-date">{{ post.created.strftime("%b %d, %Y") }}</span>
     {%- if user and post.user_id == user.id -%}
     <div class="post-action-container">
-      <a title="Edit this post" class="button-green" href="{{ url_for('app.edit_post', post_id=post.id) }}"
-        role="button">
+      <a
+        title="Edit this post"
+        class="button-green"
+        href="{{ url_for('app.edit_post', post_id=post.id) }}"
+        role="button"
+      >
         <span class="material-icons">edit</span>
       </a>
-      <a title="Delete this post" class="button-red" href="javascript:void(0)" role="button"
-        onclick="deletePost('{{post.id}}')">
+      <a
+        title="Delete this post"
+        class="button-red"
+        href="javascript:void(0)"
+        role="button"
+        onclick="deletePost('{{ post.id }}')"
+      >
         <span class="material-icons">delete</span>
       </a>
     </div>
     {%- else -%}
     <div class="post-action-container">
       {% if post not in user.liked_posts -%}
-      <a title="Like this post" class="button-red" href="{{ url_for('app.like_post', post_id=post.id) }}" role="button">
+      <a
+        title="Like this post"
+        class="button-red"
+        href="{{ url_for('app.like_post', post_id=post.id) }}"
+        role="button"
+      >
         <span class="material-icons">thumb_up</span>
       </a>
       {%- else -%}
-      <a title="Un-Like this post" class="button-red" href="{{ url_for('app.dislike_post', post_id=post.id) }}"
-        role="button">
+      <a
+        title="Un-Like this post"
+        class="button-red"
+        href="{{ url_for('app.dislike_post', post_id=post.id) }}"
+        role="button"
+      >
         <span class="material-icons">thumb_down</span>
       </a>
-      {%- endif %}
-      {% if post not in user.saved_posts -%}
-      <a title="Save this post" class="button-blue" href="{{ url_for('app.save_post', post_id=post.id) }}"
-        role="button">
+      {%- endif %} {% if post not in user.saved_posts -%}
+      <a
+        title="Save this post"
+        class="button-blue"
+        href="{{ url_for('app.save_post', post_id=post.id) }}"
+        role="button"
+      >
         <span class="material-icons">bookmark_add</span>
       </a>
       {%- else -%}
-      <a title="Un-Save this post" class="button-blue" href="{{ url_for('app.unsave_post', post_id=post.id) }}"
-        role="button">
+      <a
+        title="Un-Save this post"
+        class="button-blue"
+        href="{{ url_for('app.unsave_post', post_id=post.id) }}"
+        role="button"
+      >
         <span class="material-icons">bookmark_remove</span>
       </a>
       {%- endif %}
     </div>
     {%- endif %}
   </div>
-  <div class="post-body">
-    {{post.body}}
-  </div>
+  <div class="post-body">{{ post.body }}</div>
   <div class="post-comments">
     <span class="font-size-20"><b>COMMENTS</b></span>
-    <hr>
+    <hr />
     {% if post.comments -%}
     {%- for comment in post.comments %}
     <div class="comment-container theme-border">
       <div class="comment-header">
         <div class="comment-title-container">
-          <a class="comment-title" href="{{ url_for('app.view_user', user_id=comment.user.id) }}">
-            <i><b>{{comment.user.username}}</b></i>
+          <a
+            class="comment-title"
+            href="{{ url_for('app.view_user', user_id=comment.user.id) }}"
+          >
+            <i><b>{{ comment.user.username }}</b></i>
           </a>
         </div>
         {%- if user and comment.user_id == user.id -%}
         <div class="comment-button-container">
-          <a title="Edit this comment" class="button-green"
-            href="{{ url_for('app.edit_comment', comment_id=comment.id) }}" role="button">
+          <a
+            title="Edit this comment"
+            class="button-green"
+            href="{{ url_for('app.edit_comment', comment_id=comment.id) }}"
+            role="button"
+          >
             <span class="material-icons">edit</span>
           </a>
-          <a title="Delete this comment" class="button-red" href="javascript:void(0)" role="button"
-            onclick="deleteComment('{{comment.id}}')">
+          <a
+            title="Delete this comment"
+            class="button-red"
+            href="javascript:void(0)"
+            role="button"
+            onclick="deleteComment('{{ comment.id }}')"
+          >
             <span class="material-icons">delete</span>
           </a>
         </div>
         {%- endif %}
       </div>
-      <div class="comment-body">
-        {{comment.body}}
-      </div>
+      <div class="comment-body">{{ comment.body }}</div>
       <div class="comment-footer">
-        <span class="comment-date">{{comment.created.strftime("%b %d, %Y")}}</span>
+        <span class="comment-date">
+          {{ comment.created.strftime("%b %d, %Y") }}
+        </span>
       </div>
     </div>
     {%- endfor %}
@@ -102,7 +137,7 @@
       <span class="font-size-24">[ EMPTY ]</span>
     </div>
     {%- endif %}
-    <hr>
+    <hr />
     <form method="POST">
       {{ form.csrf_token }}
       <div class="form-field">
