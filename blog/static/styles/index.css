@@ -27,8 +27,8 @@
 }
 
 body {
-  font-family: "courier new", courier, monospace;
   background-image: url("/static/images/symphony.png");
+  font-family: "courier new", courier, monospace;
 }
 
 a {
@@ -43,27 +43,27 @@ a {
 }
 
 .website-container {
-  margin-left: auto;
   margin-right: auto;
-  max-width: 800px;
-  padding-left: 10px;
-  padding-right: 10px;
+  margin-left: auto;
   padding-top: 10px;
+  padding-right: 10px;
   padding-bottom: 25px;
+  padding-left: 10px;
+  max-width: 800px;
 }
 
 .website-title {
   margin-top: 25px;
   margin-bottom: 25px;
-  font-size: 32px;
-  font-weight: bold;
   text-align: center;
+  font-weight: bold;
+  font-size: 32px;
 }
 
 .navbar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  flex-wrap: wrap;
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -81,8 +81,8 @@ a {
   flex-grow: 1;
   margin-top: 15px;
   margin-bottom: 15px;
-  font-size: 24px;
   font-weight: 700;
+  font-size: 24px;
 }
 
 .signed-in-container {
@@ -123,15 +123,15 @@ a {
 }
 
 .form-input input {
-  font-size: 18px;
   max-width: 400px;
   width: 100%;
+  font-size: 18px;
 }
 
 .form-input textarea {
-  font-size: 18px;
   max-width: 600px;
   width: 100%;
+  font-size: 18px;
 }
 
 .form-submit {
@@ -233,10 +233,10 @@ a {
 }
 
 .search-container {
-  margin-top: 10px;
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .search-button-container button {
@@ -244,8 +244,8 @@ a {
 }
 
 .search-input-container {
-  margin-right: 10px;
   flex-grow: 1;
+  margin-right: 10px;
 }
 
 .search-input-container input {
@@ -270,16 +270,16 @@ a {
 }
 
 .user-stats-item {
-  font-size: 20px;
-  margin-left: 10px;
   margin-right: 10px;
+  margin-left: 10px;
+  font-size: 20px;
 }
 
 .pagination-container {
-  margin-top: 20px;
-  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 10px;
   font-size: 20px;
 }
 
@@ -312,12 +312,12 @@ a {
 .button-grey,
 .theme-button {
   display: inline-flex;
-  border: none;
   padding: 0;
   outline: 0;
-  cursor: pointer;
+  border: none;
   background-color: transparent;
   vertical-align: middle;
+  cursor: pointer;
   transition: all 0.1s;
 }
 
