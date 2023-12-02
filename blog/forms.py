@@ -1,4 +1,5 @@
 """Contains forms for blog app."""
+
 from flask_wtf import FlaskForm
 
 from wtforms import PasswordField, StringField, TextAreaField

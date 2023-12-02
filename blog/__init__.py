@@ -1,8 +1,9 @@
 """Contains app factory for blog app."""
 
-from blog.extensions import compress, db, login_manager
-
 from flask import Flask
+
+from blog.extensions import compress, db, login_manager
+from blog.views import app_blueprint, error400, error404, error500
 
 
 def create_app(app_config):
@@ -16,8 +17,6 @@ def create_app(app_config):
     db.init_app(app)
 
     with app.app_context():
-        from blog.views import app_blueprint, error400, error404, error500
-
         # Register blueprints
         app.register_blueprint(app_blueprint)
 

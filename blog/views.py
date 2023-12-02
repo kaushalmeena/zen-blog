@@ -1,9 +1,5 @@
 """Contains views for blog app."""
 
-from blog import db, login_manager
-from blog.forms import CommentForm, PostForm, SignInForm, SignUpForm
-from blog.models import Comment, Post, User, func, likes
-
 from flask import (
     Blueprint,
     current_app,
@@ -15,6 +11,11 @@ from flask import (
 )
 
 from flask_login import current_user, login_required, login_user, logout_user
+
+from blog.forms import CommentForm, PostForm, SignInForm, SignUpForm
+from blog.models import Comment, Post, User, func, likes
+
+from blog import db, login_manager
 
 # Initialise Blueprint
 app_blueprint = Blueprint("app", __name__)
@@ -47,7 +48,7 @@ def home():
         pagination = pagination.filter(Post.title.ilike("%" + query + "%"))
 
     pagination = pagination.order_by(Post.created.desc()).paginate(
-        page, current_app.config["POSTS_PER_PAGE"], False
+        page=page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False
     )
 
     template_params = {
@@ -71,23 +72,23 @@ def sign_in():
     if current_user.is_authenticated:
         flash("You have already logged in.")
         return redirect(url_for("app.home"))
-    else:
-        form = SignInForm()
 
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
+    form = SignInForm()
 
-            if user and user.check_password(password=form.password.data):
-                login_user(user)
-                next_page = request.args.get("next")
-                flash("Successfully logged in.")
-                return redirect(next_page or url_for("app.home"))
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
 
-            flash("Invalid username or password.")
+        if user and user.check_password(password=form.password.data):
+            login_user(user)
+            next_page = request.args.get("next")
+            flash("Successfully logged in.")
+            return redirect(next_page or url_for("app.home"))
 
-        return render_template(
-            "sign-in.html", form=form, page_title="SIGN-IN", page_color="black",
-        )
+        flash("Invalid username or password.")
+
+    return render_template(
+        "sign-in.html", form=form, page_title="SIGN-IN", page_color="black",
+    )
 
 
 @app_blueprint.route("/sign-up/", methods=["GET", "POST"])
@@ -96,25 +97,25 @@ def sign_up():
     if current_user.is_authenticated:
         flash("You have already logged in.")
         return redirect(url_for("app.home"))
-    else:
-        form = SignUpForm()
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
-            if user is None:
-                user = User(username=form.username.data)
-                user.set_password(form.password.data)
-                db.session.add(user)
-                db.session.commit()
-                login_user(user)
-                flash("Successfully registered.")
-                flash("Successfully logged in.")
-                return redirect(url_for("app.home"))
 
-            flash("A user already exists with that email address.")
+    form = SignUpForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None:
+            user = User(username=form.username.data)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            flash("Successfully registered.")
+            flash("Successfully logged in.")
+            return redirect(url_for("app.home"))
 
-        return render_template(
-            "sign-up.html", form=form, page_title="SIGN-UP", page_color="black",
-        )
+        flash("A user already exists with that email address.")
+
+    return render_template(
+        "sign-up.html", form=form, page_title="SIGN-UP", page_color="black",
+    )
 
 
 @app_blueprint.route("/new-post/", methods=["GET", "POST"])
@@ -165,10 +166,10 @@ def edit_post(post_id):
             page_title="EDIT-POST",
             page_color="purple",
         )
-    else:
-        next_page = request.headers.get("Referer")
-        flash("Blog post not found.")
-        return redirect(next_page or url_for("app.home"))
+
+    next_page = request.headers.get("Referer")
+    flash("Blog post not found.")
+    return redirect(next_page or url_for("app.home"))
 
 
 @app_blueprint.route("/post/<int:post_id>/delete/")
@@ -182,10 +183,10 @@ def delete_post(post_id):
         db.session.commit()
         flash("Post successfully deleted.")
         return redirect(url_for("app.home"))
-    else:
-        flash("Blog post not found.")
-        next_page = request.headers.get("Referer")
-        return redirect(next_page or url_for("app.home"))
+
+    flash("Blog post not found.")
+    next_page = request.headers.get("Referer")
+    return redirect(next_page or url_for("app.home"))
 
 
 @app_blueprint.route("/comment/<int:comment_id>/edit/", methods=["GET", "POST"])
@@ -210,10 +211,10 @@ def edit_comment(comment_id):
             page_title="EDIT-COMMENT",
             page_color="purple",
         )
-    else:
-        next_page = request.headers.get("Referer")
-        flash("Comment not found.")
-        return redirect(next_page or url_for("app.home"))
+
+    next_page = request.headers.get("Referer")
+    flash("Comment not found.")
+    return redirect(next_page or url_for("app.home"))
 
 
 @app_blueprint.route("/comment/<int:comment_id>/delete/")
@@ -236,13 +237,14 @@ def delete_comment(comment_id):
 @app_blueprint.route("/post/<int:post_id>/", methods=["GET", "POST"])
 @login_required
 def view_post(post_id):
-    """VIEW-POST page displays post information alongwith comments."""
+    """VIEW-POST page displays post information alongside comments."""
     post = Post.query.get(post_id)
 
     if post:
         form = CommentForm()
         if form.validate_on_submit():
-            comment = Comment(user=current_user, post=post, body=form.data.get("body"))
+            comment = Comment(user=current_user, post=post,
+                              body=form.data.get("body"))
             db.session.add(comment)
             db.session.commit()
             flash("Comment successfully posted.")
@@ -255,10 +257,10 @@ def view_post(post_id):
             page_title="VIEW-POST",
             page_color="purple",
         )
-    else:
-        next_page = request.headers.get("Referer")
-        flash("Blog post not found.")
-        return redirect(next_page or url_for("app.home"))
+
+    next_page = request.headers.get("Referer")
+    flash("Blog post not found.")
+    return redirect(next_page or url_for("app.home"))
 
 
 @app_blueprint.route("/post/<int:post_id>/like/")
@@ -356,7 +358,7 @@ def saved_posts():
     page = request.args.get("page", 1, type=int)
 
     pagination = current_user.saved_posts.order_by(Post.created.desc()).paginate(
-        page, current_app.config["POSTS_PER_PAGE"], False
+        page=page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False
     )
 
     return render_template(
@@ -381,7 +383,7 @@ def view_user(user_id):
         pagination = (
             Post.query.filter_by(user_id=user_id)
             .order_by(Post.created.desc())
-            .paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+            .paginate(page=page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False)
         )
 
         post_count = (
@@ -409,11 +411,10 @@ def view_user(user_id):
             page_title="VIEW-USER",
             page_color="orange",
         )
-    else:
-        flash("User not found.")
-        next_page = request.headers.get("Referer")
 
-        return redirect(next_page or url_for("app.home"))
+    flash("User not found.")
+    next_page = request.headers.get("Referer")
+    return redirect(next_page or url_for("app.home"))
 
 
 @app_blueprint.route("/profile/")
@@ -425,7 +426,7 @@ def profile():
     pagination = (
         Post.query.filter_by(user_id=current_user.id)
         .order_by(Post.created.desc())
-        .paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+        .paginate(page=page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False)
     )
 
     post_count = (
@@ -464,7 +465,7 @@ def sign_out():
     return redirect(url_for("app.home"))
 
 
-def error400(exception=None):
+def error400():
     """Error 404 page."""
     template_params = {"page_title": "ERROR", "page_color": "grey"}
 
@@ -474,7 +475,7 @@ def error400(exception=None):
     return render_template("400.html", **template_params), 400
 
 
-def error404(exception=None):
+def error404():
     """Error 404 page."""
     template_params = {"page_title": "ERROR", "page_color": "grey"}
 
@@ -484,7 +485,7 @@ def error404(exception=None):
     return render_template("404.html", **template_params), 404
 
 
-def error500(exception=None):
+def error500():
     """Error 500 page."""
     template_params = {"page_title": "ERROR", "page_color": "grey"}
 

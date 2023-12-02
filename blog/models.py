@@ -1,25 +1,29 @@
 """Contains models for blog app."""
 
-from blog import db
-
 from flask_login import UserMixin
 
 from sqlalchemy.sql import func
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from blog import db
+
 # Like association table
 likes = db.Table(
     "likes",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-    db.Column("post_id", db.Integer, db.ForeignKey("post.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey(
+        "user.id"), primary_key=True),
+    db.Column("post_id", db.Integer, db.ForeignKey(
+        "post.id"), primary_key=True),
 )
 
 # Save association table
 saves = db.Table(
     "saves",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-    db.Column("post_id", db.Integer, db.ForeignKey("post.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey(
+        "user.id"), primary_key=True),
+    db.Column("post_id", db.Integer, db.ForeignKey(
+        "post.id"), primary_key=True),
 )
 
 
@@ -42,7 +46,7 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password_hash = generate_password_hash(password, method="sha256")
+        self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         """Check hashed password."""
