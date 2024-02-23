@@ -21,14 +21,14 @@ To set up everything in your local machine, you need to follow these steps:
 1. Clone this repo and then change directory to the `myapp-blog` folder:
 
 ```bash
-$ git clone https://github.com/kaushalmeena/myapp-blog.git
-$ cd myapp-blog
+git clone https://github.com/kaushalmeena/myapp-blog.git
+cd myapp-blog
 ```
 
 2. Install project dependencies using poetry:
 
 ```bash
-$ poetry install
+poetry install
 ```
 
 ### Running
@@ -36,7 +36,7 @@ $ poetry install
 To run the project simply run:
 
 ```bash
-$ poetry run python wsgi.py
+poetry run python wsgi.py
 ```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
@@ -46,11 +46,11 @@ Your app should now be running on [localhost:5000](http://localhost:5000/).
 To push to Heroku you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) afterwards, you can run these commands after setting up the project locally:
 
 ```bash
-$ heroku login
-$ heroku create
-$ heroku config:set SECRET_KEY='<YOUR-SECRET-KEY-HERE>'
-$ git push heroku master
-$ heroku open
+heroku login
+heroku create
+heroku config:set SECRET_KEY='<YOUR-SECRET-KEY-HERE>'
+git push heroku master
+heroku open
 ```
 
 or
