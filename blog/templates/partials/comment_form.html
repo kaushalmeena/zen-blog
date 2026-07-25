@@ -1,0 +1,24 @@
+{% from "partials/macros.html" import icon, field %}
+{#
+  New-comment form.
+
+  htmx posts it and appends the rendered comment to #comment-list. The server
+  then sends this same template back with oob=True as an out-of-band swap, which
+  is how the textarea gets cleared without any client-side scripting.
+#}
+<form id="comment-form" method="post"
+      action="{{ url_for('posts.add_comment', slug=post.slug) }}"
+      hx-post="{{ url_for('posts.add_comment', slug=post.slug) }}"
+      hx-target="#comment-list"
+      hx-swap="beforeend"
+      hx-disabled-elt="find button"
+      {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
+  {{ form.csrf_token }}
+  {{ field(form.body) }}
+  <div class="form-actions">
+    <button class="btn btn--solid btn--keep-label" type="submit">
+      {{ icon('comment') }}<span class="btn__label">post comment</span>
+    </button>
+    <span class="field__hint htmx-indicator">posting…</span>
+  </div>
+</form>

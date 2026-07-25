@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Test
+        run: uv run pytest --cov=blog --cov-report=term-missing
+
+      - name: Verify migrations match the models
+        env:
+          APP_CONFIG: development
+          FLASK_APP: blog
+        run: |
+          uv run flask db upgrade
+          # 'db check' exits non-zero when the models have drifted from the
+          # migration history, which catches a model change with no migration.
+          uv run flask db check
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: myapp-blog:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke-test the container
+        run: |
+          docker run -d --name blog -p 8000:8000 \
+            -e SECRET_KEY=ci-only-not-a-real-secret myapp-blog:ci
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/robots.txt >/dev/null; then
+              echo "container is serving"
+              curl -fsS http://localhost:8000/ >/dev/null
+              curl -fsS http://localhost:8000/feed.xml >/dev/null
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "container never became healthy"
+          docker logs blog
+          exit 1

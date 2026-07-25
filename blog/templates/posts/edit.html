@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import icon, field, checkbox %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">{{ 'edit post' if post else 'new post' }}</h1>
+  {%- if post %}
+  <p class="page-subtitle"><a href="{{ url_for('posts.view', slug=post.slug) }}">view post</a></p>
+  {%- endif %}
+</div>
+
+<form method="post">
+  {{ form.csrf_token }}
+  {{ field(form.title, autofocus=not post) }}
+  {{ field(form.body, hint='Markdown: **bold**, _italic_, `code`, ``` fenced blocks ```, > quotes, - lists, [links](url).') }}
+  {{ field(form.tags, hint='Up to ' ~ max_tags ~ ' comma-separated tags.') }}
+  {{ checkbox(form.published) }}
+
+  <div class="form-actions">
+    <button class="btn btn--solid btn--keep-label" type="submit">
+      {{ icon('check') }}<span class="btn__label">{{ 'save changes' if post else 'publish' }}</span>
+    </button>
+    <a class="btn btn--keep-label"
+       href="{{ url_for('posts.view', slug=post.slug) if post else url_for('main.home') }}">
+      <span class="btn__label">cancel</span>
+    </a>
+  </div>
+</form>
+{% endblock %}

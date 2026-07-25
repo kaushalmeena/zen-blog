@@ -1,0 +1,17 @@
+{#
+  Response to a successful comment POST.
+
+  The comment itself is appended to #comment-list (the form's hx-target); the
+  remaining elements carry hx-swap-oob, so htmx pulls them out of this response
+  and applies them elsewhere on the page: a cleared form, an updated count and
+  the removal of the "no comments yet" placeholder.
+#}
+{% include "partials/comment.html" %}
+
+{% with oob = True %}{% include "partials/comment_form.html" %}{% endwith %}
+
+<span id="comment-count" hx-swap-oob="true">{{ post.comment_count }}</span>
+
+{%- if post.comment_count == 1 %}
+<p id="comments-empty" hx-swap-oob="delete"></p>
+{%- endif %}

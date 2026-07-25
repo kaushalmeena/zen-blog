@@ -1,11 +1,13 @@
-{% block messages %}
-{% with messages = get_flashed_messages() -%}
-{%- if messages -%}
-<ul class="message-list">
-  {%- for message in messages %}
+{#
+  Flash messages.
+
+  The element is always rendered, even when empty, so htmx responses can replace
+  it out of band (`hx-swap-oob`) after an action that flashed something. See
+  blog/responses.py: render_fragment appends this template with oob=True.
+#}
+<ul class="messages" id="messages" role="status" aria-live="polite"
+    {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
+  {%- for message in get_flashed_messages() %}
   <li>{{ message }}</li>
   {%- endfor %}
 </ul>
-{%- endif -%}
-{%- endwith -%}
-{% endblock %}

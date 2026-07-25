@@ -1,0 +1,19 @@
+{#
+  The whole list, including its container. Search replaces this element wholesale
+  (hx-swap="outerHTML" on #post-list), which is why the id lives here.
+#}
+<div class="post-list" id="post-list">
+  {%- if pagination.items %}
+  {% include "partials/post_batch.html" %}
+  {%- else %}
+  <p class="empty">
+    {%- if search %}
+    Nothing matches “{{ search }}”.
+    {%- elif active_tag %}
+    No posts tagged “{{ active_tag }}” yet.
+    {%- else %}
+    {{ empty_message|default('No posts yet.', true) }}
+    {%- endif %}
+  </p>
+  {%- endif %}
+</div>

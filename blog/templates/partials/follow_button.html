@@ -1,0 +1,18 @@
+{% from "partials/macros.html" import icon, csrf %}
+{#
+  Follow / unfollow toggle. A real POST form, wrapped so htmx can replace it with
+  the server's new state instead of reloading the profile.
+#}
+{%- set is_following = current_user.is_authenticated and profile_user in current_user.following -%}
+<form id="follow-{{ profile_user.id }}" class="inline-form" method="post"
+      action="{{ url_for('users.toggle_follow', username=profile_user.username) }}"
+      hx-post="{{ url_for('users.toggle_follow', username=profile_user.username) }}"
+      hx-target="this"
+      hx-swap="outerHTML">
+  {{ csrf() }}
+  <button class="btn btn--keep-label {{ 'btn--primary' if is_following else 'btn--solid' }}"
+          type="submit" aria-pressed="{{ 'true' if is_following else 'false' }}">
+    {{ icon('check' if is_following else 'plus') }}
+    <span class="btn__label">{{ 'following' if is_following else 'follow' }}</span>
+  </button>
+</form>

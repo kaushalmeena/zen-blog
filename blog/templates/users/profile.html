@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import icon %}
+
+{% block content %}
+<div class="profile">
+  {{ identicon(profile_user.username, 88) }}
+  <div class="profile__body">
+    <h1 class="profile__name">{{ profile_user.username }}</h1>
+    {%- if profile_user.bio %}
+    <p class="profile__bio">{{ profile_user.bio }}</p>
+    {%- endif %}
+
+    <div class="stats">
+      <span><b>{{ profile_user.post_count }}</b> posts</span>
+      <span><b>{{ profile_user.like_count }}</b> likes received</span>
+      <a href="{{ url_for('users.followers', username=profile_user.username) }}">
+        <b>{{ profile_user.follower_count }}</b> followers
+      </a>
+      <a href="{{ url_for('users.following', username=profile_user.username) }}">
+        <b>{{ profile_user.following_count }}</b> following
+      </a>
+      <span>joined {{ profile_user.created|date('%b %Y') }}</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    {%- if current_user.is_authenticated and current_user.id == profile_user.id %}
+    <a class="btn btn--keep-label" href="{{ url_for('users.settings') }}">
+      {{ icon('settings') }}<span class="btn__label">edit profile</span>
+    </a>
+    {%- elif current_user.is_authenticated %}
+    {% include "partials/follow_button.html" %}
+    {%- endif %}
+  </div>
+</div>
+
+{% include "partials/post_list.html" %}
+{% endblock %}

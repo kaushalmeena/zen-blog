@@ -1,0 +1,24 @@
+{% from "partials/macros.html" import icon, byline, tag_pills %}
+<article class="card">
+  <h2 class="card__title">
+    <a href="{{ url_for('posts.view', slug=post.slug) }}">{{ post.title }}</a>
+  </h2>
+
+  <div class="card__meta">
+    {{ byline(post.author) }}
+    <time datetime="{{ post.created|iso }}" title="{{ post.created|date('%b %d, %Y %H:%M UTC') }}">
+      {{ post.created|time_ago }}
+    </time>
+    <span class="meta-item">{{ icon('clock') }}{{ post.reading_time }} min</span>
+    {%- if not post.published %}<span class="badge">draft</span>{% endif %}
+  </div>
+
+  {%- if post.summary %}
+  <p class="card__summary">{{ post.summary }}</p>
+  {%- endif %}
+
+  <div class="card__footer">
+    {{ tag_pills(post.tags, active=active_tag) }}
+    {% include "partials/post_actions.html" %}
+  </div>
+</article>

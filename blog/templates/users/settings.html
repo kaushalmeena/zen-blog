@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import icon, field %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">settings</h1>
+  <p class="page-subtitle">signed in as {{ current_user.username }}</p>
+</div>
+
+<div class="profile">
+  {{ identicon(current_user.username, 72) }}
+  <div class="profile__body">
+    <p class="field__hint">
+      Your avatar is generated from your username, so there is nothing to upload.
+    </p>
+  </div>
+</div>
+
+<form method="post">
+  {{ form.csrf_token }}
+  {{ field(form.bio, hint='Shown on your profile. Up to 280 characters.') }}
+  <div class="form-actions">
+    <button class="btn btn--solid btn--keep-label" type="submit">
+      {{ icon('check') }}<span class="btn__label">save</span>
+    </button>
+    <a class="btn btn--keep-label" href="{{ url_for('users.me') }}">
+      <span class="btn__label">cancel</span>
+    </a>
+  </div>
+</form>
+{% endblock %}

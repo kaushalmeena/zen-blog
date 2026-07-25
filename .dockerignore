@@ -1,0 +1,19 @@
+.git
+.github
+.venv
+.claude
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+instance
+tests
+.env
+.python-version
+Dockerfile
+docker-compose.yml
+# README.md is not ignored: pyproject.toml declares it as the package readme, so
+# the build backend needs it present.

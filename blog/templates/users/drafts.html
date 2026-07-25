@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">drafts</h1>
+  <p class="page-subtitle">
+    {{ pagination.total }} unpublished post{{ '' if pagination.total == 1 else 's' }} — only you can see these
+  </p>
+</div>
+
+{% include "partials/post_list.html" %}
+{% endblock %}

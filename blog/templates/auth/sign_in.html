@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import icon, field, checkbox %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">sign in</h1>
+</div>
+
+<form method="post">
+  {{ form.csrf_token }}
+  {{ field(form.username, autofocus=True) }}
+  {{ field(form.password) }}
+  {{ checkbox(form.remember) }}
+
+  <div class="form-actions">
+    <button class="btn btn--solid btn--keep-label" type="submit">
+      {{ icon('login') }}<span class="btn__label">sign in</span>
+    </button>
+    <span class="field__hint">
+      No account? <a href="{{ url_for('auth.sign_up') }}">Sign up</a>.
+    </span>
+  </div>
+</form>
+{% endblock %}

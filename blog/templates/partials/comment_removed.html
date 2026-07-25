@@ -1,0 +1,11 @@
+{#
+  Response to a successful comment delete.
+
+  Everything here is an out-of-band swap, so the main response body is empty —
+  which is exactly what removes the comment element the form targeted.
+#}
+<span id="comment-count" hx-swap-oob="true">{{ post.comment_count }}</span>
+
+{%- if post.comment_count == 0 %}
+<p class="empty" id="comments-empty" hx-swap-oob="afterend:#comment-list">No comments yet.</p>
+{%- endif %}

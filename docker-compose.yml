@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_CONFIG: production
+      # Generate one with: python -c "import secrets; print(secrets.token_hex(32))"
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set — see .env.example}
+      # Defaults to SQLite in the mounted volume. Point at Postgres to switch:
+      # DATABASE_URL: postgresql+psycopg://blog:blog@db:5432/blog
+      DATABASE_URL: ${DATABASE_URL:-}
+    volumes:
+      - blog-data:/app/instance
+    restart: unless-stopped
+
+volumes:
+  blog-data:

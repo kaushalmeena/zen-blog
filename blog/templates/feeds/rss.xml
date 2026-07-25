@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site_name }}</title>
+    <link>{{ url_for('main.home', _external=True) }}</link>
+    <description>{{ site_tagline }}</description>
+    <language>en</language>
+    <atom:link href="{{ url_for('feeds.rss', _external=True) }}" rel="self" type="application/rss+xml"/>
+    {%- if posts %}
+    <lastBuildDate>{{ posts[0].created|rfc822 }}</lastBuildDate>
+    {%- endif %}
+    {%- for post in posts %}
+    <item>
+      <title>{{ post.title }}</title>
+      <link>{{ url_for('posts.view', slug=post.slug, _external=True) }}</link>
+      <guid isPermaLink="true">{{ url_for('posts.view', slug=post.slug, _external=True) }}</guid>
+      <pubDate>{{ post.created|rfc822 }}</pubDate>
+      <author>{{ post.author.username }}</author>
+      <description>{{ post.summary }}</description>
+      {%- for tag in post.tags|sort(attribute='name') %}
+      <category>{{ tag.name }}</category>
+      {%- endfor %}
+    </item>
+    {%- endfor %}
+  </channel>
+</rss>

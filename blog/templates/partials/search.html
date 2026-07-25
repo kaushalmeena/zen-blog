@@ -1,0 +1,43 @@
+{% from "partials/macros.html" import icon %}
+{#
+  Search-as-you-type without a line of our own JavaScript.
+
+  The <form> submits normally when JavaScript is off. When htmx is present, the
+  input itself issues a debounced GET and swaps the result into #post-list,
+  pushing the URL so the search stays shareable and bookmarkable.
+#}
+<form class="search" role="search" method="get" action="{{ url_for(search_endpoint|default('main.home')) }}">
+  <div class="search__field">
+    <span class="search__icon">{{ icon('search') }}</span>
+    <input type="search" name="q" value="{{ search }}"
+           placeholder="search titles and bodies…"
+           aria-label="Search posts"
+           autocomplete="off"
+           hx-get="{{ url_for(search_endpoint|default('main.home')) }}"
+           hx-trigger="input changed delay:350ms, search"
+           hx-include="closest form"
+           hx-target="#post-list"
+           hx-swap="outerHTML"
+           hx-push-url="true"
+           hx-indicator="closest .search" />
+  </div>
+
+  {%- if active_tag %}
+  <input type="hidden" name="tag" value="{{ active_tag }}" />
+  {%- endif %}
+
+  {#
+    No visible submit button: htmx searches as you type, and pressing Enter
+    submits the form natively. The button stays in the markup but hidden, so
+    implicit submission is guaranteed and screen-reader users still have a
+    "search" control to activate.
+  #}
+  <button class="visually-hidden" type="submit">search</button>
+</form>
+
+{%- if active_tag %}
+<p class="page-subtitle">
+  Filtered by tag <strong>{{ active_tag }}</strong>
+  · <a href="{{ url_with(tag=None, page=None) }}">clear</a>
+</p>
+{%- endif %}

@@ -1,0 +1,18 @@
+{% from "partials/macros.html" import icon, csrf %}
+{#
+  Light / dark / follow-system switch.
+
+  One button cycling three states, posted as a form: the server stores the choice
+  in a cookie and puts it on <html data-theme>, so it persists across pages and
+  needs no JavaScript. Deliberately no hx-post — changing the theme has to
+  re-render <html>, which a fragment swap cannot do.
+#}
+<form class="inline-form" method="post" action="{{ url_for('main.set_theme') }}">
+  {{ csrf() }}
+  <input type="hidden" name="theme" value="{{ next_theme }}" />
+  <button class="btn" type="submit"
+          title="Theme: {{ theme_label }}. Switch to {{ next_theme_label }}.">
+    {{ icon(theme_icon) }}
+    <span class="visually-hidden">Theme: {{ theme_label }}. Switch to {{ next_theme_label }}.</span>
+  </button>
+</form>

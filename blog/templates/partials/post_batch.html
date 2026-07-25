@@ -1,0 +1,22 @@
+{#
+  One page of post cards, plus the link that fetches the next page.
+
+  The link has a real href (page=N), so without JavaScript it navigates to the
+  next page as a normal paginated list. With htmx it sends partial=page and
+  swaps itself for the following batch, appending rather than replacing.
+#}
+{%- for post in pagination.items %}
+{% include "partials/post_card.html" %}
+{%- endfor %}
+
+{%- if pagination.has_next %}
+<a class="load-more" href="{{ url_with(page=pagination.next_num) }}"
+   hx-get="{{ url_with(page=pagination.next_num) }}"
+   hx-vals='{"partial": "page"}'
+   hx-target="this"
+   hx-swap="outerHTML"
+   rel="next">
+  load more
+  <span class="htmx-indicator">…</span>
+</a>
+{%- endif %}

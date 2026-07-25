@@ -1,54 +1,102 @@
-"""Contains forms for blog app."""
+"""WTForms definitions used by the blog's views."""
+
+from __future__ import annotations
 
 from flask_wtf import FlaskForm
+from slugify import slugify
+from wtforms import BooleanField, PasswordField, StringField, TextAreaField
+from wtforms.validators import DataRequired, EqualTo, Length, Optional, Regexp
 
-from wtforms import PasswordField, StringField, TextAreaField
-from wtforms.validators import DataRequired, EqualTo, Length
+MAX_TAGS = 5
+
+USERNAME_PATTERN = r"^[A-Za-z0-9_-]+$"
+USERNAME_MESSAGE = "Username may only contain letters, numbers, hyphens and underscores."
 
 
 class SignInForm(FlaskForm):
-    """User sign-in form."""
+    """Credentials for an existing account."""
 
-    username = StringField("USERNAME :", validators=[DataRequired()])
-    password = PasswordField("PASSWORD :", validators=[DataRequired()])
+    username = StringField("USERNAME", validators=[DataRequired()])
+    password = PasswordField("PASSWORD", validators=[DataRequired()])
+    remember = BooleanField("REMEMBER ME")
 
 
 class SignUpForm(FlaskForm):
-    """User sign-up form."""
+    """Registration details for a new account."""
 
-    username = StringField("USERNAME :", validators=[DataRequired()])
-    password = PasswordField(
-        "PASSWORD :",
+    username = StringField(
+        "USERNAME",
         validators=[
             DataRequired(),
-            Length(min=6, max=30, message="Password must consists of 6-30 characters."),
+            Length(min=3, max=32, message="Username must be 3-32 characters."),
+            Regexp(USERNAME_PATTERN, message=USERNAME_MESSAGE),
+        ],
+    )
+    password = PasswordField(
+        "PASSWORD",
+        validators=[
+            DataRequired(),
+            Length(min=8, max=128, message="Password must be at least 8 characters."),
         ],
     )
     confirm = PasswordField(
-        "Confirm PASSWORD :",
-        validators=[
-            DataRequired(),
-            EqualTo("password", message="Passwords must match."),
-        ],
+        "CONFIRM PASSWORD",
+        validators=[DataRequired(), EqualTo("password", message="Passwords must match.")],
     )
 
 
 class PostForm(FlaskForm):
-    """Post add/edit form."""
+    """Create or edit a post."""
 
     title = StringField(
-        "TITLE :",
+        "TITLE",
         validators=[
             DataRequired(),
-            Length(min=6, max=250, message="Title must consists of 6-250 characters."),
+            Length(min=6, max=250, message="Title must be 6-250 characters."),
         ],
     )
-    body = TextAreaField("BODY :", validators=[DataRequired()], render_kw={"rows": 8})
+    body = TextAreaField(
+        "BODY (MARKDOWN)",
+        validators=[DataRequired()],
+        render_kw={"rows": 16, "placeholder": "Markdown is supported: **bold**, `code`, > quotes…"},
+    )
+    tags = StringField(
+        "TAGS",
+        validators=[Optional(), Length(max=120)],
+        render_kw={"placeholder": "comma,separated,topics"},
+    )
+    published = BooleanField("PUBLISH NOW", default=True)
+
+    def tag_names(self) -> list[str]:
+        """Return the tag field parsed into at most :data:`MAX_TAGS` unique names."""
+        seen: dict[str, str] = {}
+        for raw in (self.tags.data or "").split(","):
+            name = raw.strip().lower()
+            if not name:
+                continue
+            slug = slugify(name, max_length=64)
+            if slug and slug not in seen:
+                seen[slug] = name
+            if len(seen) == MAX_TAGS:
+                break
+        return list(seen.values())
 
 
 class CommentForm(FlaskForm):
-    """Comment add/edit form."""
+    """Add or edit a comment."""
 
     body = TextAreaField(
-        "COMMENT :", validators=[DataRequired()], render_kw={"rows": 4}
+        "COMMENT",
+        validators=[DataRequired(), Length(max=2000)],
+        render_kw={"rows": 4, "placeholder": "Say something…"},
+    )
+
+
+class ProfileForm(FlaskForm):
+    """Edit the signed-in user's public profile."""
+
+    bio = TextAreaField(
+        "BIO",
+        validators=[Optional(), Length(max=280)],
+        render_kw={"rows": 3, "placeholder": "A sentence or two about yourself."},
     )

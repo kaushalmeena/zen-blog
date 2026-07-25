@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="page-head">
-  <h1 class="page-title">latest</h1>
+  <h1 class="page-title">saved</h1>
   <p class="page-subtitle">
-    {{ pagination.total }} post{{ '' if pagination.total == 1 else 's' }}
-    {%- if search %} matching “{{ search }}”{% endif %}
+    {{ pagination.total }} post{{ '' if pagination.total == 1 else 's' }} in your reading list
   </p>
 </div>
 

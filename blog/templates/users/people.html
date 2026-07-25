@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import byline %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">{{ heading|lower }}</h1>
+  <p class="page-subtitle">
+    <a href="{{ url_for('users.profile', username=profile_user.username) }}">
+      back to {{ profile_user.username }}
+    </a>
+  </p>
+</div>
+
+{%- if people %}
+<ul class="people">
+  {%- for person in people %}
+  <li class="card">
+    <div class="byline">
+      {{ identicon(person.username, 32) }}
+      <span>
+        <a href="{{ url_for('users.profile', username=person.username) }}">
+          <strong>{{ person.username }}</strong>
+        </a>
+        <span class="brand__tagline">{{ person.post_count }} posts</span>
+      </span>
+    </div>
+    {%- if current_user.is_authenticated and current_user.id != person.id %}
+    <div class="card__footer">
+      {% with profile_user = person %}{% include "partials/follow_button.html" %}{% endwith %}
+    </div>
+    {%- endif %}
+  </li>
+  {%- endfor %}
+</ul>
+{%- else %}
+<p class="empty">Nobody here yet.</p>
+{%- endif %}
+{% endblock %}

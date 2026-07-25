@@ -1,0 +1,74 @@
+{#
+  Shared markup helpers.
+
+  Every control rendered here is a real link or a real form. htmx attributes are
+  added on top, so the site works identically with JavaScript disabled — htmx
+  just skips the full page reload.
+#}
+
+{#-
+  CSRF token for forms that are not backed by a WTForms instance.
+
+  htmx supplies the token as a header (see the hx-headers attribute on <body>),
+  but a browser with JavaScript disabled posts the form natively and sends no
+  header — so every hand-written form needs this hidden field too, or
+  CSRFProtect rejects it with a 400.
+-#}
+{%- macro csrf() -%}
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+{%- endmacro -%}
+
+{%- macro icon(name, label=None) -%}
+<svg class="icon"{% if label %} role="img" aria-label="{{ label }}"{% else %} aria-hidden="true" focusable="false"{% endif %}><use href="{{ url_for('static', filename='img/icons.svg') }}#{{ name }}"></use></svg>
+{%- endmacro -%}
+
+{#- A nav button that marks itself as the current page. -#}
+{%- macro nav_link(endpoint, name, label, current, keep_label=False) -%}
+<a class="btn{% if keep_label %} btn--keep-label{% endif %}" href="{{ url_for(endpoint) }}"
+   {% if current %}aria-current="page"{% endif %}>
+  {{ icon(name) }}<span class="btn__label">{{ label }}</span>
+</a>
+{%- endmacro -%}
+
+{#- Render a WTForms field with its label, errors and optional hint. -#}
+{%- macro field(f, hint=None, autofocus=False) -%}
+<div class="field">
+  {{ f.label }}
+  {{ f(autofocus=True) if autofocus else f() }}
+  {%- if hint %}<p class="field__hint">{{ hint }}</p>{% endif -%}
+  {%- if f.errors %}
+  <ul class="errors">
+    {%- for error in f.errors %}<li>{{ error }}</li>{% endfor -%}
+  </ul>
+  {%- endif %}
+</div>
+{%- endmacro -%}
+
+{%- macro checkbox(f) -%}
+<div class="field field--check">
+  {{ f() }} {{ f.label }}
+</div>
+{%- endmacro -%}
+
+{#- Author line with identicon. -#}
+{%- macro byline(user, size=20) -%}
+<span class="byline">
+  {{ identicon(user.username, size) }}
+  <a href="{{ url_for('users.profile', username=user.username) }}">{{ user.username }}</a>
+</span>
+{%- endmacro -%}
+
+{%- macro tag_pills(tags, active=None) -%}
+{%- if tags -%}
+<ul class="tag-list">
+  {%- for tag in tags|sort(attribute='name') %}
+  <li>
+    <a class="tag" href="{{ url_for('main.home', tag=tag.slug) }}"
+       {% if active == tag.slug %}aria-current="page"{% endif %}>
+      {{ icon('tag') }}{{ tag.name }}
+    </a>
+  </li>
+  {%- endfor %}
+</ul>
+{%- endif -%}
+{%- endmacro -%}

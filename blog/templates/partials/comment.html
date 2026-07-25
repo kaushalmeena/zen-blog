@@ -1,0 +1,25 @@
+{% from "partials/macros.html" import icon, byline, csrf %}
+<li class="comment" id="comment-{{ comment.id }}">
+  <div class="comment__head">
+    {{ byline(comment.author) }}
+    <span>
+      <time datetime="{{ comment.created|iso }}">{{ comment.created|time_ago }}</time>
+      {%- if current_user.is_authenticated and comment.user_id == current_user.id %}
+      <a class="btn btn--quiet" href="{{ url_for('posts.edit_comment', comment_id=comment.id) }}"
+         title="Edit this comment">{{ icon('pencil', 'Edit') }}</a>
+      <form class="inline-form" method="post"
+            action="{{ url_for('posts.delete_comment', comment_id=comment.id) }}"
+            hx-post="{{ url_for('posts.delete_comment', comment_id=comment.id) }}"
+            hx-target="#comment-{{ comment.id }}"
+            hx-swap="outerHTML swap:150ms"
+            hx-confirm="Delete this comment?">
+        {{ csrf() }}
+        <button class="btn btn--quiet btn--danger" type="submit" title="Delete this comment">
+          {{ icon('trash', 'Delete') }}
+        </button>
+      </form>
+      {%- endif %}
+    </span>
+  </div>
+  <div class="prose">{{ comment.html }}</div>
+</li>

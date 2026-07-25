@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="page-head">
-  <h1 class="page-title">latest</h1>
+  <h1 class="page-title">following</h1>
   <p class="page-subtitle">
-    {{ pagination.total }} post{{ '' if pagination.total == 1 else 's' }}
-    {%- if search %} matching “{{ search }}”{% endif %}
+    Posts from the {{ current_user.following_count }} author{{ '' if current_user.following_count == 1 else 's' }}
+    you follow
   </p>
 </div>
 

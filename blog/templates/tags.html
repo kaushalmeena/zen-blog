@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import icon %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="page-title">tags</h1>
+  <p class="page-subtitle">{{ tag_counts|length }} topic{{ '' if tag_counts|length == 1 else 's' }}</p>
+</div>
+
+{%- if tag_counts %}
+<ul class="tag-cloud">
+  {%- for tag, total in tag_counts %}
+  <li>
+    <a class="tag" href="{{ url_for('main.home', tag=tag.slug) }}">
+      {{ icon('tag') }}{{ tag.name }} <b>{{ total }}</b>
+    </a>
+  </li>
+  {%- endfor %}
+</ul>
+{%- else %}
+<p class="empty">No tags yet. Add some when you write a post.</p>
+{%- endif %}
+{% endblock %}
