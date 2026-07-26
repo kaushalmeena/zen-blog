@@ -5,6 +5,23 @@ from datetime import timedelta
 from typing import Any, ClassVar
 
 
+def database_url() -> str | None:
+    """Return ``DATABASE_URL``, pointed at the driver this project installs.
+
+    Managed Postgres hosts hand out `postgres://` or `postgresql://`. SQLAlchemy
+    maps both to psycopg2, which is not a dependency here, so an unaltered URL
+    fails at boot with a bare ``ModuleNotFoundError``. Rewriting the scheme is
+    the whole fix.
+    """
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        return url
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return f"postgresql+psycopg://{url.removeprefix(prefix)}"
+    return url
+
+
 class BaseConfig:
     """Settings shared by every environment."""
 
@@ -39,7 +56,7 @@ class DevelopmentConfig(BaseConfig):
 
     DEBUG = True
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = database_url()
 
 
 class TestingConfig(BaseConfig):
@@ -71,7 +88,7 @@ class ProductionConfig(BaseConfig):
         if not secret_key:
             raise RuntimeError("SECRET_KEY must be set when APP_CONFIG is ProductionConfig.")
         app.config["SECRET_KEY"] = secret_key
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "")
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url() or ""
         BaseConfig.init_app(app)
 
 

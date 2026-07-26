@@ -122,7 +122,8 @@ uv run flask --app blog run --debug
 ```
 
 The site is at [localhost:5000](http://localhost:5000/). The seed command creates
-the users `ada`, `grace` and `linus`, all with the password `password123`.
+four accounts — `atlas`, `sable`, `kite` and `quill` — all with the password
+`password123`, plus the posts, comments and follows they exchange.
 
 Copy `.env.example` to `.env` to set `FLASK_APP=blog` once and drop the `--app`
 flag from the commands above.

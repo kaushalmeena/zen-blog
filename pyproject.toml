@@ -17,6 +17,7 @@ dependencies = [
     "gunicorn>=23.0.0",
     "markdown>=3.7",
     "nh3>=0.2.20",
+    "psycopg[binary]>=3.3.4",
     "python-dotenv>=1.0.1",
     "python-slugify>=8.0.4",
 ]

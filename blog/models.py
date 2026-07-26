@@ -224,6 +224,18 @@ class Tag(db.Model):
         with session.no_autoflush:
             tag = session.scalar(select(cls).where(cls.slug == slug))
         if tag is None:
+            # Because that lookup cannot autoflush, a tag added earlier in the same
+            # transaction is invisible to it. Without this second pass, two posts
+            # sharing a tag insert it twice and the unique index rejects the commit.
+            tag = next(
+                (
+                    pending
+                    for pending in session.new
+                    if type(pending) is cls and pending.slug == slug
+                ),
+                None,
+            )
+        if tag is None:
             tag = cls(name=name.strip().lower(), slug=slug)
             session.add(tag)
         return tag

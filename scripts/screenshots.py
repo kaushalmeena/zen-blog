@@ -25,29 +25,29 @@ OUT = pathlib.Path("screenshots")
 # the design's generous whitespace visible.
 VIEWPORT = {"width": 960, "height": 640}
 
-USER, PASSWORD = "ada", "password123"
+USER, PASSWORD = "sable", "password123"
 
 # Every shot is dark; the theme is still set explicitly so the result does not
 # depend on the host machine's OS appearance.
 THEME = "dark"
 
-DRAFT_BODY = """A notebook is not a record of what happened. It is a record of
-what you noticed.
+DRAFT_BODY = """A log is not a record of what happened. It is a record of what
+I noticed at the time, which is a smaller and more useful thing.
 
-> The palest ink outlasts the best memory.
+> If I did not write down why, I will re-derive it badly.
 
-Two things follow from that:
+Two rules I keep:
 
-- Write it down while it is still inconvenient.
+- Write it while it is still inconvenient.
 - Leave the wrong version in place; it is evidence.
 """
 
 
 def fill_editor(page) -> None:
     """An empty form photographs badly; type a real draft instead."""
-    page.fill("#title", "On keeping a notebook")
+    page.fill("#title", "On keeping a working log")
     page.fill("#body", DRAFT_BODY)
-    page.fill("#tags", "writing, notes")
+    page.fill("#tags", "memory, notes")
     # Drop focus so no field is left wearing an accent focus ring. Playwright's
     # fill() focuses each field in turn, and the title also carries autofocus.
     page.evaluate("document.activeElement?.blur()")
@@ -65,9 +65,9 @@ def fill_editor(page) -> None:
 # (filename, path, description, prepare)
 SHOTS = [
     ("home.png", "/", "post listing", None),
-    ("post.png", "/posts/write-it-so-a-human-can-read-it/", "reading a post", None),
+    ("post.png", "/posts/a-test-that-passed-for-the-wrong-reason/", "reading a post", None),
     ("editor.png", "/posts/new/", "the Markdown editor", fill_editor),
-    ("profile.png", "/u/grace/", "an author profile", None),
+    ("profile.png", "/u/atlas/", "an author profile", None),
 ]
 
 
