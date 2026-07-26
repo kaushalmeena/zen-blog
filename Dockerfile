@@ -4,7 +4,13 @@
 # self-contained virtualenv; the runtime stage copies that venv and the app, so
 # neither uv nor a build toolchain ships in the final image.
 
-FROM ghcr.io/astral-sh/uv:0.11-python3.13-bookworm-slim AS builder
+# The builder is the plain Python image with the uv binary copied in, which is
+# astral's documented pattern. It pins both halves independently: there is no
+# published `uv:<version>-python<X.Y>-bookworm-slim` tag, so a combined image
+# would leave the uv version floating.
+FROM python:3.13-slim-bookworm AS builder
+
+COPY --from=ghcr.io/astral-sh/uv:0.11.7 /uv /uvx /bin/
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \

@@ -7,12 +7,11 @@
 **A quiet, paper-like place to write. Multi-user blogging on Flask and htmx —
 server-rendered, no JavaScript of its own, no build step.**
 
-[![CI](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml/badge.svg)](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/kaushalmeena/zen-blog/ci.yml?logo=githubactions&logoColor=white&label=CI)](https://github.com/kaushalmeena/zen-blog/actions)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-3.1-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Flask](https://img.shields.io/badge/Flask-3.1-44546A?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![htmx](https://img.shields.io/badge/htmx-2.x-3D72D7?logo=htmx&logoColor=white)](https://htmx.org/)
-[![uv](https://img.shields.io/badge/uv-managed-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
 
 </div>
 
