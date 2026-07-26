@@ -7,6 +7,8 @@
 **A quiet, paper-like place to write. Multi-user blogging on Flask and htmx —
 server-rendered, no JavaScript of its own, no build step.**
 
+[**Try it live**](https://prod-zen-blog.onrender.com)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/kaushalmeena/zen-blog/ci.yml?logo=githubactions&logoColor=white&label=CI)](https://github.com/kaushalmeena/zen-blog/actions)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -31,6 +33,26 @@ works — it just does full page loads instead of swapping fragments.
 
 It is also an exercise in restraint on the front end: one stylesheet, one icon
 sprite, no fonts downloaded, and no images beyond the site icon.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="screenshots/home.png" alt="The post listing, with the masthead, text navigation and search"></td>
+    <td width="50%"><img src="screenshots/post.png" alt="Reading a post: serif title, byline, tags and the action row"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="screenshots/editor.png" alt="Writing a post in the Markdown editor"></td>
+    <td width="50%"><img src="screenshots/profile.png" alt="An author profile with an identicon avatar, bio and counts"></td>
+  </tr>
+</table>
+
+Shown in dark mode. `scripts/screenshots.py` recaptures them against a running
+dev server:
+
+```bash
+uv run --with playwright python scripts/screenshots.py
+```
 
 ## Features
 
@@ -142,6 +164,10 @@ Other useful commands:
 | `flask routes` | List the URL map                                       |
 
 ## Deployment
+
+[prod-zen-blog.onrender.com](https://prod-zen-blog.onrender.com) runs the
+`Dockerfile` below on Render's free tier, which spins the instance down when it
+is idle — the first request after a quiet spell takes about a minute to wake it.
 
 With Docker:
 

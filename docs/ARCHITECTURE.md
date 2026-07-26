@@ -111,6 +111,11 @@ properties cut across modules. `test_authorization.py` and
 implementation must not break, and both exist because those rules were once
 broken.
 
+`scripts/` sits outside the package and is not imported by it. It currently holds
+`screenshots.py`, which drives the local Chrome through Playwright to recapture
+the README images against a running dev server — so those images can be
+regenerated rather than being artefacts nobody can reproduce.
+
 ## The request lifecycle
 
 Worth understanding once, because it explains the shape of most views.
