@@ -1,129 +1,193 @@
 /* ==========================================================================
    ZEN-BLOG — one stylesheet, no build step, no JavaScript.
 
+   Design language: warm paper. The page should read like a well-set book —
+   a single quiet column of serif text on unbleached paper, with small tracked
+   sans-serif capitals for everything that is interface rather than writing.
+   Boxes, cards and fills are avoided; structure comes from whitespace and
+   hairlines. One terracotta accent, used sparingly.
+
    Structure:
-     1. Tokens          design values as custom properties
-     2. Theme           light / dark via prefers-color-scheme
-     3. Accents         per-page accent colour set on <body>
-     4. Base            resets and element defaults
-     5. Layout          shell, header, footer
-     6. Components      buttons, cards, forms, comments, prose
+     1. Tokens          fonts, scale, spacing
+     2. Theme           warm paper (light) / night ink (dark), cookie-driven
+     3. Base            resets and element defaults
+     4. Layout          shell, header, nav, footer
+     5. Components      buttons, listings, forms, comments, profile, popover
+     6. Prose           rendered Markdown
      7. htmx            loading indicators
+     8. Small screens
    ========================================================================== */
 
 /* 1. Tokens ------------------------------------------------------------- */
 
+/* Theme values are grouped by the CSS property family they feed, following the
+   namespacing Tailwind v4 settled on:
+
+     --color-*      every colour, including both palette halves
+     --font-*       font families
+     --text-*       font sizes
+     --tracking-*   letter-spacing
+     --spacing-*    padding, margin, gap
+     --radius-*     border radius
+     --shadow-*     box shadows
+     --container-*  max-widths
+     --duration-* / --ease-*   motion
+
+   Reading a name therefore tells you where it may be used, and a new value has
+   an obvious home. Within a namespace the names are semantic rather than
+   positional (--text-body, not --text-base) so a value can be added or dropped
+   without renumbering its neighbours.
+
+   `--border` below is the one exception: a composite shorthand, not a theme
+   value. Tailwind has no namespace for it because it generates border utilities
+   from a width and a colour; here `border: var(--border)` appears often enough
+   that spelling it out fifteen times would be worse. */
+
 :root {
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono",
-    "Courier New", monospace;
+  /* Body text is a book serif; interface text is a quiet sans; code is mono.
+     All are system stacks — this site downloads no fonts. */
+  --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino,
+    Charter, Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    monospace;
 
-  --step--1: 0.8125rem;
-  --step-0: 1rem;
-  --step-1: 1.125rem;
-  --step-2: 1.375rem;
-  --step-3: 1.75rem;
-  --step-4: 2.25rem;
+  /* Type scale, smallest to largest.
 
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
+     Named `--text-<role>` with an optional `-sm` / `-lg` tier, the most common
+     size in a role left unsuffixed. Four roles: label and caption for interface
+     text, body and heading for content — which mirrors the two-voices rule the
+     design is built on.
 
-  --radius: 6px;
-  --border: 1px solid var(--line);
-  --measure: 46rem;
-  --transition: 120ms ease;
+     Roles rather than a t-shirt ladder because the token is consumed in a rule
+     that already knows its role, so `--text-heading-lg` says what it is for while
+     `--text-4xl` only says how big it is. It also means a size can be added under
+     an existing role without renumbering its neighbours. */
+  --text-label: 0.6875rem;      /* tracked capitals: nav, buttons, meta, form labels */
+  --text-caption: 0.8125rem;    /* small secondary text: hints, counts, menu items */
+  --text-body: 1.0625rem;       /* default body copy */
+  --text-body-lg: 1.1875rem;    /* long-form article text */
+  --text-heading-sm: 1.4375rem; /* listing and card titles */
+  --text-heading: 1.75rem;      /* page headings */
+  --text-heading-lg: 2.375rem;  /* a single post's title */
 
-  --brand: #ef7a2b;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.5rem;
+  --spacing-6: 2.5rem;
+  --spacing-7: 4rem;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --border: 1px solid var(--color-line);
+  --container-prose: 42.5rem; /* 680px reading column */
+
+  /* Motion. Duration and easing are separate values, set as separate
+     properties rather than folded into the `transition` shorthand, so a rule
+     states its timing once instead of once per animated property. */
+  --duration-quiet: 240ms;
+  --ease-quiet: ease-out;
+
+  /* The tracked-capitals treatment used for all interface text. */
+  --tracking-label: 0.12em;
 }
 
 /* 2. Theme -------------------------------------------------------------- */
 
 /* Palette values are declared once; the assignments below pick a side.
    `data-theme` on <html> comes from a cookie (blog/theming.py), so an explicit
-   choice beats the OS preference and survives navigation without JavaScript. */
-:root {
-  --light-bg: #f6f3ed;
-  --light-grid: rgb(23 22 20 / 6%);
-  --light-surface: #ffffff;
-  --light-surface-2: #ebe6dc;
-  --light-ink: #171614;
-  --light-ink-soft: #4d4842;
-  --light-ink-faint: #837c72;
-  --light-line: #d6d0c4;
-  --light-line-strong: #b0a898;
-  --light-danger: #b5342a;
-  --light-shadow: 0 1px 2px rgb(26 25 23 / 8%);
-  --light-raise: 0 1px 0 rgb(255 255 255 / 70%) inset;
+   choice beats the OS preference and survives navigation without JavaScript.
 
-  --dark-bg: #0e0d0b;
-  --dark-grid: rgb(240 236 228 / 5%);
-  --dark-surface: #1c1a16;
-  --dark-surface-2: #292620;
-  --dark-ink: #f0ece4;
-  --dark-ink-soft: #b8b2a7;
-  --dark-ink-faint: #8b8377;
-  --dark-line: #3d3830;
-  --dark-line-strong: #57503f;
-  --dark-danger: #ef7b6a;
-  --dark-shadow: 0 1px 3px rgb(0 0 0 / 45%);
-  --dark-raise: 0 1px 0 rgb(255 255 255 / 4%) inset;
+   Names are semantic, not a hue ramp: `--color-ink`, never `--color-stone-800`.
+   A ramp is a primitive — it would force every component to name a shade and
+   every shade to be swapped per theme, which is exactly what these tokens exist
+   to avoid.
+
+   Modifiers use one vocabulary throughout:
+     (none)     the default for that role
+     -muted     one step weaker
+     -subtle    two steps weaker
+     -strong    one step stronger
+     -sunken    recessed rather than raised (an elevation, not an emphasis) */
+:root {
+  /* Warm paper: unbleached cotton, charcoal ink, terracotta accent. */
+  --color-light-bg: #f7f5f0;
+  --color-light-surface: #fdfbf6;
+  --color-light-surface-sunken: #edeae2;
+  --color-light-ink: #2c2a29;
+  --color-light-ink-muted: #55524f;
+  --color-light-ink-subtle: #787470;
+  --color-light-line: #e0dcd3;
+  --color-light-line-strong: #c4bfb4;
+  --color-light-accent: #a35c48;
+  --color-light-danger: #9e3b2e;
+  --shadow-panel-light: 0 10px 30px rgb(44 42 41 / 10%);
+
+  /* Night ink: charcoal slate, aged-paper text, soft clay accent. */
+  --color-dark-bg: #181716;
+  --color-dark-surface: #1e1d1b;
+  --color-dark-surface-sunken: #262421;
+  --color-dark-ink: #e6e2dd;
+  --color-dark-ink-muted: #c2bdb6;
+  --color-dark-ink-subtle: #9e9993;
+  --color-dark-line: #2f2d2a;
+  --color-dark-line-strong: #494540;
+  --color-dark-accent: #d98870;
+  --color-dark-danger: #e08573;
+  --shadow-panel-dark: 0 10px 30px rgb(0 0 0 / 45%);
 }
 
 /* Light is the default. */
 :root {
-  --bg: var(--light-bg);
-  --grid: var(--light-grid);
-  --surface: var(--light-surface);
-  --surface-2: var(--light-surface-2);
-  --ink: var(--light-ink);
-  --ink-soft: var(--light-ink-soft);
-  --ink-faint: var(--light-ink-faint);
-  --line: var(--light-line);
-  --line-strong: var(--light-line-strong);
-  --danger: var(--light-danger);
-  --shadow: var(--light-shadow);
-  --raise: var(--light-raise);
+  --color-bg: var(--color-light-bg);
+  --color-surface: var(--color-light-surface);
+  --color-surface-sunken: var(--color-light-surface-sunken);
+  --color-ink: var(--color-light-ink);
+  --color-ink-muted: var(--color-light-ink-muted);
+  --color-ink-subtle: var(--color-light-ink-subtle);
+  --color-line: var(--color-light-line);
+  --color-line-strong: var(--color-light-line-strong);
+  --color-accent: var(--color-light-accent);
+  --color-danger: var(--color-light-danger);
+  --shadow-panel: var(--shadow-panel-light);
 }
 
 /* No explicit choice yet: follow the operating system. */
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {
-    --bg: var(--dark-bg);
-    --grid: var(--dark-grid);
-    --surface: var(--dark-surface);
-    --surface-2: var(--dark-surface-2);
-    --ink: var(--dark-ink);
-    --ink-soft: var(--dark-ink-soft);
-    --ink-faint: var(--dark-ink-faint);
-    --line: var(--dark-line);
-    --line-strong: var(--dark-line-strong);
-    --danger: var(--dark-danger);
-    --shadow: var(--dark-shadow);
-    --raise: var(--dark-raise);
+    --color-bg: var(--color-dark-bg);
+    --color-surface: var(--color-dark-surface);
+    --color-surface-sunken: var(--color-dark-surface-sunken);
+    --color-ink: var(--color-dark-ink);
+    --color-ink-muted: var(--color-dark-ink-muted);
+    --color-ink-subtle: var(--color-dark-ink-subtle);
+    --color-line: var(--color-dark-line);
+    --color-line-strong: var(--color-dark-line-strong);
+    --color-accent: var(--color-dark-accent);
+    --color-danger: var(--color-dark-danger);
+    --shadow-panel: var(--shadow-panel-dark);
   }
 }
 
 /* An explicit choice wins over the OS preference in both directions. */
 :root[data-theme="dark"] {
-  --bg: var(--dark-bg);
-  --grid: var(--dark-grid);
-  --surface: var(--dark-surface);
-  --surface-2: var(--dark-surface-2);
-  --ink: var(--dark-ink);
-  --ink-soft: var(--dark-ink-soft);
-  --ink-faint: var(--dark-ink-faint);
-  --line: var(--dark-line);
-  --line-strong: var(--dark-line-strong);
-  --danger: var(--dark-danger);
-  --shadow: var(--dark-shadow);
-  --raise: var(--dark-raise);
+  --color-bg: var(--color-dark-bg);
+  --color-surface: var(--color-dark-surface);
+  --color-surface-sunken: var(--color-dark-surface-sunken);
+  --color-ink: var(--color-dark-ink);
+  --color-ink-muted: var(--color-dark-ink-muted);
+  --color-ink-subtle: var(--color-dark-ink-subtle);
+  --color-line: var(--color-dark-line);
+  --color-line-strong: var(--color-dark-line-strong);
+  --color-accent: var(--color-dark-accent);
+  --color-danger: var(--color-dark-danger);
+  --shadow-panel: var(--shadow-panel-dark);
 }
 
-/* Tell the browser to theme its own widgets (scrollbars, form controls) to match. */
+/* Tell the browser to theme its own widgets (scrollbars, form controls). */
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -136,61 +200,7 @@
   color-scheme: light dark;
 }
 
-/* 3. Accents ------------------------------------------------------------ */
-
-/* Each accent declares a light value and a dark value; the rules further down
-   swap in --accent-dark when the dark palette is active. */
-body {
-  --accent: var(--brand);
-  --accent-dark: var(--brand);
-}
-body.accent-orange {
-  --accent: #d9651a;
-  --accent-dark: #f7954f;
-}
-body.accent-green {
-  --accent: #0f7d69;
-  --accent-dark: #3ec2a8;
-}
-body.accent-blue {
-  --accent: #2069a3;
-  --accent-dark: #5aa9e6;
-}
-body.accent-purple {
-  --accent: #7a3d9e;
-  --accent-dark: #b57ddb;
-}
-body.accent-red {
-  --accent: #b5342a;
-  --accent-dark: #ef7b6a;
-}
-body.accent-grey {
-  --accent: #6c7173;
-  --accent-dark: #9aa0a2;
-}
-
-/* Brighter accents on dark backgrounds, applied for both `dark` and `auto`. */
-:root[data-theme="dark"] body.accent-orange,
-:root[data-theme="dark"] body.accent-green,
-:root[data-theme="dark"] body.accent-blue,
-:root[data-theme="dark"] body.accent-purple,
-:root[data-theme="dark"] body.accent-red,
-:root[data-theme="dark"] body.accent-grey {
-  --accent: var(--accent-dark);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="auto"] body.accent-orange,
-  :root[data-theme="auto"] body.accent-green,
-  :root[data-theme="auto"] body.accent-blue,
-  :root[data-theme="auto"] body.accent-purple,
-  :root[data-theme="auto"] body.accent-red,
-  :root[data-theme="auto"] body.accent-grey {
-    --accent: var(--accent-dark);
-  }
-}
-
-/* 4. Base --------------------------------------------------------------- */
+/* 3. Base --------------------------------------------------------------- */
 
 *,
 *::before,
@@ -202,27 +212,14 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Background pattern, generated entirely in CSS — no image request, and it
-   recolours with the theme because every layer is drawn from --grid.
-
-   Graph paper: hairlines on a 5.5rem grid, plus a dot at each intersection for
-   texture. It suits the monospace type without competing with the text, and it
-   is attached to the viewport so it reads as paper the content moves over rather
-   than as a pattern that scrolls. */
 body {
   margin: 0;
-  background-color: var(--bg);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-    radial-gradient(circle at center, var(--grid) 1.5px, transparent 1.6px);
-  background-size: 5.5rem 5.5rem;
-  background-position: center top, center top, 2.75rem 2.75rem;
-  background-attachment: fixed;
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: var(--step-0);
-  line-height: 1.6;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  font-size: var(--text-body);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -230,7 +227,7 @@ h2,
 h3,
 h4 {
   margin: 0;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.25;
 }
 
@@ -240,17 +237,20 @@ ol,
 pre,
 blockquote,
 table {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--spacing-4);
 }
 
 a {
   color: inherit;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 3px;
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 0.2em;
+  transition-property: color, text-decoration-color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 a:hover {
-  text-decoration-color: var(--accent);
+  text-decoration-color: var(--color-accent);
 }
 
 img,
@@ -260,7 +260,7 @@ svg {
 
 hr {
   height: 0;
-  margin: var(--space-5) 0;
+  margin: var(--spacing-6) 0;
   border: 0;
   border-top: var(--border);
 }
@@ -269,37 +269,36 @@ code,
 pre,
 kbd {
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* Text controls get a flush ring instead of the offset outline. An outline with a
-   2px offset sits outside the border, so a focused field appeared to grow by 4px
-   on every side; a ring drawn on the border edge is just as visible without
-   adding bulk or shifting the layout's apparent size. */
+/* Text controls get a flush ring instead of the offset outline, so a focused
+   field does not appear to grow. */
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
 
+/* Lucide icons inherit currentColor and size with the text around them. */
 .icon {
   display: inline-block;
   flex: none;
-  width: 1.15em;
-  height: 1.15em;
-  vertical-align: -0.2em;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.18em;
 }
 
 .visually-hidden {
@@ -313,129 +312,114 @@ select:focus-visible {
 
 .skip-link {
   position: absolute;
-  top: var(--space-2);
-  left: var(--space-2);
+  top: var(--spacing-2);
+  left: var(--spacing-2);
   z-index: 10;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--spacing-2) var(--spacing-3);
   transform: translateY(-250%);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-panel);
 }
 
 .skip-link:focus {
   transform: none;
 }
 
-/* 5. Layout ------------------------------------------------------------- */
+/* 4. Layout ------------------------------------------------------------- */
 
+/* One narrow column with generous margins — the page is the paper. */
 .shell {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 0 var(--space-4);
-  max-width: var(--measure);
-  background: var(--bg);
+  padding: 0 clamp(1.5rem, 6vw, 3rem);
+  max-width: var(--container-prose);
 }
 
-/* Sticky so the nav and account menu stay reachable down a long post, and so the
-   account popover can rely on a fixed trigger position.
-
-   The opaque background is what hides content scrolling underneath, and it has to
-   come from the header's own padding rather than a spread box-shadow: a shadow
-   paints outside the border box, so it covered the top of whatever followed —
-   which clipped the flash message sitting directly below. */
+/* Sticky so the account menu can rely on a fixed trigger position; the plain
+   paper background hides content scrolling beneath. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 10;
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-4);
-  background: var(--bg);
+  padding-top: var(--spacing-5);
+  padding-bottom: var(--spacing-4);
+  border-bottom: var(--border);
+  background: var(--color-bg);
 }
 
-/* Brand on the left, account controls on the right, nav on its own line below. */
 .site-header__bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--spacing-3);
 }
 
 .site-header__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--spacing-2);
 }
 
+/* A masthead, not a logo: the name set in tracked capitals. */
 .brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
   text-decoration: none;
-}
-
-.brand__mark {
-  width: 2rem;
-  height: 2rem;
 }
 
 .brand__name {
-  font-size: var(--step-2);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
-.brand__tagline {
-  color: var(--ink-faint);
-  font-size: var(--step--1);
-}
-
-/* Plain text links, separated by a rule. The current page is underlined rather
-   than boxed, so the nav stays quiet next to the accented page title. */
 .site-nav {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-4);
-  margin-top: var(--space-3);
-  padding: var(--space-3) 0;
-  border-top: var(--border);
-  border-bottom: var(--border);
+  align-items: baseline;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
 }
 
+/* Interface text: small tracked capitals in the sans face. */
 .navlink {
-  color: var(--ink-faint);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-decoration: none;
-  text-underline-offset: 6px;
-  transition: color var(--transition);
+  text-transform: uppercase;
+  text-underline-offset: 0.5em;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .navlink:hover {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
+  color: var(--color-ink);
 }
 
 .navlink[aria-current="page"] {
-  color: var(--ink);
-  font-weight: 700;
+  color: var(--color-ink);
   text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 1px;
 }
 
-/* The row's primary action. Same shape and weight as its neighbours, just
-   tinted, so the nav stays a single set of text links. */
 .navlink--accent {
-  color: var(--accent);
+  color: var(--color-accent);
 }
 
 .navlink--accent:hover {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
 }
 
 /* Pushes the primary action to the trailing edge of the nav row. */
@@ -448,33 +432,32 @@ select:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-3);
-  margin: var(--space-6) 0 var(--space-5);
+  gap: var(--spacing-3);
+  margin: var(--spacing-7) 0 var(--spacing-6);
 }
 
 .page-title {
-  color: var(--accent);
-  font-size: var(--step-3);
-}
-
-.page-title::before {
-  content: "/ ";
-  color: var(--ink-faint);
-}
-
-.page-title::after {
-  content: " /";
-  color: var(--ink-faint);
+  font-family: var(--font-serif);
+  font-size: var(--text-heading);
+  font-weight: 500;
+  font-style: italic;
 }
 
 .page-subtitle {
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.page-subtitle a {
+  color: inherit;
 }
 
 main {
   flex: 1 1 auto;
-  padding-bottom: var(--space-7);
+  padding-bottom: var(--spacing-7);
 }
 
 .site-footer {
@@ -482,128 +465,125 @@ main {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-4) 0 var(--space-6);
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) 0 var(--spacing-6);
   border-top: var(--border);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 .site-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--spacing-4);
 }
 
-/* Plain text, underlined only on hover — the persistent underlines ran through
-   the gaps and made the row look broken. */
 .site-footer__links a {
   text-decoration: none;
 }
 
 .site-footer__links a:hover {
-  color: var(--ink);
+  color: var(--color-ink);
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 0.4em;
 }
 
-/* 6. Components --------------------------------------------------------- */
+/* 5. Components ----------------------------------------------------------- */
 
-/* Buttons: shared shape for <a> and <button> so markup stays semantic.
-   Every button gets a visible edge and a surface of its own — a bare transparent
-   label does not read as something you can press. */
+/* Buttons: quiet outlines in tracked capitals. Shape is shared between <a>
+   and <button> so markup stays semantic; only .btn--solid is filled at rest. */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  /* Deliberately tight. A filled, padded button is a lot of furniture for a
-     mostly-text site, so the default is an outline: a hairline border and a
-     transparent fill, taking barely more room than its own label. The fill
-     arrives on hover, and only .btn--solid is filled at rest. */
-  padding: 0.3rem 0.6rem;
+  gap: var(--spacing-2);
+  padding: 0.45rem 0.9rem;
   border: var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   background: none;
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: var(--step--1);
+  color: var(--color-ink-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   line-height: 1.4;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: color var(--transition), background-color var(--transition),
-    border-color var(--transition);
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .btn:hover {
-  border-color: var(--line-strong);
-  background: var(--surface);
-  color: var(--ink);
+  border-color: var(--color-line-strong);
+  color: var(--color-ink);
 }
 
 .btn[aria-current="page"] {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
-  color: var(--accent);
-  font-weight: 700;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
-/* Icon-only buttons inside a card footer stay quiet so the counts read as data,
-   not as a row of competing controls. */
+.btn--primary {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn--primary:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  color: var(--color-accent);
+}
+
+.btn--solid {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.btn--solid:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--color-ink));
+  color: var(--color-bg);
+}
+
+.btn--danger {
+  color: var(--color-danger);
+}
+
+.btn--danger:hover {
+  border-color: color-mix(in srgb, var(--color-danger) 45%, transparent);
+  color: var(--color-danger);
+}
+
+.btn--icon {
+  padding: 0.45rem;
+}
+
+/* Icon-only buttons beside content stay borderless so they read as marginalia. */
 .btn--quiet {
-  padding: var(--space-1) var(--space-2);
+  padding: var(--spacing-1) var(--spacing-2);
   border-color: transparent;
 }
 
 .btn--quiet:hover {
-  border-color: var(--line);
-  background: var(--surface-2);
-}
-
-.btn--primary {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.btn--primary:hover {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
-}
-
-.btn--solid {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--bg);
-  font-weight: 700;
-}
-
-.btn--solid:hover {
-  background: color-mix(in srgb, var(--accent) 82%, var(--ink));
-  color: var(--bg);
-}
-
-.btn--danger {
-  color: var(--danger);
-}
-
-.btn--danger:hover {
-  background: color-mix(in srgb, var(--danger) 12%, transparent);
-  color: var(--danger);
+  border-color: var(--color-line);
 }
 
 .btn:active {
   transform: translateY(1px);
 }
 
-/* htmx disables submit buttons while a request is in flight via hx-disabled-elt
-   (see partials/comment_form.html), so the disabled state needs a look of its
-   own — otherwise a busy button is indistinguishable from a ready one. */
+/* htmx disables submit buttons while a request is in flight via
+   hx-disabled-elt, so the busy state needs a look of its own. */
 .btn:disabled,
 .btn[aria-disabled="true"] {
   transform: none;
-  border-color: var(--line);
-  background: var(--surface-2);
-  color: var(--ink-faint);
+  border-color: var(--color-line);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-subtle);
   cursor: progress;
 }
 
@@ -611,14 +591,10 @@ main {
   display: inline;
 }
 
-.btn--icon {
-  padding: 0.3rem;
-}
-
 /* Theme switch --------------------------------------------------------------
 
    Both controls are always in the markup; exactly one is shown. Deciding here
-   rather than on the server is what keeps the switch to a single click while the
+   rather than on the server keeps the switch to a single click while the
    stored preference is `auto`, since only CSS can see prefers-color-scheme. */
 
 .theme-switch--to-light {
@@ -648,77 +624,71 @@ main {
 .user-trigger {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1);
-  border: var(--border);
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: var(--surface-2);
-  box-shadow: var(--raise);
-  color: var(--ink-faint);
+  background: none;
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
   cursor: pointer;
-  transition: border-color var(--transition), background-color var(--transition);
+  transition-property: border-color, color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .user-trigger:hover {
-  border-color: var(--line-strong);
-  background: var(--surface);
-  color: var(--ink);
+  border-color: var(--color-line);
+  color: var(--color-ink);
 }
 
 .user-trigger__name {
   overflow: hidden;
   max-width: 9ch;
-  color: var(--ink);
-  font-size: var(--step--1);
+  color: var(--color-ink-muted);
+  font-size: var(--text-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .popover {
-  width: min(15rem, calc(100vw - 2rem));
-  padding: var(--space-2);
+  width: min(12.5rem, calc(100vw - 2rem));
+  padding: var(--spacing-4);
   border: var(--border);
-  border-radius: calc(var(--radius) + 2px);
-  background: var(--surface);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
-  color: var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-panel);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
 .popover:not(:popover-open) {
   display: none;
 }
 
-/* Placement.
-
-   CSS anchor positioning would be the natural fit, but browser support is
-   uneven in a way that fails badly: some engines ship `position-anchor` while
-   still using the older name for `position-area`, so an @supports test on the
-   former passes and the placement property is then dropped — leaving the panel
-   in the middle of the viewport.
-
-   Since the header is sticky, the trigger sits at a fixed viewport position, so
-   plain coordinates are exact and work everywhere `popover` itself does. The
-   right offset lines the panel up with the content column's right edge. */
+/* Placed with plain coordinates against the sticky header: CSS anchor
+   positioning support is still too uneven to rely on, and `left: auto` is
+   required because the UA stylesheet sets both inset sides. */
 .popover:popover-open {
   position: fixed;
-  /* Just below the trigger, which sits at a fixed viewport position because the
-     header is sticky. The trigger's bottom edge lands at ~3.4rem. */
-  top: 3.65rem;
-  /* `left: auto` is required: the UA stylesheet sets both `left: 0` and
-     `right: 0` on popovers, and with a width set that is over-constrained, so the
-     inline-start offset wins and `right` is ignored. */
+  top: 4.2rem;
   left: auto;
-  right: max(var(--space-4), calc((100vw - var(--measure)) / 2 + var(--space-4)));
+  /* Mirrors the shell's padding so the panel's right edge lines up with the
+     trigger's at any viewport width. */
+  right: max(
+    clamp(1.5rem, 6vw, 3rem),
+    calc((100vw - var(--container-prose)) / 2 + clamp(1.5rem, 6vw, 3rem))
+  );
   margin: 0;
 }
 
 .popover__head {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
+  gap: var(--spacing-3);
+  padding-bottom: var(--spacing-3);
   border-bottom: var(--border);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--spacing-3);
 }
 
 .popover__head span {
@@ -726,70 +696,138 @@ main {
   min-width: 0;
 }
 
-.popover__meta {
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+/* The name is content, so it is set in the serif like everything written. */
+.popover__name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.3;
 }
 
+.popover__meta {
+  color: var(--color-ink-subtle);
+  font-size: var(--text-label);
+}
+
+/* Text-only rows in the same tracked capitals as the nav — no icons, no fills;
+   the hover is a colour change, nothing moves. */
 .popover__item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  display: block;
   width: 100%;
-  padding: var(--space-2);
+  padding: var(--spacing-2) 0;
   border: 0;
-  border-radius: var(--radius);
   background: none;
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: var(--step--1);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-align: left;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .popover__item:hover {
-  background: var(--surface-2);
-  color: var(--ink);
+  color: var(--color-ink);
 }
 
 .popover__item--danger {
-  color: var(--danger);
+  color: color-mix(in srgb, var(--color-danger) 70%, var(--color-ink-subtle));
 }
 
 .popover__item--danger:hover {
-  background: color-mix(in srgb, var(--danger) 12%, transparent);
-  color: var(--danger);
+  color: var(--color-danger);
 }
 
 .popover__rule {
-  margin: var(--space-2) 0;
+  margin: var(--spacing-3) 0;
 }
 
+/* A group caption, not a row you can press.
+
+   Everything interactive in this panel is sans-serif tracked capitals, so the
+   label deliberately breaks that pattern: lowercase serif italic, the same voice
+   the page titles use. Being visibly a different kind of text is what stops it
+   reading as a disabled menu item. */
 .popover__label {
-  margin: 0 0 var(--space-1);
-  padding: 0 var(--space-2);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
-  letter-spacing: 0.08em;
+  margin: 0 0 var(--spacing-3);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-serif);
+  font-size: var(--text-caption);
+  font-style: italic;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
+}
+
+/* Theme choices: three centred stacks, icon over label. Stacking rather than
+   sitting the icon beside the word keeps all three inside the narrower panel
+   without crowding. */
+.theme-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* Narrow enough that all three stacks fit the 12.5rem panel without
+     overflowing — "system" is the widest label and sets the limit. */
+  gap: var(--spacing-3);
+}
+
+.theme-row form {
+  display: flex;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  cursor: pointer;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
-/* Tick on the active theme, pushed to the trailing edge of the row. */
-.popover__check {
-  margin-left: auto;
-  color: var(--accent);
+.theme-option .icon {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
-.popover__item[aria-current="true"] {
-  color: var(--ink);
-  font-weight: 700;
+.theme-option:hover {
+  color: var(--color-ink);
+}
+
+.theme-option[aria-current="true"] {
+  color: var(--color-ink);
+}
+
+/* The accent underline marks the active option — the same mark the nav uses for
+   the current page. It sits on the label only, so it does not run under the icon. */
+.theme-option[aria-current="true"] .theme-option__label {
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
 }
 
 /* Search ---------------------------------------------------------------- */
 
+/* An underlined slot in the paper rather than a boxed control. */
 .search {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--spacing-6);
 }
 
 .search__field {
@@ -800,99 +838,96 @@ main {
 
 .search__icon {
   position: absolute;
-  left: var(--space-3);
-  color: var(--ink-faint);
+  left: 0;
+  color: var(--color-ink-subtle);
   pointer-events: none;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
-/* The icon tints while htmx has a search in flight — the only progress cue now
-   that the submit button is gone. */
-.search.htmx-request .search__icon {
-  color: var(--accent);
-}
-
-/* Specificity has to beat the `input[type="search"]` padding shorthand further
-   down the file, otherwise the shorthand resets padding-left and the text runs
-   under the icon. */
 .search input[type="search"] {
-  padding-left: calc(var(--space-3) * 2 + 1.15em);
+  padding: 0.4rem 0 0.4rem 1.8em;
   width: 100%;
+  border: none;
+  border-bottom: var(--border);
+  border-radius: 0;
+  background: none;
+}
+
+.search input[type="search"]:focus-visible {
+  border-bottom-color: var(--color-accent);
+  box-shadow: none;
+}
+
+/* The icon tints while htmx has a search in flight — the only progress cue. */
+.search.htmx-request .search__icon {
+  color: var(--color-accent);
 }
 
 /* Forms ----------------------------------------------------------------- */
 
 .field {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--spacing-5);
 }
 
-/* Label sits at body size, matching the text typed into the control below it —
-   a label two steps smaller than its own input reads as a caption. */
 .field > label {
   display: block;
-  margin-bottom: var(--space-2);
-  color: var(--ink);
-  font-size: var(--step-0);
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-ink-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 input[type="text"],
 input[type="password"],
 input[type="search"],
 textarea {
-  /* Tighter than it was: 12px of padding all round made a single-line field look
-     like a text area. Font size stays at 1rem — dropping below 16px makes iOS
-     Safari zoom the page on focus. */
-  padding: 0.4rem var(--space-3);
+  padding: 0.45rem 0.65rem;
   width: 100%;
   border: var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
   font: inherit;
-  line-height: 1.5;
-  transition: border-color var(--transition), box-shadow var(--transition);
-}
-
-input:focus,
-textarea:focus {
-  border-color: var(--accent);
+  line-height: 1.6;
+  transition-property: border-color, box-shadow;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 textarea {
   resize: vertical;
-  line-height: 1.6;
 }
 
 .field__hint {
-  margin-top: var(--space-2);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+  margin-top: var(--spacing-2);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
 }
 
 .field--check {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--spacing-2);
 }
 
 .field--check label {
   margin: 0;
-  font-weight: 400;
-  letter-spacing: 0;
   cursor: pointer;
 }
 
-/* The UA default checkbox is about 13px, which looks undersized beside a
-   body-size label and is a small tap target. Sized up to match the label's line
-   box and tinted with the page accent. */
 .field--check input[type="checkbox"] {
   flex: none;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.05rem;
+  height: 1.05rem;
   margin: 0;
   padding: 0;
-  accent-color: var(--accent);
+  accent-color: var(--color-accent);
   cursor: pointer;
 }
 
@@ -900,19 +935,21 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-5);
 }
 
 .errors {
-  margin: var(--space-2) 0 0;
-  padding-left: var(--space-4);
-  color: var(--danger);
-  font-size: var(--step--1);
+  margin: var(--spacing-2) 0 0;
+  padding-left: var(--spacing-4);
+  color: var(--color-danger);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
 }
 
+/* Flash messages: a margin note, not an alert box. */
 .messages {
-  margin: 0 0 var(--space-4);
+  margin: var(--spacing-5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -922,39 +959,36 @@ textarea {
 }
 
 .messages li {
-  padding: var(--space-2) var(--space-3);
-  border-left: 3px solid var(--accent);
-  background: var(--surface-2);
-  font-size: var(--step--1);
+  padding: var(--spacing-1) var(--spacing-4);
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-ink-muted);
+  font-style: italic;
 }
 
 .messages li + li {
-  margin-top: var(--space-2);
+  margin-top: var(--spacing-2);
 }
 
-/* Post cards ------------------------------------------------------------ */
+/* Post listings ----------------------------------------------------------- */
 
+/* Entries are separated by whitespace and a hairline — no cards, no boxes. */
 .post-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+}
+
+.post-list > * + * {
+  border-top: var(--border);
 }
 
 .card {
-  padding: var(--space-4);
-  border: var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  transition: border-color var(--transition);
-}
-
-.card:hover {
-  border-color: var(--line-strong);
+  padding: var(--spacing-6) 0;
 }
 
 .card__title {
-  font-size: var(--step-2);
+  font-family: var(--font-serif);
+  font-size: var(--text-heading-sm);
+  font-weight: 500;
 }
 
 .card__title a {
@@ -962,22 +996,34 @@ textarea {
 }
 
 .card__title a:hover {
-  color: var(--accent);
+  color: var(--color-accent);
 }
 
 .card__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-3);
-  margin-top: var(--space-2);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+  gap: var(--spacing-2) var(--spacing-4);
+  margin-top: var(--spacing-2);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.card__meta a {
+  text-decoration: none;
+}
+
+.card__meta a:hover {
+  color: var(--color-ink);
 }
 
 .card__summary {
-  margin: var(--space-3) 0 0;
-  color: var(--ink-soft);
+  margin: var(--spacing-3) 0 0;
+  max-width: 60ch;
+  color: var(--color-ink-muted);
 }
 
 .card__footer {
@@ -985,66 +1031,56 @@ textarea {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-3);
 }
 
 .byline {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--spacing-2);
 }
 
 .avatar {
-  border-radius: var(--radius);
+  border-radius: 50%;
   vertical-align: middle;
   shape-rendering: crispEdges;
-}
-
-/* Circular inside the pill-shaped trigger and the menu header, so the avatar
-   follows the curve of the control around it instead of cutting across it. */
-.user-trigger .avatar,
-.popover__head .avatar {
-  border-radius: 50%;
-}
-
-.profile .avatar {
-  border-radius: calc(var(--radius) * 2);
 }
 
 .meta-item {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--spacing-1);
 }
 
+/* Like / save / comment row. Every slot shares one shape so the row keeps its
+   geometry as state changes; the toggled-on state changes only colour. */
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--spacing-2);
 }
 
-/* Every slot in the action row — static count, button, or toggled-on button —
-   shares one shape, so the row cannot go ragged as state changes.
+.actions .inline-form {
+  display: flex;
+  align-items: center;
+}
 
-   Slots are sized by their content and left-aligned. An earlier version centred
-   content inside a fixed min-width, which put each icon at a different offset
-   from its slot edge and made the row look misaligned. The count carries the
-   min-width instead, so a count going from 9 to 10 does not shift the icons. */
 .action {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-2);
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
   border: 1px solid transparent;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   background: none;
-  color: var(--ink-faint);
-  font: inherit;
-  font-size: var(--step--1);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
   line-height: 1;
-  transition: color var(--transition), background-color var(--transition),
-    border-color var(--transition);
+  transition-property: color, border-color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .action__count {
@@ -1052,115 +1088,110 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 
-/* The toggles are wrapped in <form> so they work without htmx, which leaves the
-   button sitting on the form's text baseline — enough to push it a couple of
-   pixels out of line with the plain-<span> slots next to it. Making the wrapper a
-   flex container removes the line box and the offset with it. */
-.actions .inline-form {
-  display: flex;
-  align-items: center;
-}
-
 button.action {
   cursor: pointer;
 }
 
 button.action:hover {
-  border-color: var(--line);
-  background: var(--surface-2);
-  color: var(--ink);
+  border-color: var(--color-line);
+  color: var(--color-ink);
 }
 
 button.action:active {
   transform: translateY(1px);
 }
 
-/* Toggled on: colour and a filled icon only. An added border or background would
-   make the control a different size from its neighbours. */
+/* Toggled on: colour and a filled icon only, never a different shape. */
 .action--on {
-  color: var(--accent);
+  color: var(--color-accent);
 }
 
 button.action--on:hover {
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  color: var(--accent);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  color: var(--color-accent);
 }
 
+/* Tags: quiet lowercase words, not pills. */
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: var(--spacing-2) var(--spacing-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .tag {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
-  border: var(--border);
-  border-radius: 999px;
-  background: var(--surface-2);
-  box-shadow: var(--raise);
-  color: var(--ink-soft);
-  font-size: var(--step--1);
+  color: var(--color-ink-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
   text-decoration: none;
-  transition: color var(--transition), background-color var(--transition),
-    border-color var(--transition);
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
+}
+
+/* The '#' is a marker rather than a word, so it is set at reduced strength — but
+   from the tag's own colour, not a fixed one. Two reasons: a border token
+   (--line-strong) is tuned for hairlines and left it almost invisible against the
+   paper in both themes, and a hardcoded colour also overrode inheritance, so the
+   marker stayed grey while the word turned accent on hover. */
+.tag::before {
+  content: "#";
+  opacity: 0.7;
 }
 
 .tag:hover,
 .tag[aria-current="page"] {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
-  color: var(--accent);
+  color: var(--color-accent);
 }
 
 .badge {
-  padding: 0 var(--space-2);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
+  padding: 0 var(--spacing-2);
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
 .empty {
-  padding: var(--space-7) var(--space-4);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
-  color: var(--ink-faint);
+  padding: var(--spacing-7) 0;
+  color: var(--color-ink-subtle);
+  font-style: italic;
   text-align: center;
 }
 
 .load-more {
   display: block;
-  margin-top: var(--space-2);
-  padding: 0.35rem var(--space-3);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
-  color: var(--ink-soft);
-  font-size: var(--step--1);
+  padding: var(--spacing-4) 0 var(--spacing-2);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .load-more:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent);
 }
 
-/* Single post ----------------------------------------------------------- */
+/* Single post ------------------------------------------------------------- */
 
 .post-header {
-  margin-bottom: var(--space-5);
+  margin: var(--spacing-7) 0 var(--spacing-5);
 }
 
 .post-header h1 {
-  font-size: var(--step-4);
-  letter-spacing: -0.02em;
+  font-size: var(--text-heading-lg);
+  line-height: 1.2;
 }
 
 .post-toolbar {
@@ -1168,16 +1199,180 @@ button.action--on:hover {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) 0;
   border-top: var(--border);
   border-bottom: var(--border);
+  margin-bottom: var(--spacing-6);
 }
 
-/* Rendered Markdown ---------------------------------------------------- */
+/* Comments ---------------------------------------------------------------- */
 
+.comments {
+  margin-top: var(--spacing-7);
+}
+
+.comments__heading {
+  margin-bottom: var(--spacing-4);
+  color: var(--color-ink-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 var(--spacing-6);
+  padding: 0;
+  list-style: none;
+}
+
+.comment {
+  padding: var(--spacing-4) 0;
+  border-top: var(--border);
+}
+
+.comment:target {
+  border-left: 2px solid var(--color-accent);
+  padding-left: var(--spacing-4);
+}
+
+.comment__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-ink-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.comment__head a {
+  text-decoration: none;
+}
+
+.comment .prose {
+  font-size: var(--text-body);
+}
+
+/* Profiles ---------------------------------------------------------------- */
+
+/* An author page opens like a book's colophon: centred and unhurried. */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin: var(--spacing-7) 0 var(--spacing-5);
+  padding-bottom: var(--spacing-6);
+  border-bottom: var(--border);
+  text-align: center;
+}
+
+.profile__body {
+  max-width: 34rem;
+}
+
+.profile__name {
+  font-size: var(--text-heading);
+}
+
+.profile__bio {
+  margin: var(--spacing-2) 0 0;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.stats span {
+  color: var(--color-ink-subtle);
+}
+
+.stats b {
+  color: var(--color-ink);
+  font-size: var(--text-caption);
+}
+
+/* Two of the stats navigate; a dotted underline says so without shouting. */
+.stats a {
+  color: var(--color-ink-subtle);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition-property: color;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
+}
+
+.stats a:hover,
+.stats a:focus-visible {
+  color: var(--color-accent);
+  text-decoration-style: solid;
+  text-decoration-color: var(--color-accent);
+}
+
+.stats a:hover b,
+.stats a:focus-visible b {
+  color: var(--color-accent);
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people .card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) 0;
+}
+
+.people .card__footer {
+  margin: 0;
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3) var(--spacing-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body);
+}
+
+/* 6. Prose ---------------------------------------------------------------- */
+
+/* Rendered Markdown: book typography. */
 .prose {
-  font-size: var(--step-1);
+  font-size: var(--text-body-lg);
+  line-height: 1.85;
   overflow-wrap: break-word;
 }
 
@@ -1189,50 +1384,50 @@ button.action--on:hover {
 .prose h2,
 .prose h3,
 .prose h4 {
-  margin: var(--space-6) 0 var(--space-3);
+  margin: var(--spacing-6) 0 var(--spacing-3);
 }
 
 .prose h1 {
-  font-size: var(--step-3);
+  font-size: var(--text-heading);
 }
 .prose h2 {
-  font-size: var(--step-2);
+  font-size: var(--text-heading-sm);
 }
 .prose h3 {
-  font-size: var(--step-1);
+  font-size: var(--text-body-lg);
 }
 
 .prose ul,
 .prose ol {
-  padding-left: var(--space-5);
+  padding-left: var(--spacing-5);
 }
 
 .prose li + li {
-  margin-top: var(--space-1);
+  margin-top: var(--spacing-1);
 }
 
 .prose blockquote {
   margin-left: 0;
-  padding: var(--space-1) var(--space-4);
-  border-left: 3px solid var(--accent);
-  color: var(--ink-soft);
+  padding: var(--spacing-1) var(--spacing-5);
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-ink-muted);
   font-style: italic;
 }
 
 .prose pre {
   overflow-x: auto;
-  padding: var(--space-4);
+  padding: var(--spacing-4);
   border: var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-2);
-  font-size: var(--step--1);
-  line-height: 1.5;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-caption);
+  line-height: 1.6;
 }
 
 .prose :not(pre) > code {
   padding: 0.1em 0.35em;
   border-radius: 3px;
-  background: var(--surface-2);
+  background: var(--color-surface-sunken);
 }
 
 .prose table {
@@ -1240,166 +1435,37 @@ button.action--on:hover {
   overflow-x: auto;
   border-collapse: collapse;
   width: 100%;
+  font-size: var(--text-body);
 }
 
 .prose th,
 .prose td {
-  padding: var(--space-2) var(--space-3);
-  border: var(--border);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: var(--border);
   text-align: left;
 }
 
 .prose th {
-  background: var(--surface-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 .prose img {
   height: auto;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
-/* Comments -------------------------------------------------------------- */
-
-.comments {
-  margin-top: var(--space-7);
-}
-
-.comments__heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-  font-size: var(--step-2);
-}
-
-.comment-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin: 0 0 var(--space-5);
-  padding: 0;
-  list-style: none;
-}
-
-.comment {
-  padding: var(--space-3) var(--space-4);
-  border: var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.comment:target {
-  border-color: var(--accent);
-}
-
-.comment__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
-  color: var(--ink-faint);
-  font-size: var(--step--1);
-}
-
-.comment .prose {
-  font-size: var(--step-0);
-}
-
-/* Profiles -------------------------------------------------------------- */
-
-.profile {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--space-4);
-  margin: var(--space-6) 0;
-  padding-bottom: var(--space-5);
-  border-bottom: var(--border);
-}
-
-.profile__body {
-  flex: 1 1 16rem;
-}
-
-.profile__name {
-  font-size: var(--step-3);
-}
-
-.profile__bio {
-  margin: var(--space-2) 0 0;
-  color: var(--ink-soft);
-}
-
-.stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-3);
-  font-size: var(--step--1);
-}
-
-.stats span {
-  color: var(--ink-faint);
-}
-
-.stats b {
-  color: var(--ink);
-  font-size: var(--step-0);
-}
-
-/* Two of the four stats lead somewhere and two are just numbers, so the links
-   need to say so. A dotted underline reads as "there is more here" without
-   shouting like a normal link, and the whole item — number included — picks up
-   the accent on hover and focus so the target is obviously the entire stat. */
-.stats a {
-  color: var(--ink-faint);
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 4px;
-  cursor: pointer;
-  transition: color var(--transition);
-}
-
-.stats a:hover,
-.stats a:focus-visible {
-  color: var(--accent);
-  text-decoration-style: solid;
-  text-decoration-color: var(--accent);
-}
-
-.stats a:hover b,
-.stats a:focus-visible b {
-  color: var(--accent);
-}
-
-.people {
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  list-style: none;
-}
-
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* 7. htmx --------------------------------------------------------------- */
+/* 7. htmx ----------------------------------------------------------------- */
 
 /* htmx sets .htmx-request on the element issuing a request; the indicator is
    pure CSS so no JavaScript of ours is involved. */
 .htmx-indicator {
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition-property: opacity;
+  transition-duration: var(--duration-quiet);
+  transition-timing-function: var(--ease-quiet);
 }
 
 .htmx-request .htmx-indicator,
@@ -1414,7 +1480,7 @@ button.action--on:hover {
 
 .htmx-swapping {
   opacity: 0;
-  transition: opacity 150ms ease;
+  transition: opacity 200ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1425,35 +1491,32 @@ button.action--on:hover {
   }
 }
 
-/* Small screens --------------------------------------------------------- */
+/* 8. Small screens -------------------------------------------------------- */
 
 @media (max-width: 34rem) {
-  .site-header__bar {
-    gap: var(--space-2);
+  .site-header {
+    padding-top: var(--spacing-4);
   }
 
   .site-nav {
-    gap: var(--space-3);
-    font-size: var(--step--1);
+    gap: var(--spacing-3);
   }
 
-  /* Let the links wrap naturally instead of stranding the primary action on a
-     line of its own. */
   .site-nav__spacer {
     display: none;
   }
 
-  .brand__name {
-    font-size: var(--step-1);
-  }
-
-  /* Avatar and chevron alone are enough on a phone; the name would push the
-     header onto another line. */
   .user-trigger__name {
     display: none;
   }
 
+  .page-head,
+  .post-header,
+  .profile {
+    margin-top: var(--spacing-6);
+  }
+
   .post-header h1 {
-    font-size: var(--step-3);
+    font-size: var(--text-heading);
   }
 }

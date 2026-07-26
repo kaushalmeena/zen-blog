@@ -1,10 +1,11 @@
 <div align="center">
 
-<img src="blog/static/images/icon.svg" alt="" width="96" height="96" />
+<img src="blog/static/images/icon.svg" alt="" width="88" height="88" />
 
 # zen-blog
 
-**A minimal, JavaScript-free multi-user blog — Flask + htmx, server-rendered, no build step.**
+**A quiet, paper-like place to write. Multi-user blogging on Flask and htmx —
+server-rendered, no JavaScript of its own, no build step.**
 
 [![CI](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml/badge.svg)](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
@@ -29,6 +30,9 @@ Every interactive control is a real `<a href>` or `<form method="post">` first.
 htmx attributes are layered on top, so with JavaScript disabled the site still
 works — it just does full page loads instead of swapping fragments.
 
+It is also an exercise in restraint on the front end: one stylesheet, one icon
+sprite, no fonts downloaded, and no images beyond the site icon.
+
 ## Features
 
 **Writing**
@@ -47,8 +51,6 @@ works — it just does full page loads instead of swapping fragments.
 - RSS feed, `sitemap.xml` and `robots.txt`
 - Light / dark / follow-system switch. The choice is a cookie the server reads,
   not a script, so it persists across pages and never flashes the wrong theme
-- A CSS-generated graph-paper background that recolours with the theme — no image
-  request, and nothing to swap when the theme changes
 
 **Social**
 
@@ -62,7 +64,7 @@ works — it just does full page loads instead of swapping fragments.
 | Area           | Tools                                                                                                      |
 | -------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Framework**  | [Flask 3](https://flask.palletsprojects.com/) · [Jinja2](https://jinja.palletsprojects.com/)                |
-| **Front end**  | [htmx 2](https://htmx.org/) + [flask-htmx](https://flask-htmx.readthedocs.io/) · one hand-written CSS file · [Lucide](https://lucide.dev/) icons as an SVG sprite |
+| **Front end**  | [htmx 2](https://htmx.org/) + [flask-htmx](https://flask-htmx.readthedocs.io/) · one hand-written CSS file, system fonts · [Lucide](https://lucide.dev/) icons as an SVG sprite |
 | **Database**   | [SQLAlchemy 2](https://www.sqlalchemy.org/) · SQLite by default, any URL via `DATABASE_URL`                 |
 | **Migrations** | [Alembic](https://alembic.sqlalchemy.org/) via [Flask-Migrate](https://flask-migrate.readthedocs.io/)      |
 | **Auth**       | [Flask-Login](https://flask-login.readthedocs.io/) · [Flask-WTF](https://flask-wtf.readthedocs.io/) CSRF    |
@@ -127,6 +129,11 @@ uv run flask --app blog db upgrade
 `uv run flask --app blog db check` fails when the models and the migration
 history have drifted apart; CI runs it on every push.
 
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the orientation guide: what lives
+where, the invariants the code relies on, and the things it deliberately does not
+do. [docs/DESIGN.md](docs/DESIGN.md) covers the visual system — tokens, palette,
+type — and the naming convention they follow.
+
 Other useful commands:
 
 | Command        | What it does                                          |
@@ -134,34 +141,6 @@ Other useful commands:
 | `flask seed`   | Insert demo users, posts, comments, likes and follows  |
 | `flask reset`  | Drop and recreate every table (asks first)             |
 | `flask routes` | List the URL map                                       |
-
-## Caching
-
-There is no build step, so static filenames never change and a browser cannot tell
-a new stylesheet from the one it has. Every `url_for('static', ...)` therefore
-gains a `?v=` stamp derived from the file's contents, which makes it safe to serve
-assets as `public, max-age=1y, immutable` in production — no revalidation request
-per asset, per page load. In development the lifetime stays at zero so edits show
-up immediately.
-
-Pages are the opposite case: anything rendered for a logged-in user is
-`no-store, private`, because it contains controls only that user may use and the
-back button would otherwise redisplay it after someone else logs in.
-
-## How the htmx pieces fit together
-
-- `blog/responses.py` decides between a fragment and a full page. `render_fragment()`
-  also appends the flash-message region as an [out-of-band swap](https://htmx.org/attributes/hx-swap-oob/),
-  so a flash raised during a fragment request still reaches the page.
-- `blog/listings.py` serves three shapes from one view: a full page, a replacement
-  list (search), or the next batch of cards (load-more, flagged with `partial=page`).
-- Templates in `templates/partials/` are each addressable by id, so the server can
-  re-render exactly one element — an action bar, a follow button, a comment.
-- CSRF tokens reach htmx through a single `hx-headers` attribute on `<body>`, and
-  `CSRFProtect` validates every state-changing request. Hand-written forms also
-  carry a hidden token via the `csrf()` macro, because a browser without
-  JavaScript posts them natively and sends no header — `tests/test_no_javascript.py`
-  turns CSRF on and posts every one of those forms the way such a browser would.
 
 ## Deployment
 

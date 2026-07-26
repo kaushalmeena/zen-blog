@@ -1,10 +1,10 @@
 {% from "partials/macros.html" import icon, csrf %}
 {#
-  Theme options inside the account menu.
+  Theme options inside the account menu: three centred stacks, icon over label.
 
-  A menu can name all three states outright, so each is one click and the current
-  one is ticked. `system` defers to prefers-color-scheme and is the default for
-  anyone who has never chosen.
+  Each option is its own one-input POST form, so the whole thing works without
+  JavaScript. The active option carries aria-current and its label is underlined
+  in the accent — no tick glyph, matching how the nav marks the current page.
 #}
 {%- set options = [
   ('light', 'sun', 'light'),
@@ -12,14 +12,15 @@
   ('auto', 'contrast', 'system'),
 ] -%}
 
-{%- for value, symbol, label in options %}
-<form method="post" action="{{ url_for('main.set_theme') }}">
-  {{ csrf() }}
-  <input type="hidden" name="theme" value="{{ value }}" />
-  <button class="popover__item" type="submit"
-          {% if theme == value %}aria-current="true"{% endif %}>
-    {{ icon(symbol) }}<span>{{ label }}</span>
-    {%- if theme == value %}<span class="popover__check">{{ icon('check') }}</span>{% endif %}
-  </button>
-</form>
-{%- endfor %}
+<div class="theme-row">
+  {%- for value, symbol, label in options %}
+  <form method="post" action="{{ url_for('main.set_theme') }}">
+    {{ csrf() }}
+    <input type="hidden" name="theme" value="{{ value }}" />
+    <button class="theme-option" type="submit"
+            {% if theme == value %}aria-current="true"{% endif %}>
+      {{ icon(symbol) }}<span class="theme-option__label">{{ label }}</span>
+    </button>
+  </form>
+  {%- endfor %}
+</div>

@@ -68,9 +68,7 @@
   {%- for tag in tags|sort(attribute='name') %}
   <li>
     <a class="tag" href="{{ url_for('main.home', tag=tag.slug) }}"
-       {% if active == tag.slug %}aria-current="page"{% endif %}>
-      {{ icon('tag') }}{{ tag.name }}
-    </a>
+       {% if active == tag.slug %}aria-current="page"{% endif %}>{{ tag.name }}</a>
   </li>
   {%- endfor %}
 </ul>

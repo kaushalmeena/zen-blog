@@ -99,7 +99,7 @@ def test_stat_links_are_visually_distinguished():
 
     # Hover and keyboard focus both promote it to a solid accent underline.
     hover = css.split(".stats a:hover,\n.stats a:focus-visible {")[1].split("}")[0]
-    assert "var(--accent)" in hover
+    assert "var(--color-accent)" in hover
     assert "text-decoration-style: solid" in hover
 
     # The static stats must not pick any of that up.

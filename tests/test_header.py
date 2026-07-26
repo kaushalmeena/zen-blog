@@ -164,12 +164,15 @@ def test_action_row_uses_equal_width_slots():
     assert "background" not in on_block
 
 
-def test_background_pattern_is_generated_in_css():
-    """The texture PNG is gone; the pattern is drawn from theme variables."""
+def test_paper_background_is_a_plain_colour():
+    """The zen redesign: warm paper, no texture image and no drawn pattern."""
     from pathlib import Path
 
     css = Path("blog/static/styles/main.css").read_text()
+    assert "--color-light-bg: #f7f5f0" in css
+    assert "--color-dark-bg: #181716" in css
+    # No image, and no generated graph-paper grid either.
     assert "texture.png" not in css
-    assert "--light-grid:" in css
-    assert "--dark-grid:" in css
-    assert not Path("blog/static/images/texture.png").exists()
+    assert "--color-light-grid" not in css
+    body_block = css.split("\nbody {")[1].split("}")[0]
+    assert "background-image" not in body_block

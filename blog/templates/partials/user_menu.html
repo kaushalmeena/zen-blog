@@ -7,8 +7,9 @@
   or Escape), focus and the top layer. No JavaScript, and no ARIA bookkeeping of
   our own — the attributes imply the expanded state.
 
-  Browsers without Popover API support show the panel inline instead of hiding it,
-  which is ugly but still fully usable, so nothing here is load-bearing.
+  The panel follows the site's paper language: a name set in serif, then
+  text-only rows in tracked capitals. The only icon is the chevron on the
+  trigger.
 #}
 <button class="user-trigger" type="button" popovertarget="account-menu"
         aria-label="Account menu for {{ current_user.username }}">
@@ -19,9 +20,9 @@
 
 <div class="popover" id="account-menu" popover>
   <div class="popover__head">
-    {{ identicon(current_user.username, 40) }}
+    {{ identicon(current_user.username, 36) }}
     <span>
-      <strong>{{ current_user.username }}</strong>
+      <strong class="popover__name">{{ current_user.username }}</strong>
       <span class="popover__meta">
         {{ current_user.post_count }} posts · {{ current_user.follower_count }} followers
       </span>
@@ -29,12 +30,8 @@
   </div>
 
   {# Saved and drafts are not repeated here — they already have nav links. #}
-  <a class="popover__item" href="{{ url_for('users.me') }}">
-    {{ icon('user') }}<span>profile</span>
-  </a>
-  <a class="popover__item" href="{{ url_for('users.settings') }}">
-    {{ icon('settings') }}<span>settings</span>
-  </a>
+  <a class="popover__item" href="{{ url_for('users.me') }}"><span>profile</span></a>
+  <a class="popover__item" href="{{ url_for('users.settings') }}"><span>settings</span></a>
 
   <hr class="popover__rule" />
 
@@ -46,7 +43,7 @@
   <form method="post" action="{{ url_for('auth.logout') }}">
     {{ csrf() }}
     <button class="popover__item popover__item--danger" type="submit">
-      {{ icon('logout') }}<span>logout</span>
+      <span>logout</span>
     </button>
   </form>
 </div>

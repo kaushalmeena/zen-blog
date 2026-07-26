@@ -11,9 +11,7 @@
 <ul class="tag-cloud">
   {%- for tag, total in tag_counts %}
   <li>
-    <a class="tag" href="{{ url_for('main.home', tag=tag.slug) }}">
-      {{ icon('tag') }}{{ tag.name }} <b>{{ total }}</b>
-    </a>
+    <a class="tag" href="{{ url_for('main.home', tag=tag.slug) }}">{{ tag.name }} <b>{{ total }}</b></a>
   </li>
   {%- endfor %}
 </ul>

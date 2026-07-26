@@ -88,22 +88,53 @@ def test_css_hides_exactly_one_direction_per_state():
 
 
 def test_menu_names_each_theme_state(client, log_in, alice):
+    """Each option is named in words, not left to its icon alone."""
     log_in("alice")
     html = " ".join(client.get("/").data.decode().split())
-    menu = html.split('<p class="popover__label">theme</p>')[1]
+    row = html.split('<div class="theme-row">')[1].split("</div>")[0]
+
     for label in ("light", "dark", "system"):
-        assert f"<span>{label}</span>" in menu, label
+        assert f'<span class="theme-option__label">{label}</span>' in row, label
 
 
-def test_active_row_is_ticked_for_every_state(client, log_in, alice):
+def test_each_theme_option_has_an_icon(client, log_in, alice):
+    log_in("alice")
+    row = " ".join(client.get("/").data.decode().split())
+    row = row.split('<div class="theme-row">')[1].split("</div>")[0]
+
+    assert "icons.svg?v=" in row
+    for symbol in ("sun", "moon", "contrast"):
+        assert f"#{symbol}" in row, symbol
+
+
+def test_theme_label_is_not_styled_like_an_option():
+    """It reads as a caption because it breaks the interactive text pattern."""
+    from pathlib import Path
+
+    css = Path("blog/static/styles/main.css").read_text()
+    label = css.split(".popover__label {")[1].split("}")[0]
+    option = css.split("\n.theme-option {")[1].split("}")[0]
+
+    # Interactive rows are sans tracked capitals; the label is serif italic.
+    assert "--font-serif" in label
+    assert "font-style: italic" in label
+    assert "text-transform: none" in label
+
+    assert "--font-sans" in option
+    assert "text-transform: uppercase" in option
+
+
+def test_active_option_is_marked_for_every_state(client, log_in, alice):
+    """Exactly one theme option carries aria-current, and it is the stored one."""
     log_in("alice")
 
     for choice in ("light", "dark", "auto"):
         client.post("/theme/", data={"theme": choice})
-        menu = " ".join(client.get("/").data.decode().split()).split('popover__label">theme</p>')[1]
-        row = menu.split(f'name="theme" value="{choice}" />')[1].split("</form>")[0]
-        assert 'aria-current="true"' in row, choice
-        assert menu.count('<span class="popover__check">') == 1, choice
+        html = " ".join(client.get("/").data.decode().split())
+        row = html.split('<div class="theme-row">')[1].split("</div>")[0]
+        active = row.split(f'name="theme" value="{choice}" />')[1].split("</form>")[0]
+        assert 'aria-current="true"' in active, choice
+        assert row.count('aria-current="true"') == 1, choice
 
 
 def test_unknown_theme_is_rejected(client):
