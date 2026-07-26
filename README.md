@@ -4,15 +4,15 @@
 
 # zen-blog
 
-**A quiet, paper-like place to write. Multi-user blogging on Flask and htmx —
-server-rendered, no JavaScript of its own, no build step.**
-
-[**Try it live**](https://prod-zen-blog.onrender.com)
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.1-44546A?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![htmx](https://img.shields.io/badge/htmx-2.x-3D72D7?logo=htmx&logoColor=white)](https://htmx.org/)
+
+**A quiet, paper-like place to write. Multi-user blogging on Flask and htmx —
+server-rendered, no JavaScript of its own, no build step.**
+
+[**Try it live**](https://prod-zen-blog.onrender.com)
 
 </div>
 
