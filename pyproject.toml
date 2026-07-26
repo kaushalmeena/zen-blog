@@ -1,5 +1,5 @@
 [project]
-name = "myapp-blog"
+name = "zen-blog"
 version = "2.0.0"
 description = "A minimal, JavaScript-free multi-user blogging platform built with Flask and htmx."
 readme = "README.md"
@@ -22,8 +22,8 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/kaushalmeena/myapp-blog"
-Issues = "https://github.com/kaushalmeena/myapp-blog/issues"
+Repository = "https://github.com/kaushalmeena/zen-blog"
+Issues = "https://github.com/kaushalmeena/zen-blog/issues"
 
 [build-system]
 requires = ["hatchling"]

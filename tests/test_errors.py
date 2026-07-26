@@ -35,7 +35,7 @@ def test_403_shows_a_caller_supplied_message(client, log_in, alice, make_post):
 def test_error_pages_keep_the_site_chrome(client):
     """The error page still queries current_user, so it must render fully."""
     body = client.get("/no/such/path/").data
-    assert b"MYAPP-BLOG" in body
+    assert b"ZEN-BLOG" in body
     assert b"Back to the home page" in body
 
 
@@ -54,4 +54,4 @@ def test_500_handler_rolls_back_and_renders(app):
     assert response.status_code == 500
     assert b"Something broke" in response.data
     # The handler rolled the session back, so the page's own queries still work.
-    assert b"MYAPP-BLOG" in response.data
+    assert b"ZEN-BLOG" in response.data

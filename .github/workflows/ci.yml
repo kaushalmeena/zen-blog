@@ -54,14 +54,14 @@ jobs:
           context: .
           push: false
           load: true
-          tags: myapp-blog:ci
+          tags: zen-blog:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Smoke-test the container
         run: |
           docker run -d --name blog -p 8000:8000 \
-            -e SECRET_KEY=ci-only-not-a-real-secret myapp-blog:ci
+            -e SECRET_KEY=ci-only-not-a-real-secret zen-blog:ci
           for attempt in $(seq 1 30); do
             if curl -fsS http://localhost:8000/robots.txt >/dev/null; then
               echo "container is serving"

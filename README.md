@@ -2,11 +2,11 @@
 
 <img src="blog/static/images/icon.svg" alt="" width="96" height="96" />
 
-# myapp-blog
+# zen-blog
 
 **A minimal, JavaScript-free multi-user blog — Flask + htmx, server-rendered, no build step.**
 
-[![CI](https://github.com/kaushalmeena/myapp-blog/actions/workflows/ci.yml/badge.svg)](https://github.com/kaushalmeena/myapp-blog/actions/workflows/ci.yml)
+[![CI](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml/badge.svg)](https://github.com/kaushalmeena/zen-blog/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.1-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
@@ -75,11 +75,11 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and
 [git](https://git-scm.com/downloads). uv installs the right Python for you.
 
 ```bash
-git clone https://github.com/kaushalmeena/myapp-blog.git
+git clone https://github.com/kaushalmeena/zen-blog.git
 ```
 
 ```bash
-cd myapp-blog && uv sync
+cd zen-blog && uv sync
 ```
 
 Create the schema, and optionally some demo content:

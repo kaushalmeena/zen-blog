@@ -15,7 +15,7 @@ class BaseConfig:
     #: which is what you want while editing CSS.
     STATIC_MAX_AGE = 0
 
-    SITE_NAME = "MYAPP-BLOG"
+    SITE_NAME = "ZEN-BLOG"
     SITE_TAGLINE = "A minimal, JavaScript-free blogging platform."
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
