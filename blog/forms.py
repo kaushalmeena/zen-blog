@@ -13,7 +13,7 @@ USERNAME_PATTERN = r"^[A-Za-z0-9_-]+$"
 USERNAME_MESSAGE = "Username may only contain letters, numbers, hyphens and underscores."
 
 
-class SignInForm(FlaskForm):
+class LoginForm(FlaskForm):
     """Credentials for an existing account."""
 
     username = StringField("USERNAME", validators=[DataRequired()])
@@ -21,7 +21,7 @@ class SignInForm(FlaskForm):
     remember = BooleanField("REMEMBER ME")
 
 
-class SignUpForm(FlaskForm):
+class RegisterForm(FlaskForm):
     """Registration details for a new account."""
 
     username = StringField(

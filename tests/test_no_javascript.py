@@ -1,7 +1,7 @@
 """The site with JavaScript switched off.
 
 The rest of the suite runs with ``WTF_CSRF_ENABLED = False``, which hid a real
-bug: the hand-written forms (sign out, like, save, follow, delete, theme) had no
+bug: the hand-written forms (logout, like, save, follow, delete, theme) had no
 hidden CSRF field. htmx supplies the token as a header, so those forms worked in a
 browser and returned 400 the moment JavaScript was unavailable.
 
@@ -36,28 +36,28 @@ def forms_on(client, path):
 
 @pytest.fixture
 def signed_in(client, alice, make_user):
-    """Sign in without htmx, using the sign-in form's own token."""
-    html = client.get("/sign-in/").data.decode()
+    """Log in without htmx, using the login form's own token."""
+    html = client.get("/login/").data.decode()
     token = HIDDEN_TOKEN.search(html).group("token")
     response = client.post(
-        "/sign-in/",
+        "/login/",
         data={"csrf_token": token, "username": "alice", "password": "correct horse battery"},
         follow_redirects=True,
     )
-    assert b"Signed in as alice" in response.data
+    assert b"Logged in as alice" in response.data
     return client
 
 
-def test_sign_out_form_carries_a_token_and_works(signed_in):
-    """Regression: this form had no token, so signing out returned 400."""
+def test_logout_form_carries_a_token_and_works(signed_in):
+    """Regression: this form had no token, so logging out returned 400."""
     tokens = forms_on(signed_in, "/")
-    assert tokens["/sign-out/"], "sign-out form is missing its CSRF field"
+    assert tokens["/logout/"], "logout form is missing its CSRF field"
 
     response = signed_in.post(
-        "/sign-out/", data={"csrf_token": tokens["/sign-out/"]}, follow_redirects=True
+        "/logout/", data={"csrf_token": tokens["/logout/"]}, follow_redirects=True
     )
     assert response.status_code == 200
-    assert b"Signed out." in response.data
+    assert b"Logged out." in response.data
 
 
 def test_like_and_save_forms_work_without_htmx(signed_in, bob, make_post):

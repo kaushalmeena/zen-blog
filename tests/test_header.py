@@ -31,19 +31,19 @@ def test_tagline_is_not_in_the_header(client):
     assert 'name="description" content="A minimal, JavaScript-free' in html
 
 
-def test_account_menu_is_a_native_popover(client, sign_in, alice):
-    sign_in("alice")
+def test_account_menu_is_a_native_popover(client, log_in, alice):
+    log_in("alice")
     html = squash(client.get("/").data)
 
     assert 'popovertarget="account-menu"' in html
     assert 'id="account-menu" popover' in html
     # Everything the old header spread across the nav now lives in the menu.
-    for target in ("/me/", "/settings/", "/saved/", "/drafts/", "/sign-out/"):
+    for target in ("/me/", "/settings/", "/saved/", "/drafts/", "/logout/"):
         assert target in html, target
 
 
-def test_account_trigger_shows_the_username_next_to_the_avatar(client, sign_in, alice):
-    sign_in("alice")
+def test_account_trigger_shows_the_username_next_to_the_avatar(client, log_in, alice):
+    log_in("alice")
     html = squash(client.get("/").data)
 
     trigger = html.split('class="user-trigger"')[1].split("</button>")[0]
@@ -55,21 +55,49 @@ def test_account_trigger_shows_the_username_next_to_the_avatar(client, sign_in, 
 def test_account_menu_is_absent_for_anonymous_visitors(client):
     html = client.get("/").data.decode()
     assert "account-menu" not in html
-    assert "sign in" in html
+    assert "login" in html
 
 
-def test_popover_needs_no_javascript(client, sign_in, alice):
+def test_auth_links_sit_in_the_nav_styled_like_the_other_links(client):
+    """They were buttons in the top bar; now they are nav links on the right."""
+    nav = squash(client.get("/").data).split('<nav class="site-nav"')[1].split("</nav>")[0]
+
+    assert '<a class="navlink" href="/login/">login</a>' in nav
+    assert '<a class="navlink navlink--accent" href="/register/">register</a>' in nav
+    # No button treatment anywhere in the nav.
+    assert "btn" not in nav
+
+
+def test_write_link_sits_in_the_nav_for_logged_in_users(client, log_in, alice):
+    log_in("alice")
+    html = squash(client.get("/").data)
+    nav = html.split('<nav class="site-nav"')[1].split("</nav>")[0]
+
+    assert '<a class="navlink navlink--accent" href="/posts/new/">write</a>' in nav
+    assert "btn" not in nav
+    # And it is no longer duplicated in the top bar.
+    bar = html.split('<div class="site-header__bar">')[1].split('<nav class="site-nav"')[0]
+    assert "/posts/new/" not in bar
+
+
+def test_primary_action_is_pushed_to_the_trailing_edge(client):
+    nav = squash(client.get("/").data).split('<nav class="site-nav"')[1].split("</nav>")[0]
+    spacer = nav.index('class="site-nav__spacer"')
+    assert nav.index('href="/tags/"') < spacer < nav.index('href="/login/"')
+
+
+def test_popover_needs_no_javascript(client, log_in, alice):
     """The Popover API is declarative, so the menu must not add a script."""
-    sign_in("alice")
+    log_in("alice")
     html = client.get("/").data.decode()
     assert html.count("<script") == 1  # vendored htmx only
     assert "onclick" not in html
 
 
-def test_action_row_slots_share_one_shape(client, sign_in, alice, bob, make_post):
+def test_action_row_slots_share_one_shape(client, log_in, alice, bob, make_post):
     """Uneven buttons came from the active state adding a box the others lacked."""
     post = make_post(bob, title="A post to react to")
-    sign_in("alice")
+    log_in("alice")
 
     off = squash(client.get(f"/posts/{post.slug}/").data)
     row = off.split('<div class="actions"')[1].split("</div>")[0]
@@ -90,7 +118,7 @@ def test_action_row_uses_equal_width_slots():
     """The evenness is a CSS guarantee; assert the rule that provides it."""
     from pathlib import Path
 
-    css = Path("blog/static/css/main.css").read_text()
+    css = Path("blog/static/styles/main.css").read_text()
     action_block = css.split(".action {")[1].split("}")[0]
     # Slots are content-sized and left-aligned; centring inside a fixed width is
     # what made the icons sit at different offsets.
@@ -111,8 +139,8 @@ def test_background_pattern_is_generated_in_css():
     """The texture PNG is gone; the pattern is drawn from theme variables."""
     from pathlib import Path
 
-    css = Path("blog/static/css/main.css").read_text()
+    css = Path("blog/static/styles/main.css").read_text()
     assert "texture.png" not in css
     assert "--light-grid:" in css
     assert "--dark-grid:" in css
-    assert not Path("blog/static/img/texture.png").exists()
+    assert not Path("blog/static/images/texture.png").exists()

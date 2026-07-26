@@ -23,7 +23,7 @@ def test_choice_survives_navigation(client, alice, make_post):
     post = make_post(alice)
     client.post("/theme/", data={"theme": "dark"})
 
-    for path in ("/", f"/posts/{post.slug}/", "/tags/", "/sign-in/"):
+    for path in ("/", f"/posts/{post.slug}/", "/tags/", "/login/"):
         assert 'data-theme="dark"' in client.get(path).data.decode(), path
 
 
@@ -34,8 +34,8 @@ def test_anonymous_visitors_get_a_header_toggle(client):
     assert "account-menu" not in html
 
 
-def test_signed_in_users_get_the_options_in_the_account_menu(client, sign_in, alice):
-    sign_in("alice")
+def test_signed_in_users_get_the_options_in_the_account_menu(client, log_in, alice):
+    log_in("alice")
     html = client.get("/").data.decode()
 
     # The header toggle moves into the menu, which names all three states.
@@ -44,8 +44,8 @@ def test_signed_in_users_get_the_options_in_the_account_menu(client, sign_in, al
         assert f'<input type="hidden" name="theme" value="{value}" />' in html
 
 
-def test_active_theme_is_ticked_in_the_menu(client, sign_in, alice):
-    sign_in("alice")
+def test_active_theme_is_ticked_in_the_menu(client, log_in, alice):
+    log_in("alice")
     client.post("/theme/", data={"theme": "dark"})
     html = " ".join(client.get("/").data.decode().split())
 
@@ -74,7 +74,7 @@ def test_both_switch_directions_are_always_present(client):
 
 def test_css_hides_exactly_one_direction_per_state():
     """The one-click promise lives in CSS, so assert the rules that deliver it."""
-    css = (Path("blog/static/css/main.css")).read_text()
+    css = (Path("blog/static/styles/main.css")).read_text()
 
     # Light appearance: only the "go dark" control shows.
     assert ".theme-switch--to-light {\n  display: none;\n}" in css
@@ -87,8 +87,8 @@ def test_css_hides_exactly_one_direction_per_state():
     assert ':root[data-theme="auto"] .theme-switch--to-dark' in css
 
 
-def test_menu_names_each_theme_state(client, sign_in, alice):
-    sign_in("alice")
+def test_menu_names_each_theme_state(client, log_in, alice):
+    log_in("alice")
     html = " ".join(client.get("/").data.decode().split())
     menu = html.split('<p class="popover__label">theme</p>')[1]
     for label in ("light", "dark", "system"):

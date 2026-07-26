@@ -76,17 +76,17 @@ def bob(make_user):
 
 
 @pytest.fixture
-def sign_in(client):
-    """Sign a user in through the real login form."""
+def log_in(client):
+    """Log a user in through the real login form."""
 
-    def _sign_in(username, password=PASSWORD):
+    def _log_in(username, password=PASSWORD):
         return client.post(
-            "/sign-in/",
+            "/login/",
             data={"username": username, "password": password},
             follow_redirects=True,
         )
 
-    return _sign_in
+    return _log_in
 
 
 @pytest.fixture

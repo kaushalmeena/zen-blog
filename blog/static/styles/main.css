@@ -328,14 +328,19 @@ kbd {
 }
 
 /* Sticky so the nav and account menu stay reachable down a long post, and so the
-   account popover can rely on a fixed trigger position. */
+   account popover can rely on a fixed trigger position.
+
+   The opaque background is what hides content scrolling underneath, and it has to
+   come from the header's own padding rather than a spread box-shadow: a shadow
+   paints outside the border box, so it covered the top of whatever followed —
+   which clipped the flash message sitting directly below. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 10;
   padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
   background: var(--bg);
-  box-shadow: 0 0 0 var(--space-4) var(--bg);
 }
 
 /* Brand on the left, account controls on the right, nav on its own line below. */
@@ -408,6 +413,22 @@ kbd {
   text-decoration: underline;
   text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
+}
+
+/* The row's primary action. Same shape and weight as its neighbours, just
+   tinted, so the nav stays a single set of text links. */
+.navlink--accent {
+  color: var(--accent);
+}
+
+.navlink--accent:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* Pushes the primary action to the trailing edge of the nav row. */
+.site-nav__spacer {
+  flex: 1 1 auto;
 }
 
 .page-head {
@@ -868,7 +889,6 @@ textarea {
 .messages li {
   padding: var(--space-2) var(--space-3);
   border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
   background: var(--surface-2);
   font-size: var(--step--1);
 }
@@ -1380,6 +1400,12 @@ button.action--on:hover {
   .site-nav {
     gap: var(--space-3);
     font-size: var(--step--1);
+  }
+
+  /* Let the links wrap naturally instead of stranding the primary action on a
+     line of its own. */
+  .site-nav__spacer {
+    display: none;
   }
 
   .brand__name {

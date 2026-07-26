@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="page-head">
-  <h1 class="page-title">sign in</h1>
+  <h1 class="page-title">login</h1>
 </div>
 
 <form method="post">
@@ -14,10 +14,10 @@
 
   <div class="form-actions">
     <button class="btn btn--solid" type="submit">
-      {{ icon('login') }}<span>sign in</span>
+      {{ icon('login') }}<span>login</span>
     </button>
     <span class="field__hint">
-      No account? <a href="{{ url_for('auth.sign_up') }}">Sign up</a>.
+      No account? <a href="{{ url_for('auth.register') }}">Register</a>.
     </span>
   </div>
 </form>

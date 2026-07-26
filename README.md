@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="blog/static/img/icon.svg" alt="" width="96" height="96" />
+<img src="blog/static/images/icon.svg" alt="" width="96" height="96" />
 
 # myapp-blog
 
@@ -19,7 +19,7 @@
 
 ## What this is
 
-A small multi-user blogging site: sign up, write posts in Markdown, tag them,
+A small multi-user blogging site: register, write posts in Markdown, tag them,
 follow other authors, like, save and comment. Everything is rendered on the
 server. There is **no hand-written JavaScript and no front-end build step** — the
 only script on the page is a vendored copy of [htmx](https://htmx.org/), which
@@ -158,8 +158,8 @@ blog/
 │   ├── partials/        macros + every htmx-swappable fragment
 │   └── auth/ posts/ users/ errors/ feeds/
 └── static/
-    ├── css/main.css     the entire stylesheet
-    ├── img/             site icon and the Lucide icon sprite
+    ├── styles/main.css  the entire stylesheet
+    ├── images/          site icon and the Lucide icon sprite
     └── vendor/htmx.min.js
 migrations/              Alembic revisions
 tests/                   pytest suite

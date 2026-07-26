@@ -83,8 +83,8 @@ def _register_extensions(app: Flask) -> None:
 
     migrate.init_app(app, db)
 
-    login_manager.login_view = "auth.sign_in"
-    login_manager.login_message = "You must be signed in to do that."
+    login_manager.login_view = "auth.login"
+    login_manager.login_message = "You must be logged in to do that."
 
 
 def _register_blueprints(app: Flask) -> None:

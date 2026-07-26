@@ -48,10 +48,10 @@
 
   <hr class="popover__rule" />
 
-  <form method="post" action="{{ url_for('auth.sign_out') }}">
+  <form method="post" action="{{ url_for('auth.logout') }}">
     {{ csrf() }}
     <button class="popover__item popover__item--danger" type="submit">
-      {{ icon('logout') }}<span>sign out</span>
+      {{ icon('logout') }}<span>logout</span>
     </button>
   </form>
 </div>

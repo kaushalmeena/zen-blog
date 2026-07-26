@@ -118,7 +118,7 @@ def seed(password: str) -> None:
     db.session.commit()
     click.echo(f"Seeded {len(DEMO_USERS)} users and {len(DEMO_POSTS)} posts.")
     click.echo(
-        f"Sign in as any of {', '.join(name for name, _ in DEMO_USERS)} with password {password!r}."
+        f"Log in as any of {', '.join(name for name, _ in DEMO_USERS)} with password {password!r}."
     )
 
 

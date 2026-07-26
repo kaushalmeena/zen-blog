@@ -69,7 +69,7 @@
   {% include "partials/comment_form.html" %}
   {%- else %}
   <p class="empty">
-    <a href="{{ url_for('auth.sign_in', next=request.path) }}">Sign in</a> to join the conversation.
+    <a href="{{ url_for('auth.login', next=request.path) }}">Login</a> to join the conversation.
   </p>
   {%- endif %}
 </section>

@@ -1,31 +1,29 @@
-{% from "partials/macros.html" import icon, nav_link %}
+{% from "partials/macros.html" import nav_link %}
 <header class="site-header">
   <div class="site-header__bar">
     <a class="brand" href="{{ url_for('main.home') }}">
-      <img class="brand__mark" src="{{ url_for('static', filename='img/icon.svg') }}"
+      <img class="brand__mark" src="{{ url_for('static', filename='images/icon.svg') }}"
            alt="" width="32" height="32" />
       <span class="brand__name">{{ site_name }}</span>
     </a>
 
     <div class="site-header__actions">
       {%- if current_user.is_authenticated %}
-      <a class="btn btn--primary" href="{{ url_for('posts.create') }}"
-         {% if request.endpoint == 'posts.create' %}aria-current="page"{% endif %}>
-        {{ icon('pencil') }}<span>write</span>
-      </a>
       {# Theme options live inside the account menu for signed-in users. #}
       {% include "partials/user_menu.html" %}
       {%- else %}
       {# Anonymous visitors have no account menu, so they keep the header toggle. #}
       {% include "partials/theme_switch.html" %}
-      <a class="navlink" href="{{ url_for('auth.sign_in') }}"
-         {% if request.endpoint == 'auth.sign_in' %}aria-current="page"{% endif %}>sign in</a>
-      <a class="btn btn--primary" href="{{ url_for('auth.sign_up') }}"
-         {% if request.endpoint == 'auth.sign_up' %}aria-current="page"{% endif %}>sign up</a>
       {%- endif %}
     </div>
   </div>
 
+  {#
+    One row of text links. Section links sit on the left; the primary action —
+    write, or login / register — is pushed to the right by the spacer but keeps
+    the same plain-text treatment, so the row reads as one set of links rather
+    than links plus a button.
+  #}
   <nav class="site-nav" aria-label="Main">
     {{ nav_link('main.home', 'home') }}
     {{ nav_link('main.tags', 'tags') }}
@@ -33,6 +31,15 @@
     {{ nav_link('main.following', 'following') }}
     {{ nav_link('posts.saved', 'saved') }}
     {{ nav_link('users.drafts', 'drafts') }}
+    {%- endif %}
+
+    <span class="site-nav__spacer"></span>
+
+    {%- if current_user.is_authenticated %}
+    {{ nav_link('posts.create', 'write', accent=True) }}
+    {%- else %}
+    {{ nav_link('auth.login', 'login') }}
+    {{ nav_link('auth.register', 'register', accent=True) }}
     {%- endif %}
   </nav>
 </header>

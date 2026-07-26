@@ -50,8 +50,8 @@ def robots():
         "Disallow: /settings/",
         "Disallow: /drafts/",
         "Disallow: /saved/",
-        "Disallow: /sign-in/",
-        "Disallow: /sign-up/",
+        "Disallow: /login/",
+        "Disallow: /register/",
         f"Sitemap: {url_for('feeds.sitemap', _external=True)}",
     ]
     return Response("\n".join(lines) + "\n", mimetype="text/plain")

@@ -5,8 +5,8 @@ from sqlalchemy import select
 from blog.models import Post, Tag
 
 
-def test_create_post_assigns_slug_and_tags(client, db, sign_in, alice):
-    sign_in("alice")
+def test_create_post_assigns_slug_and_tags(client, db, log_in, alice):
+    log_in("alice")
     response = client.post(
         "/posts/new/",
         data={
@@ -43,8 +43,8 @@ def test_tags_are_reused_not_duplicated(db, alice, make_post):
     assert db.session.scalars(select(Tag)).all().__len__() == 1
 
 
-def test_tag_count_is_capped(client, db, sign_in, alice):
-    sign_in("alice")
+def test_tag_count_is_capped(client, db, log_in, alice):
+    log_in("alice")
     client.post(
         "/posts/new/",
         data={
@@ -58,9 +58,9 @@ def test_tag_count_is_capped(client, db, sign_in, alice):
     assert len(post.tags) == 5
 
 
-def test_editing_title_updates_slug(client, db, sign_in, alice, make_post):
+def test_editing_title_updates_slug(client, db, log_in, alice, make_post):
     post = make_post(alice, title="The original title")
-    sign_in("alice")
+    log_in("alice")
     client.post(
         f"/posts/{post.slug}/edit/",
         data={"title": "A different title now", "body": "changed", "published": "y"},
@@ -133,9 +133,9 @@ def test_pagination_splits_results(client, alice, make_post):
     assert "Numbered post number 0" in second
 
 
-def test_comment_can_be_added_and_deleted(client, db, sign_in, alice, bob, make_post):
+def test_comment_can_be_added_and_deleted(client, db, log_in, alice, bob, make_post):
     post = make_post(alice)
-    sign_in("bob")
+    log_in("bob")
 
     client.post(
         f"/posts/{post.slug}/comments/", data={"body": "Good point."}, follow_redirects=True
@@ -147,21 +147,21 @@ def test_comment_can_be_added_and_deleted(client, db, sign_in, alice, bob, make_
     assert db.session.get(Post, post.id).comment_count == 0
 
 
-def test_empty_comment_is_rejected(client, db, sign_in, alice, bob, make_post):
+def test_empty_comment_is_rejected(client, db, log_in, alice, bob, make_post):
     post = make_post(alice)
-    sign_in("bob")
+    log_in("bob")
     client.post(f"/posts/{post.slug}/comments/", data={"body": "   "})
     assert db.session.get(Post, post.id).comment_count == 0
 
 
 def test_deleting_post_removes_its_comments(
-    client, db, sign_in, alice, bob, make_post, make_comment
+    client, db, log_in, alice, bob, make_post, make_comment
 ):
     post = make_post(alice)
     make_comment(bob, post)
     post_id = post.id
 
-    sign_in("alice")
+    log_in("alice")
     client.post(f"/posts/{post.slug}/delete/")
 
     db.session.expire_all()

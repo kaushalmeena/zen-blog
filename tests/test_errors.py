@@ -15,18 +15,18 @@ def test_404_renders_the_error_page(client):
     assert b"check your spelling" not in response.data
 
 
-def test_403_shows_our_default_message(client, sign_in, alice, bob, make_post):
+def test_403_shows_our_default_message(client, log_in, alice, bob, make_post):
     post = make_post(alice)
-    sign_in("bob")
+    log_in("bob")
     response = client.post(f"/posts/{post.slug}/delete/")
     assert response.status_code == 403
     assert b"do not have permission" in response.data
 
 
-def test_403_shows_a_caller_supplied_message(client, sign_in, alice, make_post):
+def test_403_shows_a_caller_supplied_message(client, log_in, alice, make_post):
     """abort(403, "...") passes a specific reason that should reach the page."""
     post = make_post(alice)
-    sign_in("alice")
+    log_in("alice")
     response = client.post(f"/posts/{post.slug}/like/")
     assert response.status_code == 403
     assert b"cannot like your own post" in response.data

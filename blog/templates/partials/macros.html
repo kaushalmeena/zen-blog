@@ -19,13 +19,19 @@
 {%- endmacro -%}
 
 {%- macro icon(name, label=None) -%}
-<svg class="icon"{% if label %} role="img" aria-label="{{ label }}"{% else %} aria-hidden="true" focusable="false"{% endif %}><use href="{{ url_for('static', filename='img/icons.svg') }}#{{ name }}"></use></svg>
+<svg class="icon"{% if label %} role="img" aria-label="{{ label }}"{% else %} aria-hidden="true" focusable="false"{% endif %}><use href="{{ url_for('static', filename='images/icons.svg') }}#{{ name }}"></use></svg>
 {%- endmacro -%}
 
-{#- A plain text nav link. The current page is underlined, not boxed. -#}
-{%- macro nav_link(endpoint, label) -%}
+{#-
+  A plain text nav link. The current page is underlined, not boxed.
+
+  `accent=True` tints the label for the row's primary action (write, register)
+  so it still leads the eye without becoming a differently shaped control.
+-#}
+{%- macro nav_link(endpoint, label, accent=False) -%}
 {%- set current = ' aria-current="page"' if request.endpoint == endpoint else '' -%}
-<a class="navlink" href="{{ url_for(endpoint) }}"{{ current|safe }}>{{ label }}</a>
+<a class="navlink{{ ' navlink--accent' if accent else '' }}"
+   href="{{ url_for(endpoint) }}"{{ current|safe }}>{{ label }}</a>
 {%- endmacro -%}
 
 {#- Render a WTForms field with its label, errors and optional hint. -#}

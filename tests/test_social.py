@@ -2,7 +2,7 @@
 
 
 def test_following_feed_shows_only_followed_authors(
-    client, db, sign_in, alice, bob, make_user, make_post
+    client, db, log_in, alice, bob, make_user, make_post
 ):
     carol = make_user("carol")
     make_post(alice, title="A post by alice here")
@@ -11,7 +11,7 @@ def test_following_feed_shows_only_followed_authors(
     bob.following.add(alice)
     db.session.commit()
 
-    sign_in("bob")
+    log_in("bob")
     html = client.get("/following/").data.decode()
     assert "A post by alice here" in html
     assert "A post by carol here" not in html
@@ -22,8 +22,8 @@ def squash(html: bytes) -> str:
     return " ".join(html.decode().split())
 
 
-def test_follow_counts_update(client, db, sign_in, alice, bob):
-    sign_in("bob")
+def test_follow_counts_update(client, db, log_in, alice, bob):
+    log_in("bob")
     client.post("/u/alice/follow/")
     db.session.expire_all()
 
@@ -32,7 +32,7 @@ def test_follow_counts_update(client, db, sign_in, alice, bob):
     assert "<b>1</b> followers" in squash(client.get("/u/alice/").data)
 
 
-def test_follower_and_following_pages_list_people(client, db, sign_in, alice, bob):
+def test_follower_and_following_pages_list_people(client, db, log_in, alice, bob):
     bob.following.add(alice)
     db.session.commit()
 
@@ -57,19 +57,19 @@ def test_profile_like_count_excludes_drafts(client, alice, make_post):
     assert alice.post_count == 1
 
 
-def test_bio_round_trips_through_settings(client, db, sign_in, alice):
-    sign_in("alice")
+def test_bio_round_trips_through_settings(client, db, log_in, alice):
+    log_in("alice")
     client.post("/settings/", data={"bio": "Writes about slugs."}, follow_redirects=True)
     db.session.expire_all()
     assert alice.bio == "Writes about slugs."
     assert b"Writes about slugs." in client.get("/u/alice/").data
 
 
-def test_drafts_page_lists_only_own_drafts(client, sign_in, alice, bob, make_post):
+def test_drafts_page_lists_only_own_drafts(client, log_in, alice, bob, make_post):
     make_post(alice, title="Alice private draft", published=False)
     make_post(bob, title="Bob private draft", published=False)
 
-    sign_in("alice")
+    log_in("alice")
     html = client.get("/drafts/").data.decode()
     assert "Alice private draft" in html
     assert "Bob private draft" not in html
@@ -91,7 +91,7 @@ def test_stat_links_are_visually_distinguished():
     """The affordance is CSS, so assert the rules that provide it."""
     from pathlib import Path
 
-    css = Path("blog/static/css/main.css").read_text()
+    css = Path("blog/static/styles/main.css").read_text()
 
     link = css.split("\n.stats a {")[1].split("}")[0]
     assert "text-decoration-style: dotted" in link

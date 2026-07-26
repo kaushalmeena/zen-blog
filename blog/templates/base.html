@@ -6,9 +6,9 @@
     <title>{{ page_title }} · {{ site_name }}</title>
     <meta name="description" content="{{ page_description|default(site_tagline, true) }}" />
 
-    <link rel="icon" href="{{ url_for('static', filename='img/icon.svg') }}" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon.svg') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.svg') }}" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icon.svg') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}" />
     <link rel="alternate" type="application/rss+xml"
           title="{{ site_name }}" href="{{ url_for('feeds.rss') }}" />
 
@@ -17,7 +17,7 @@
     <meta property="og:description" content="{{ page_description|default(site_tagline, true) }}" />
     <meta property="og:type" content="{{ og_type|default('website') }}" />
     <meta property="og:url" content="{{ request.url }}" />
-    <meta property="og:image" content="{{ url_for('static', filename='img/icon.svg', _external=True) }}" />
+    <meta property="og:image" content="{{ url_for('static', filename='images/icon.svg', _external=True) }}" />
     <meta name="twitter:card" content="summary" />
 
     {#
