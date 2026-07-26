@@ -10,7 +10,6 @@ server-rendered, no JavaScript of its own, no build step.**
 [**Try it live**](https://prod-zen-blog.onrender.com)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639?logo=opensourceinitiative&logoColor=white)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/kaushalmeena/zen-blog/ci.yml?logo=githubactions&logoColor=white&label=CI)](https://github.com/kaushalmeena/zen-blog/actions)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.1-44546A?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![htmx](https://img.shields.io/badge/htmx-2.x-3D72D7?logo=htmx&logoColor=white)](https://htmx.org/)
@@ -41,18 +40,19 @@ sprite, no fonts downloaded, and no images beyond the site icon.
     <td width="50%"><img src="screenshots/home.png" alt="The post listing, with the masthead, text navigation and search"></td>
     <td width="50%"><img src="screenshots/post.png" alt="Reading a post: serif title, byline, tags and the action row"></td>
   </tr>
+</table>
+
+<details>
+<summary>More screenshots</summary>
+
+<table>
   <tr>
     <td width="50%"><img src="screenshots/editor.png" alt="Writing a post in the Markdown editor"></td>
     <td width="50%"><img src="screenshots/profile.png" alt="An author profile with an identicon avatar, bio and counts"></td>
   </tr>
 </table>
 
-Shown in dark mode. `scripts/screenshots.py` recaptures them against a running
-dev server:
-
-```bash
-uv run --with playwright python scripts/screenshots.py
-```
+</details>
 
 ## Features
 
@@ -80,7 +80,7 @@ uv run --with playwright python scripts/screenshots.py
 - Comments, added and removed in place
 - Profiles with bios and deterministic identicon avatars generated from the username — nothing to upload, nothing to store
 
-## Tech stack
+## Tech Stack
 
 | Area           | Tools                                                                                                      |
 | -------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -92,7 +92,7 @@ uv run --with playwright python scripts/screenshots.py
 | **Tooling**    | [uv](https://docs.astral.sh/uv/) · [Ruff](https://docs.astral.sh/ruff/) · [pytest](https://pytest.org/)     |
 | **Deployment** | [Docker](https://www.docker.com/) · [gunicorn](https://gunicorn.org/)                                      |
 
-## Getting started
+## Getting Started
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and
 [git](https://git-scm.com/downloads). uv installs the right Python for you.
@@ -155,13 +155,8 @@ where, the invariants the code relies on, and the things it deliberately does no
 do. [docs/DESIGN.md](docs/DESIGN.md) covers the visual system — tokens, palette,
 type — and the naming convention they follow.
 
-Other useful commands:
-
-| Command        | What it does                                          |
-| -------------- | ----------------------------------------------------- |
-| `flask seed`   | Insert demo users, posts, comments, likes and follows  |
-| `flask reset`  | Drop and recreate every table (asks first)             |
-| `flask routes` | List the URL map                                       |
+Two more commands are worth knowing: `flask reset` drops and recreates every
+table (it asks first), and `flask routes` prints the URL map.
 
 ## Deployment
 
@@ -204,4 +199,5 @@ uv add "psycopg[binary]"
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+This project is licensed under the MIT License — see the [LICENSE](LICENSE)
+file for details.
