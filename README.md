@@ -151,19 +151,17 @@ uv run flask --app blog db upgrade
 `uv run flask --app blog db check` fails when the models and the migration
 history have drifted apart; CI runs it on every push.
 
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the orientation guide: what lives
-where, the invariants the code relies on, and the things it deliberately does not
-do. [docs/DESIGN.md](docs/DESIGN.md) covers the visual system — tokens, palette,
-type — and the naming convention they follow.
+Two more commands: `flask reset` drops and recreates every table (it asks
+first), and `flask routes` prints the URL map.
 
-Two more commands are worth knowing: `flask reset` drops and recreates every
-table (it asks first), and `flask routes` prints the URL map.
+Further reading:
+
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — what lives where, the invariants the
+  code relies on, and what it deliberately does not do.
+- [DESIGN.md](docs/DESIGN.md) — the visual system: tokens, palette, type, and the
+  convention that names them.
 
 ## Deployment
-
-[prod-zen-blog.onrender.com](https://prod-zen-blog.onrender.com) runs the
-`Dockerfile` below on Render's free tier, which spins the instance down when it
-is idle — the first request after a quiet spell takes about a minute to wake it.
 
 With Docker:
 
@@ -182,11 +180,8 @@ refuses to boot without one), then:
 uv run gunicorn "blog:create_app()" --bind 0.0.0.0:8000 --workers 3
 ```
 
-To use Postgres instead of SQLite, set `DATABASE_URL` and add the driver:
-
-```bash
-uv add "psycopg[binary]"
-```
+To use Postgres instead of SQLite, set `DATABASE_URL`. The driver is already a
+dependency, and a `postgres://` or `postgresql://` URL is accepted as given.
 
 ### Configuration
 
