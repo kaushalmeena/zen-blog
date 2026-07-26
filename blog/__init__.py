@@ -5,7 +5,8 @@ from __future__ import annotations
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
+from flask.sessions import SecureCookieSessionInterface
 
 from blog.config import CONFIGS, BaseConfig
 from blog.extensions import compress, csrf, db, htmx, login_manager, migrate
@@ -31,8 +32,9 @@ def create_app(config: str | type[BaseConfig] | None = None) -> Flask:
     _register_extensions(app)
     _register_blueprints(app)
 
-    from blog import cli, errors, template_filters
+    from blog import assets, cli, errors, template_filters
 
+    assets.register(app)
     cli.register(app)
     errors.register(app)
     template_filters.register(app)
@@ -42,21 +44,57 @@ def create_app(config: str | type[BaseConfig] | None = None) -> Flask:
 
 
 def _register_cache_policy(app: Flask) -> None:
-    """Keep signed-in pages out of the browser cache.
+    """Split caching into two rules: public assets, and private pages.
 
-    Pages rendered for a signed-in user contain controls only that user may use
-    (edit, delete, unfollow). Without this header the browser is free to redisplay
-    such a page from cache after a different account signs in — the buttons still
-    fail with 403, but the page looks like it grants access it does not.
+    Static files are identical for everyone and their URLs carry a content stamp
+    (see blog/assets.py), so they can be cached hard and never revalidated. They
+    must also shed the ``Vary: Cookie`` that Flask's session adds to every
+    response — an asset that varies by cookie cannot be reused across visitors in
+    a shared cache, which would undo the caching entirely.
+
+    Pages rendered for a signed-in user are the opposite case: they contain
+    controls only that user may use (edit, delete, unfollow). Without ``no-store``
+    the browser may redisplay such a page from cache after a different account
+    logs in. The buttons still fail with 403, but the page looks like it grants
+    access it does not.
     """
     from flask_login import current_user
 
+    static_max_age = app.config["STATIC_MAX_AGE"]
+
+    app.session_interface = _StaticFriendlySession()
+
     @app.after_request
     def add_cache_headers(response):
+        if request.endpoint == "static":
+            if static_max_age:
+                response.headers["Cache-Control"] = f"public, max-age={static_max_age}, immutable"
+            return response
+
         if current_user.is_authenticated:
             response.headers.setdefault("Cache-Control", "no-store, private")
-            response.headers.setdefault("Vary", "Cookie")
+            response.vary.add("Cookie")
         return response
+
+
+class _StaticFriendlySession(SecureCookieSessionInterface):
+    """Leaves the session out of static file responses.
+
+    Flask adds ``Vary: Cookie`` to any response whose session was touched, and
+    Flask-Login touches it on every request — including requests for CSS. That
+    happens in ``save_session``, which runs *after* ``after_request``, so an
+    ``after_request`` hook cannot remove it.
+
+    A static file is byte-identical for every visitor, so varying it by cookie is
+    both untrue and expensive: a shared cache has to store one copy per session.
+    Nothing legitimately mutates the session while serving a file, so skipping the
+    save for those requests costs nothing.
+    """
+
+    def save_session(self, app, session, response):
+        if request.endpoint == "static":
+            return
+        super().save_session(app, session, response)
 
 
 def _resolve_config(config: str | type[BaseConfig] | None) -> type[BaseConfig]:

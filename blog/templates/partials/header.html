@@ -20,7 +20,7 @@
 
   {#
     One row of text links. Section links sit on the left; the primary action —
-    write, or login / register — is pushed to the right by the spacer but keeps
+    new post, or login / register — is pushed to the right by the spacer but keeps
     the same plain-text treatment, so the row reads as one set of links rather
     than links plus a button.
   #}
@@ -36,7 +36,7 @@
     <span class="site-nav__spacer"></span>
 
     {%- if current_user.is_authenticated %}
-    {{ nav_link('posts.create', 'write', accent=True) }}
+    {{ nav_link('posts.create', 'new post', accent=True) }}
     {%- else %}
     {{ nav_link('auth.login', 'login') }}
     {{ nav_link('auth.register', 'register', accent=True) }}

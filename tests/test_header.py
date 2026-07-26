@@ -37,9 +37,36 @@ def test_account_menu_is_a_native_popover(client, log_in, alice):
 
     assert 'popovertarget="account-menu"' in html
     assert 'id="account-menu" popover' in html
-    # Everything the old header spread across the nav now lives in the menu.
-    for target in ("/me/", "/settings/", "/saved/", "/drafts/", "/logout/"):
-        assert target in html, target
+
+
+def account_menu(html: str) -> str:
+    """The popover's markup only.
+
+    Bounded by the nav that follows it in the DOM — without that bound the nav's
+    own saved/drafts links would count as menu contents.
+    """
+    after_open = html.split('id="account-menu" popover>')[1]
+    return after_open.split('<nav class="site-nav"')[0]
+
+
+def test_account_menu_holds_only_account_level_items(client, log_in, alice):
+    """Saved and drafts have nav links, so repeating them in the menu is noise."""
+    log_in("alice")
+    html = squash(client.get("/").data)
+    menu = account_menu(html)
+
+    assert "<span>profile</span>" in menu
+    assert "<span>settings</span>" in menu
+    assert "<span>logout</span>" in menu
+
+    assert "saved posts" not in menu
+    assert "drafts" not in menu
+    assert "your profile" not in menu
+
+    # They stay reachable from the nav.
+    nav = html.split('<nav class="site-nav"')[1].split("</nav>")[0]
+    assert 'href="/saved/"' in nav
+    assert 'href="/drafts/"' in nav
 
 
 def test_account_trigger_shows_the_username_next_to_the_avatar(client, log_in, alice):
@@ -49,7 +76,9 @@ def test_account_trigger_shows_the_username_next_to_the_avatar(client, log_in, a
     trigger = html.split('class="user-trigger"')[1].split("</button>")[0]
     assert "alice avatar" in trigger  # the identicon
     assert '<span class="user-trigger__name">alice</span>' in trigger
-    assert "icons.svg#chevron-down" in trigger
+    # Static URLs carry a cache-busting stamp, so the query sits before the fragment.
+    assert "icons.svg?v=" in trigger
+    assert "#chevron-down" in trigger
 
 
 def test_account_menu_is_absent_for_anonymous_visitors(client):
@@ -68,12 +97,12 @@ def test_auth_links_sit_in_the_nav_styled_like_the_other_links(client):
     assert "btn" not in nav
 
 
-def test_write_link_sits_in_the_nav_for_logged_in_users(client, log_in, alice):
+def test_new_post_link_sits_in_the_nav_for_logged_in_users(client, log_in, alice):
     log_in("alice")
     html = squash(client.get("/").data)
     nav = html.split('<nav class="site-nav"')[1].split("</nav>")[0]
 
-    assert '<a class="navlink navlink--accent" href="/posts/new/">write</a>' in nav
+    assert '<a class="navlink navlink--accent" href="/posts/new/">new post</a>' in nav
     assert "btn" not in nav
     # And it is no longer duplicated in the top bar.
     bar = html.split('<div class="site-header__bar">')[1].split('<nav class="site-nav"')[0]

@@ -278,6 +278,18 @@ kbd {
   border-radius: 2px;
 }
 
+/* Text controls get a flush ring instead of the offset outline. An outline with a
+   2px offset sits outside the border, so a focused field appeared to grow by 4px
+   on every side; a ring drawn on the border edge is just as visible without
+   adding bulk or shifting the layout's apparent size. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 28%, transparent);
 }
@@ -504,14 +516,18 @@ main {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  /* Deliberately tight. A filled, padded button is a lot of furniture for a
+     mostly-text site, so the default is an outline: a hairline border and a
+     transparent fill, taking barely more room than its own label. The fill
+     arrives on hover, and only .btn--solid is filled at rest. */
+  padding: 0.3rem 0.6rem;
   border: var(--border);
   border-radius: var(--radius);
-  background: var(--surface-2);
-  box-shadow: var(--raise);
+  background: none;
   color: var(--ink-soft);
   font: inherit;
   font-size: var(--step--1);
+  line-height: 1.4;
   text-decoration: none;
   cursor: pointer;
   transition: color var(--transition), background-color var(--transition),
@@ -536,8 +552,6 @@ main {
 .btn--quiet {
   padding: var(--space-1) var(--space-2);
   border-color: transparent;
-  background: none;
-  box-shadow: none;
 }
 
 .btn--quiet:hover {
@@ -547,13 +561,12 @@ main {
 
 .btn--primary {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   color: var(--accent);
 }
 
 .btn--primary:hover {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 20%, var(--surface));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent);
 }
 
@@ -578,15 +591,20 @@ main {
   color: var(--danger);
 }
 
-.btn--on {
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
-}
-
 .btn:active {
   transform: translateY(1px);
-  box-shadow: none;
+}
+
+/* htmx disables submit buttons while a request is in flight via hx-disabled-elt
+   (see partials/comment_form.html), so the disabled state needs a look of its
+   own — otherwise a busy button is indistinguishable from a ready one. */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  transform: none;
+  border-color: var(--line);
+  background: var(--surface-2);
+  color: var(--ink-faint);
+  cursor: progress;
 }
 
 .inline-form {
@@ -594,7 +612,7 @@ main {
 }
 
 .btn--icon {
-  padding: var(--space-2);
+  padding: 0.3rem;
 }
 
 /* Theme switch --------------------------------------------------------------
@@ -683,7 +701,9 @@ main {
    right offset lines the panel up with the content column's right edge. */
 .popover:popover-open {
   position: fixed;
-  top: 4.25rem;
+  /* Just below the trigger, which sits at a fixed viewport position because the
+     header is sticky. The trigger's bottom edge lands at ~3.4rem. */
+  top: 3.65rem;
   /* `left: auto` is required: the UA stylesheet sets both `left: 0` and
      `right: 0` on popovers, and with a width set that is over-constrained, so the
      inline-start offset wins and `right` is ignored. */
@@ -805,28 +825,33 @@ main {
   margin-bottom: var(--space-5);
 }
 
-.field > label,
-.field__label {
+/* Label sits at body size, matching the text typed into the control below it —
+   a label two steps smaller than its own input reads as a caption. */
+.field > label {
   display: block;
   margin-bottom: var(--space-2);
-  color: var(--ink-soft);
-  font-size: var(--step--1);
+  color: var(--ink);
+  font-size: var(--step-0);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
 }
 
 input[type="text"],
 input[type="password"],
 input[type="search"],
 textarea {
-  padding: var(--space-3);
+  /* Tighter than it was: 12px of padding all round made a single-line field look
+     like a text area. Font size stays at 1rem — dropping below 16px makes iOS
+     Safari zoom the page on focus. */
+  padding: 0.4rem var(--space-3);
   width: 100%;
   border: var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
-  transition: border-color var(--transition);
+  line-height: 1.5;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
 input:focus,
@@ -853,12 +878,22 @@ textarea {
 
 .field--check label {
   margin: 0;
+  font-weight: 400;
   letter-spacing: 0;
+  cursor: pointer;
 }
 
-.field--check input {
-  width: auto;
+/* The UA default checkbox is about 13px, which looks undersized beside a
+   body-size label and is a small tap target. Sized up to match the label's line
+   box and tinted with the page accent. */
+.field--check input[type="checkbox"] {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  padding: 0;
   accent-color: var(--accent);
+  cursor: pointer;
 }
 
 .form-actions {
@@ -1103,7 +1138,7 @@ button.action--on:hover {
 .load-more {
   display: block;
   margin-top: var(--space-2);
-  padding: var(--space-3);
+  padding: 0.35rem var(--space-3);
   border: 1px dashed var(--line-strong);
   border-radius: var(--radius);
   color: var(--ink-soft);

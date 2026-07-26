@@ -28,14 +28,9 @@
     </span>
   </div>
 
+  {# Saved and drafts are not repeated here — they already have nav links. #}
   <a class="popover__item" href="{{ url_for('users.me') }}">
-    {{ icon('user') }}<span>your profile</span>
-  </a>
-  <a class="popover__item" href="{{ url_for('posts.saved') }}">
-    {{ icon('bookmark') }}<span>saved posts</span>
-  </a>
-  <a class="popover__item" href="{{ url_for('users.drafts') }}">
-    {{ icon('draft') }}<span>drafts</span>
+    {{ icon('user') }}<span>profile</span>
   </a>
   <a class="popover__item" href="{{ url_for('users.settings') }}">
     {{ icon('settings') }}<span>settings</span>

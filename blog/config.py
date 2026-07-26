@@ -10,6 +10,11 @@ class BaseConfig:
 
     POSTS_PER_PAGE = 10
 
+    #: Seconds to cache static files for. Their URLs carry a content stamp, so a
+    #: long lifetime is safe; 0 keeps Werkzeug's revalidate-every-time default,
+    #: which is what you want while editing CSS.
+    STATIC_MAX_AGE = 0
+
     SITE_NAME = "MYAPP-BLOG"
     SITE_TAGLINE = "A minimal, JavaScript-free blogging platform."
 
@@ -57,6 +62,7 @@ class ProductionConfig(BaseConfig):
     SESSION_COOKIE_SECURE = True
     REMEMBER_COOKIE_SECURE = True
     PREFERRED_URL_SCHEME = "https"
+    STATIC_MAX_AGE = 31_536_000  # one year
 
     @staticmethod
     def init_app(app):

@@ -135,37 +135,20 @@ Other useful commands:
 | `flask reset`  | Drop and recreate every table (asks first)             |
 | `flask routes` | List the URL map                                       |
 
-## Project layout
+## Caching
 
-```
-blog/
-├── __init__.py          app factory
-├── config.py            development / testing / production settings
-├── extensions.py        unbound extension instances
-├── models.py            User, Post, Comment, Tag + association tables
-├── forms.py             WTForms definitions
-├── rendering.py         Markdown → sanitized HTML, excerpts, reading time
-├── avatars.py           deterministic identicon SVGs
-├── theming.py           cookie-backed light / dark / auto preference
-├── listings.py          shared paginated-list logic for every post feed
-├── responses.py         htmx fragment vs. full-page response helpers
-├── template_filters.py  Jinja filters, globals, context processors
-├── errors.py            HTTP error handlers
-├── cli.py               flask seed, flask reset
-├── blueprints/          main · auth · posts · users · feeds
-├── templates/
-│   ├── base.html
-│   ├── partials/        macros + every htmx-swappable fragment
-│   └── auth/ posts/ users/ errors/ feeds/
-└── static/
-    ├── styles/main.css  the entire stylesheet
-    ├── images/          site icon and the Lucide icon sprite
-    └── vendor/htmx.min.js
-migrations/              Alembic revisions
-tests/                   pytest suite
-```
+There is no build step, so static filenames never change and a browser cannot tell
+a new stylesheet from the one it has. Every `url_for('static', ...)` therefore
+gains a `?v=` stamp derived from the file's contents, which makes it safe to serve
+assets as `public, max-age=1y, immutable` in production — no revalidation request
+per asset, per page load. In development the lifetime stays at zero so edits show
+up immediately.
 
-### How the htmx pieces fit together
+Pages are the opposite case: anything rendered for a logged-in user is
+`no-store, private`, because it contains controls only that user may use and the
+back button would otherwise redisplay it after someone else logs in.
+
+## How the htmx pieces fit together
 
 - `blog/responses.py` decides between a fragment and a full page. `render_fragment()`
   also appends the flash-message region as an [out-of-band swap](https://htmx.org/attributes/hx-swap-oob/),
@@ -212,14 +195,8 @@ uv add "psycopg[binary]"
 | `APP_CONFIG`   | `development`         | `development` · `testing` · `production`                    |
 | `SECRET_KEY`   | `dev`                 | **Required** in production; the app won't start without it  |
 | `DATABASE_URL` | SQLite in `instance/` | Any SQLAlchemy URL                                          |
+| `STATIC_MAX_AGE` | `0` dev / 1 year prod | Static cache lifetime; URLs are content-stamped, so long is safe |
 | `FLASK_APP`    | —                     | Set to `blog` to skip `--app blog`                          |
-
-## Contributing
-
-Bug reports and feature requests are welcome — please
-[open an issue](https://github.com/kaushalmeena/myapp-blog/issues/new/choose)
-first to discuss. For code changes, fork the repo, create a branch, make sure
-`uv run pytest` and `uv run ruff check .` pass, and open a pull request.
 
 ## License
 

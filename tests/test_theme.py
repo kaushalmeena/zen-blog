@@ -95,6 +95,17 @@ def test_menu_names_each_theme_state(client, log_in, alice):
         assert f"<span>{label}</span>" in menu, label
 
 
+def test_active_row_is_ticked_for_every_state(client, log_in, alice):
+    log_in("alice")
+
+    for choice in ("light", "dark", "auto"):
+        client.post("/theme/", data={"theme": choice})
+        menu = " ".join(client.get("/").data.decode().split()).split('popover__label">theme</p>')[1]
+        row = menu.split(f'name="theme" value="{choice}" />')[1].split("</form>")[0]
+        assert 'aria-current="true"' in row, choice
+        assert menu.count('<span class="popover__check">') == 1, choice
+
+
 def test_unknown_theme_is_rejected(client):
     assert client.post("/theme/", data={"theme": "neon"}).status_code == 400
     assert client.get_cookie(COOKIE_NAME) is None
