@@ -24,17 +24,27 @@ def load_user(user_id: str) -> User | None:
 def _safe_next() -> str | None:
     """Return the ``next`` parameter only when it points at this site.
 
-    Guards against an open redirect: without the host check an attacker could
-    send ``/login/?next=https://evil.example`` and bounce a freshly
-    authenticated user off-site.
+    Guards against an open redirect: without this an attacker could send
+    ``/login/?next=https://evil.example`` and bounce a freshly authenticated
+    user off-site.
+
+    Asking ``urlparse`` whether it found a host is not enough on its own. It
+    reports a netloc only for *exactly* two leading slashes, whereas a browser
+    skips any run of slashes or backslashes and reads whatever follows as the
+    host — so ``////evil.example`` looks like an ordinary path here and
+    navigates off-site there. Hence the explicit second-character check, and the
+    rejection of the whitespace browsers strip before parsing.
     """
     target = request.args.get("next")
-    if not target:
+    if not target or target.strip() != target or {"\t", "\r", "\n"} & set(target):
+        return None
+    # A single leading slash, and the next character must not start an authority.
+    if not target.startswith("/") or target[1:2] in {"/", "\\"}:
         return None
     parsed = urlparse(target)
     if parsed.scheme or parsed.netloc:
         return None
-    return target if target.startswith("/") else None
+    return target
 
 
 @bp.route("/login/", methods=["GET", "POST"])

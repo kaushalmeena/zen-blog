@@ -1,5 +1,7 @@
 """Registration, login and logout."""
 
+import pytest
+
 from blog.models import User
 from tests.conftest import PASSWORD
 
@@ -70,9 +72,42 @@ def test_next_parameter_cannot_redirect_off_site(client, alice):
     assert response.headers["Location"] == "/"
 
 
-def test_next_parameter_allows_local_path(client, alice):
-    response = client.post("/login/?next=/saved/", data={"username": "alice", "password": PASSWORD})
-    assert response.headers["Location"] == "/saved/"
+# Every one of these is a way to write "go to evil.example" that a browser
+# honours. `urlparse` only reports a host for exactly two leading slashes, and a
+# browser skips any run of slashes *or backslashes* before reading the host, so
+# the three-or-more cases used to sail through the guard.
+@pytest.mark.parametrize(
+    "target",
+    [
+        "//evil.example",
+        "///evil.example",
+        "////evil.example",
+        "/////evil.example",
+        "/\\evil.example",
+        "/\\/evil.example",
+        "\\\\evil.example",
+        " //evil.example",
+        "/\t/evil.example",
+        "/\r\n//evil.example",
+        "https://evil.example",
+        "http:/evil.example",
+        "javascript:alert(1)",
+    ],
+)
+def test_next_parameter_rejects_authority_lookalikes(client, alice, target):
+    response = client.post(
+        "/login/", query_string={"next": target}, data={"username": "alice", "password": PASSWORD}
+    )
+    assert response.headers["Location"] == "/"
+
+
+@pytest.mark.parametrize("target", ["/saved/", "/posts/a-slug/", "/?tag=agents", "/evil.example"])
+def test_next_parameter_allows_local_path(client, alice, target):
+    """A single leading slash is a path on this site, including a host-shaped one."""
+    response = client.post(
+        "/login/", query_string={"next": target}, data={"username": "alice", "password": PASSWORD}
+    )
+    assert response.headers["Location"] == target
 
 
 def test_protected_pages_redirect_anonymous_users(client):

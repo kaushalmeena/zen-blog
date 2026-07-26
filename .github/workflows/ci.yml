@@ -10,6 +10,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Checking out the code is all this workflow does with the token; anything more
+# has to be granted deliberately.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

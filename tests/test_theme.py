@@ -154,14 +154,32 @@ def test_switch_returns_the_visitor_to_the_same_page(client, alice, make_post):
         data={"theme": "dark"},
         headers={"Referer": f"http://localhost/posts/{post.slug}/"},
     )
-    assert response.headers["Location"] == f"http://localhost/posts/{post.slug}/"
+    # Only the path and query are reused, so the redirect is relative by
+    # construction and cannot point at another origin.
+    assert response.headers["Location"] == f"/posts/{post.slug}/"
 
 
-def test_switch_ignores_an_off_site_referrer(client):
-    """Otherwise the switch becomes an open redirect."""
+def test_switch_keeps_the_query_string(client):
     response = client.post(
-        "/theme/", data={"theme": "dark"}, headers={"Referer": "https://evil.example/landing"}
+        "/theme/", data={"theme": "dark"}, headers={"Referer": "http://localhost/?tag=agents"}
     )
+    assert response.headers["Location"] == "/?tag=agents"
+
+
+@pytest.mark.parametrize(
+    "referrer",
+    [
+        "https://evil.example/landing",
+        "http://localhost.evil.example/landing",
+        "//evil.example/landing",
+        "///evil.example",
+        "////evil.example",
+        "/\\evil.example",
+    ],
+)
+def test_switch_ignores_an_off_site_referrer(client, referrer):
+    """Otherwise the switch becomes an open redirect."""
+    response = client.post("/theme/", data={"theme": "dark"}, headers={"Referer": referrer})
     assert response.headers["Location"] == "/"
 
 
