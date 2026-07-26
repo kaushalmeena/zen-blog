@@ -10,7 +10,7 @@ from flask import Flask, current_app, request
 
 from blog.avatars import identicon
 from blog.forms import MAX_TAGS
-from blog.theming import ICONS, LABELS, NEXT_THEME, current_theme
+from blog.theming import current_theme
 
 
 def url_with(**overrides) -> str:
@@ -95,14 +95,9 @@ def register(app: Flask) -> None:
 
     @app.context_processor
     def inject_site():
-        theme = current_theme(request)
         return {
             "site_name": current_app.config["SITE_NAME"],
             "site_tagline": current_app.config["SITE_TAGLINE"],
             "current_year": datetime.now(UTC).year,
-            "theme": theme,
-            "theme_icon": ICONS[theme],
-            "theme_label": LABELS[theme],
-            "next_theme": NEXT_THEME[theme],
-            "next_theme_label": LABELS[NEXT_THEME[theme]],
+            "theme": current_theme(request),
         }

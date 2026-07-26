@@ -1,0 +1,26 @@
+{% from "partials/macros.html" import icon, csrf %}
+{#
+  Theme options inside the account menu.
+
+  A menu can afford to name all three states outright, so each is one click and
+  the current one is ticked. That also removes the ambiguity the header toggle has
+  to work around: here the server already knows which option is active, so no CSS
+  is involved in deciding what to show.
+#}
+{%- set options = [
+  ('light', 'sun', 'light'),
+  ('dark', 'moon', 'dark'),
+  ('auto', 'contrast', 'system'),
+] -%}
+
+{%- for value, symbol, label in options %}
+<form method="post" action="{{ url_for('main.set_theme') }}">
+  {{ csrf() }}
+  <input type="hidden" name="theme" value="{{ value }}" />
+  <button class="popover__item" type="submit"
+          {% if theme == value %}aria-current="true"{% endif %}>
+    {{ icon(symbol) }}<span>{{ label }}</span>
+    {%- if theme == value %}<span class="popover__check">{{ icon('check') }}</span>{% endif %}
+  </button>
+</form>
+{%- endfor %}

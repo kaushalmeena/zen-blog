@@ -1,0 +1,57 @@
+{% from "partials/macros.html" import icon, csrf %}
+{#
+  Account menu built on the native Popover API.
+
+  `popovertarget` on the button and `popover` on the panel are plain HTML
+  attributes: the browser handles opening, closing, light-dismiss (click outside
+  or Escape), focus and the top layer. No JavaScript, and no ARIA bookkeeping of
+  our own — the attributes imply the expanded state.
+
+  Browsers without Popover API support show the panel inline instead of hiding it,
+  which is ugly but still fully usable, so nothing here is load-bearing.
+#}
+<button class="user-trigger" type="button" popovertarget="account-menu"
+        aria-label="Account menu for {{ current_user.username }}">
+  {{ identicon(current_user.username, 26) }}
+  <span class="user-trigger__name">{{ current_user.username }}</span>
+  {{ icon('chevron-down') }}
+</button>
+
+<div class="popover" id="account-menu" popover>
+  <div class="popover__head">
+    {{ identicon(current_user.username, 40) }}
+    <span>
+      <strong>{{ current_user.username }}</strong>
+      <span class="popover__meta">
+        {{ current_user.post_count }} posts · {{ current_user.follower_count }} followers
+      </span>
+    </span>
+  </div>
+
+  <a class="popover__item" href="{{ url_for('users.me') }}">
+    {{ icon('user') }}<span>your profile</span>
+  </a>
+  <a class="popover__item" href="{{ url_for('posts.saved') }}">
+    {{ icon('bookmark') }}<span>saved posts</span>
+  </a>
+  <a class="popover__item" href="{{ url_for('users.drafts') }}">
+    {{ icon('draft') }}<span>drafts</span>
+  </a>
+  <a class="popover__item" href="{{ url_for('users.settings') }}">
+    {{ icon('settings') }}<span>settings</span>
+  </a>
+
+  <hr class="popover__rule" />
+
+  <p class="popover__label">theme</p>
+  {% include "partials/theme_menu.html" %}
+
+  <hr class="popover__rule" />
+
+  <form method="post" action="{{ url_for('auth.sign_out') }}">
+    {{ csrf() }}
+    <button class="popover__item popover__item--danger" type="submit">
+      {{ icon('logout') }}<span>sign out</span>
+    </button>
+  </form>
+</div>

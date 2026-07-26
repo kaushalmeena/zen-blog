@@ -26,8 +26,8 @@
 
     {%- if current_user.is_authenticated and post.user_id == current_user.id %}
     <div class="actions">
-      <a class="btn btn--keep-label" href="{{ url_for('posts.edit', slug=post.slug) }}">
-        {{ icon('pencil') }}<span class="btn__label">edit</span>
+      <a class="btn" href="{{ url_for('posts.edit', slug=post.slug) }}">
+        {{ icon('pencil') }}<span>edit</span>
       </a>
       {#
         hx-confirm replaces the old hand-written confirm() call. Without htmx the
@@ -38,8 +38,8 @@
             hx-post="{{ url_for('posts.delete', slug=post.slug) }}"
             hx-confirm="Delete “{{ post.title }}” permanently?">
         {{ csrf() }}
-        <button class="btn btn--danger btn--keep-label" type="submit">
-          {{ icon('trash') }}<span class="btn__label">delete</span>
+        <button class="btn btn--danger" type="submit">
+          {{ icon('trash') }}<span>delete</span>
         </button>
       </form>
     </div>

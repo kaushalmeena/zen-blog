@@ -2,6 +2,11 @@
 {#
   Like / save controls for one post, swapped as a unit.
 
+  All three slots use the same `.action` shape and a shared min-width, so the row
+  keeps its geometry whether a control is a static count, a button, or toggled on.
+  Earlier the active state added a filled box that the comment count did not have,
+  which made the row look ragged.
+
   Each control is a real <form method="post">, so with JavaScript disabled the
   browser posts it and lands back on the post page. With htmx loaded, hx-post
   replaces just this element with the server-rendered new state.
@@ -12,8 +17,8 @@
 {%- set target = "#post-actions-" ~ post.id -%}
 
 <div class="actions" id="post-actions-{{ post.id }}">
-  <span class="meta-item btn btn--quiet" title="{{ post.comment_count }} comments">
-    {{ icon('comment') }}{{ post.comment_count }}
+  <span class="action" title="{{ post.comment_count }} comments">
+    {{ icon('comment') }}<span class="action__count">{{ post.comment_count }}</span>
   </span>
 
   {%- if current_user.is_authenticated and not own_post %}
@@ -22,10 +27,10 @@
         hx-post="{{ url_for('posts.toggle_like', slug=post.slug) }}"
         hx-target="{{ target }}" hx-swap="outerHTML">
     {{ csrf() }}
-    <button class="btn btn--quiet{% if liked %} btn--on{% endif %}" type="submit"
+    <button class="action{% if liked %} action--on{% endif %}" type="submit"
             title="{{ 'Remove your like' if liked else 'Like this post' }}"
             aria-pressed="{{ 'true' if liked else 'false' }}">
-      {{ icon('heart-solid' if liked else 'heart') }}{{ post.like_count }}
+      {{ icon('heart-solid' if liked else 'heart') }}<span class="action__count">{{ post.like_count }}</span>
     </button>
   </form>
 
@@ -34,7 +39,7 @@
         hx-post="{{ url_for('posts.toggle_save', slug=post.slug) }}"
         hx-target="{{ target }}" hx-swap="outerHTML">
     {{ csrf() }}
-    <button class="btn btn--quiet{% if saved %} btn--on{% endif %}" type="submit"
+    <button class="action{% if saved %} action--on{% endif %}" type="submit"
             title="{{ 'Remove from your reading list' if saved else 'Save for later' }}"
             aria-pressed="{{ 'true' if saved else 'false' }}">
       {{ icon('bookmark-solid' if saved else 'bookmark') }}
@@ -42,8 +47,8 @@
     </button>
   </form>
   {%- else %}
-  <span class="meta-item btn btn--quiet" title="{{ post.like_count }} likes">
-    {{ icon('heart') }}{{ post.like_count }}
+  <span class="action" title="{{ post.like_count }} likes">
+    {{ icon('heart') }}<span class="action__count">{{ post.like_count }}</span>
   </span>
   {%- endif %}
 </div>

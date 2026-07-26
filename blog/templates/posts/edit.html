@@ -17,12 +17,12 @@
   {{ checkbox(form.published) }}
 
   <div class="form-actions">
-    <button class="btn btn--solid btn--keep-label" type="submit">
-      {{ icon('check') }}<span class="btn__label">{{ 'save changes' if post else 'publish' }}</span>
+    <button class="btn btn--solid" type="submit">
+      {{ icon('check') }}<span>{{ 'save changes' if post else 'publish' }}</span>
     </button>
-    <a class="btn btn--keep-label"
+    <a class="btn"
        href="{{ url_for('posts.view', slug=post.slug) if post else url_for('main.home') }}">
-      <span class="btn__label">cancel</span>
+      <span>cancel</span>
     </a>
   </div>
 </form>

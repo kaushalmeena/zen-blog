@@ -5,8 +5,13 @@ have any. So the preference round-trips through the server instead: the button i
 a form, the choice lands in a cookie, and ``data-theme`` on ``<html>`` decides
 which set of custom properties applies.
 
-``auto`` is the default and leaves the decision to ``prefers-color-scheme``, so a
-visitor who never touches the button still gets the theme their OS asked for.
+``auto`` is the default and defers to ``prefers-color-scheme``, so a visitor who
+never touches the switch gets the theme their OS asked for.
+
+The switch is always one click. Both a "go light" and a "go dark" control are
+rendered, and CSS shows only the one that is not the current appearance — see
+``partials/theme_switch.html``. That matters for ``auto``: the server cannot know
+what the OS prefers, so it cannot pick the right single target, but CSS can.
 """
 
 from __future__ import annotations
@@ -21,21 +26,6 @@ LIGHT = "light"
 DARK = "dark"
 
 THEMES = (AUTO, LIGHT, DARK)
-
-#: What the button switches to next, so one control cycles all three states.
-NEXT_THEME = {AUTO: LIGHT, LIGHT: DARK, DARK: AUTO}
-
-LABELS = {
-    AUTO: "follow system",
-    LIGHT: "light",
-    DARK: "dark",
-}
-
-ICONS = {
-    AUTO: "contrast",
-    LIGHT: "sun",
-    DARK: "moon",
-}
 
 
 def current_theme(request: Request) -> str:

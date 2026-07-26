@@ -1,4 +1,3 @@
-{% from "partials/macros.html" import icon %}
 <!doctype html>
 <html lang="en" data-theme="{{ theme }}">
   <head>
@@ -44,8 +43,8 @@
       <footer class="site-footer">
         <span>© {{ current_year }} {{ site_name }}</span>
         <nav class="site-footer__links" aria-label="Site links">
-          <a href="{{ url_for('main.tags') }}">{{ icon('tag') }} tags</a>
-          <a href="{{ url_for('feeds.rss') }}">{{ icon('rss') }} rss</a>
+          <a href="{{ url_for('main.tags') }}">tags</a>
+          <a href="{{ url_for('feeds.rss') }}">rss</a>
           <a href="https://github.com/kaushalmeena/myapp-blog">source</a>
         </nav>
       </footer>

@@ -10,9 +10,9 @@
       hx-target="this"
       hx-swap="outerHTML">
   {{ csrf() }}
-  <button class="btn btn--keep-label {{ 'btn--primary' if is_following else 'btn--solid' }}"
+  <button class="btn {{ 'btn--primary' if is_following else 'btn--solid' }}"
           type="submit" aria-pressed="{{ 'true' if is_following else 'false' }}">
     {{ icon('check' if is_following else 'plus') }}
-    <span class="btn__label">{{ 'following' if is_following else 'follow' }}</span>
+    <span>{{ 'following' if is_following else 'follow' }}</span>
   </button>
 </form>

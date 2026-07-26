@@ -1,18 +1,30 @@
 {% from "partials/macros.html" import icon, csrf %}
 {#
-  Light / dark / follow-system switch.
+  Light / dark switch — always one click.
 
-  One button cycling three states, posted as a form: the server stores the choice
-  in a cookie and puts it on <html data-theme>, so it persists across pages and
-  needs no JavaScript. Deliberately no hx-post — changing the theme has to
-  re-render <html>, which a fragment swap cannot do.
+  Both controls are rendered and CSS hides whichever matches the current
+  appearance (see the "Theme switch" block in main.css). Doing the choosing in CSS
+  rather than on the server is what makes this work while the stored preference is
+  `auto`: the server cannot see the visitor's OS setting, so it cannot know which
+  single target to offer, but a media query can.
+
+  A third state — back to following the system — lives in the account menu, where
+  it does not get in the way of the common case.
 #}
-<form class="inline-form" method="post" action="{{ url_for('main.set_theme') }}">
+<form class="theme-switch theme-switch--to-dark" method="post"
+      action="{{ url_for('main.set_theme') }}">
   {{ csrf() }}
-  <input type="hidden" name="theme" value="{{ next_theme }}" />
-  <button class="btn" type="submit"
-          title="Theme: {{ theme_label }}. Switch to {{ next_theme_label }}.">
-    {{ icon(theme_icon) }}
-    <span class="visually-hidden">Theme: {{ theme_label }}. Switch to {{ next_theme_label }}.</span>
+  <input type="hidden" name="theme" value="dark" />
+  <button class="btn btn--icon" type="submit" title="Switch to dark theme">
+    {{ icon('moon') }}<span class="visually-hidden">Switch to dark theme</span>
+  </button>
+</form>
+
+<form class="theme-switch theme-switch--to-light" method="post"
+      action="{{ url_for('main.set_theme') }}">
+  {{ csrf() }}
+  <input type="hidden" name="theme" value="light" />
+  <button class="btn btn--icon" type="submit" title="Switch to light theme">
+    {{ icon('sun') }}<span class="visually-hidden">Switch to light theme</span>
   </button>
 </form>

@@ -47,6 +47,8 @@ works — it just does full page loads instead of swapping fragments.
 - RSS feed, `sitemap.xml` and `robots.txt`
 - Light / dark / follow-system switch. The choice is a cookie the server reads,
   not a script, so it persists across pages and never flashes the wrong theme
+- A CSS-generated graph-paper background that recolours with the theme — no image
+  request, and nothing to swap when the theme changes
 
 **Social**
 
@@ -60,7 +62,7 @@ works — it just does full page loads instead of swapping fragments.
 | Area           | Tools                                                                                                      |
 | -------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Framework**  | [Flask 3](https://flask.palletsprojects.com/) · [Jinja2](https://jinja.palletsprojects.com/)                |
-| **Front end**  | [htmx 2](https://htmx.org/) + [flask-htmx](https://flask-htmx.readthedocs.io/) · one hand-written CSS file  |
+| **Front end**  | [htmx 2](https://htmx.org/) + [flask-htmx](https://flask-htmx.readthedocs.io/) · one hand-written CSS file · [Lucide](https://lucide.dev/) icons as an SVG sprite |
 | **Database**   | [SQLAlchemy 2](https://www.sqlalchemy.org/) · SQLite by default, any URL via `DATABASE_URL`                 |
 | **Migrations** | [Alembic](https://alembic.sqlalchemy.org/) via [Flask-Migrate](https://flask-migrate.readthedocs.io/)      |
 | **Auth**       | [Flask-Login](https://flask-login.readthedocs.io/) · [Flask-WTF](https://flask-wtf.readthedocs.io/) CSRF    |
@@ -157,7 +159,7 @@ blog/
 │   └── auth/ posts/ users/ errors/ feeds/
 └── static/
     ├── css/main.css     the entire stylesheet
-    ├── img/             icon, icon sprite, background texture
+    ├── img/             site icon and the Lucide icon sprite
     └── vendor/htmx.min.js
 migrations/              Alembic revisions
 tests/                   pytest suite

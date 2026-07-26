@@ -47,7 +47,7 @@
    choice beats the OS preference and survives navigation without JavaScript. */
 :root {
   --light-bg: #f6f3ed;
-  --light-bg-texture: url("../img/texture.png");
+  --light-grid: rgb(23 22 20 / 6%);
   --light-surface: #ffffff;
   --light-surface-2: #ebe6dc;
   --light-ink: #171614;
@@ -60,7 +60,7 @@
   --light-raise: 0 1px 0 rgb(255 255 255 / 70%) inset;
 
   --dark-bg: #0e0d0b;
-  --dark-bg-texture: none;
+  --dark-grid: rgb(240 236 228 / 5%);
   --dark-surface: #1c1a16;
   --dark-surface-2: #292620;
   --dark-ink: #f0ece4;
@@ -76,7 +76,7 @@
 /* Light is the default. */
 :root {
   --bg: var(--light-bg);
-  --bg-texture: var(--light-bg-texture);
+  --grid: var(--light-grid);
   --surface: var(--light-surface);
   --surface-2: var(--light-surface-2);
   --ink: var(--light-ink);
@@ -93,7 +93,7 @@
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {
     --bg: var(--dark-bg);
-    --bg-texture: var(--dark-bg-texture);
+    --grid: var(--dark-grid);
     --surface: var(--dark-surface);
     --surface-2: var(--dark-surface-2);
     --ink: var(--dark-ink);
@@ -110,7 +110,7 @@
 /* An explicit choice wins over the OS preference in both directions. */
 :root[data-theme="dark"] {
   --bg: var(--dark-bg);
-  --bg-texture: var(--dark-bg-texture);
+  --grid: var(--dark-grid);
   --surface: var(--dark-surface);
   --surface-2: var(--dark-surface-2);
   --ink: var(--dark-ink);
@@ -202,10 +202,23 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Background pattern, generated entirely in CSS — no image request, and it
+   recolours with the theme because every layer is drawn from --grid.
+
+   Graph paper: hairlines on a 5.5rem grid, plus a dot at each intersection for
+   texture. It suits the monospace type without competing with the text, and it
+   is attached to the viewport so it reads as paper the content moves over rather
+   than as a pattern that scrolls. */
 body {
   margin: 0;
   background-color: var(--bg);
-  background-image: var(--bg-texture);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    radial-gradient(circle at center, var(--grid) 1.5px, transparent 1.6px);
+  background-size: 5.5rem 5.5rem;
+  background-position: center top, center top, 2.75rem 2.75rem;
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: var(--step-0);
@@ -311,10 +324,33 @@ kbd {
   margin: 0 auto;
   padding: 0 var(--space-4);
   max-width: var(--measure);
+  background: var(--bg);
 }
 
+/* Sticky so the nav and account menu stay reachable down a long post, and so the
+   account popover can rely on a fixed trigger position. */
 .site-header {
-  padding-top: var(--space-5);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: var(--space-4);
+  background: var(--bg);
+  box-shadow: 0 0 0 var(--space-4) var(--bg);
+}
+
+/* Brand on the left, account controls on the right, nav on its own line below. */
+.site-header__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .brand {
@@ -325,12 +361,12 @@ kbd {
 }
 
 .brand__mark {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .brand__name {
-  font-size: var(--step-3);
+  font-size: var(--step-2);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -340,23 +376,38 @@ kbd {
   font-size: var(--step--1);
 }
 
-/* The nav sits on its own raised surface so it reads as a bar rather than as
-   loose text floating on the page background. */
+/* Plain text links, separated by a rule. The current page is underlined rather
+   than boxed, so the nav stays quiet next to the accented page title. */
 .site-nav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-  padding: var(--space-2);
-  border: var(--border);
-  border-radius: calc(var(--radius) + 2px);
-  background: var(--surface);
-  box-shadow: var(--shadow), var(--raise);
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: var(--border);
+  border-bottom: var(--border);
 }
 
-.site-nav__spacer {
-  flex: 1 1 auto;
+.navlink {
+  color: var(--ink-faint);
+  text-decoration: none;
+  text-underline-offset: 6px;
+  transition: color var(--transition);
+}
+
+.navlink:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+.navlink[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
 }
 
 .page-head {
@@ -409,6 +460,18 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
+}
+
+/* Plain text, underlined only on hover — the persistent underlines ran through
+   the gaps and made the row look broken. */
+.site-footer__links a {
+  text-decoration: none;
+}
+
+.site-footer__links a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* 6. Components --------------------------------------------------------- */
@@ -507,6 +570,179 @@ main {
 
 .inline-form {
   display: inline;
+}
+
+.btn--icon {
+  padding: var(--space-2);
+}
+
+/* Theme switch --------------------------------------------------------------
+
+   Both controls are always in the markup; exactly one is shown. Deciding here
+   rather than on the server is what keeps the switch to a single click while the
+   stored preference is `auto`, since only CSS can see prefers-color-scheme. */
+
+.theme-switch--to-light {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-switch--to-light {
+  display: inline;
+}
+
+:root[data-theme="dark"] .theme-switch--to-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] .theme-switch--to-light {
+    display: inline;
+  }
+
+  :root[data-theme="auto"] .theme-switch--to-dark {
+    display: none;
+  }
+}
+
+/* Account menu (native Popover API) ---------------------------------------- */
+
+.user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1);
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: var(--raise);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.user-trigger:hover {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.user-trigger__name {
+  overflow: hidden;
+  max-width: 9ch;
+  color: var(--ink);
+  font-size: var(--step--1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popover {
+  width: min(15rem, calc(100vw - 2rem));
+  padding: var(--space-2);
+  border: var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  color: var(--ink);
+}
+
+.popover:not(:popover-open) {
+  display: none;
+}
+
+/* Placement.
+
+   CSS anchor positioning would be the natural fit, but browser support is
+   uneven in a way that fails badly: some engines ship `position-anchor` while
+   still using the older name for `position-area`, so an @supports test on the
+   former passes and the placement property is then dropped — leaving the panel
+   in the middle of the viewport.
+
+   Since the header is sticky, the trigger sits at a fixed viewport position, so
+   plain coordinates are exact and work everywhere `popover` itself does. The
+   right offset lines the panel up with the content column's right edge. */
+.popover:popover-open {
+  position: fixed;
+  top: 4.25rem;
+  /* `left: auto` is required: the UA stylesheet sets both `left: 0` and
+     `right: 0` on popovers, and with a width set that is over-constrained, so the
+     inline-start offset wins and `right` is ignored. */
+  left: auto;
+  right: max(var(--space-4), calc((100vw - var(--measure)) / 2 + var(--space-4)));
+  margin: 0;
+}
+
+.popover__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-bottom: var(--border);
+  margin-bottom: var(--space-2);
+}
+
+.popover__head span {
+  display: block;
+  min-width: 0;
+}
+
+.popover__meta {
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+}
+
+.popover__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--step--1);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.popover__item:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.popover__item--danger {
+  color: var(--danger);
+}
+
+.popover__item--danger:hover {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+.popover__rule {
+  margin: var(--space-2) 0;
+}
+
+.popover__label {
+  margin: 0 0 var(--space-1);
+  padding: 0 var(--space-2);
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Tick on the active theme, pushed to the trailing edge of the row. */
+.popover__check {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.popover__item[aria-current="true"] {
+  color: var(--ink);
+  font-weight: 700;
 }
 
 /* Search ---------------------------------------------------------------- */
@@ -705,13 +941,20 @@ textarea {
 }
 
 .avatar {
-  border-radius: 3px;
+  border-radius: var(--radius);
   vertical-align: middle;
   shape-rendering: crispEdges;
 }
 
-.avatar--lg {
-  border-radius: var(--radius);
+/* Circular inside the pill-shaped trigger and the menu header, so the avatar
+   follows the curve of the control around it instead of cutting across it. */
+.user-trigger .avatar,
+.popover__head .avatar {
+  border-radius: 50%;
+}
+
+.profile .avatar {
+  border-radius: calc(var(--radius) * 2);
 }
 
 .meta-item {
@@ -722,9 +965,70 @@ textarea {
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1);
+}
+
+/* Every slot in the action row — static count, button, or toggled-on button —
+   shares one shape, so the row cannot go ragged as state changes.
+
+   Slots are sized by their content and left-aligned. An earlier version centred
+   content inside a fixed min-width, which put each icon at a different offset
+   from its slot edge and made the row look misaligned. The count carries the
+   min-width instead, so a count going from 9 to 10 does not shift the icons. */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: var(--step--1);
+  line-height: 1;
+  transition: color var(--transition), background-color var(--transition),
+    border-color var(--transition);
+}
+
+.action__count {
+  min-width: 1.25ch;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The toggles are wrapped in <form> so they work without htmx, which leaves the
+   button sitting on the form's text baseline — enough to push it a couple of
+   pixels out of line with the plain-<span> slots next to it. Making the wrapper a
+   flex container removes the line box and the offset with it. */
+.actions .inline-form {
+  display: flex;
+  align-items: center;
+}
+
+button.action {
+  cursor: pointer;
+}
+
+button.action:hover {
+  border-color: var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+button.action:active {
+  transform: translateY(1px);
+}
+
+/* Toggled on: colour and a filled icon only. An added border or background would
+   make the control a different size from its neighbours. */
+.action--on {
+  color: var(--accent);
+}
+
+button.action--on:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
 }
 
 .tag-list {
@@ -955,7 +1259,7 @@ textarea {
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin: var(--space-6) 0;
   padding-bottom: var(--space-5);
   border-bottom: var(--border);
 }
@@ -981,15 +1285,39 @@ textarea {
   font-size: var(--step--1);
 }
 
-.stats a,
 .stats span {
   color: var(--ink-faint);
-  text-decoration: none;
 }
 
 .stats b {
   color: var(--ink);
   font-size: var(--step-0);
+}
+
+/* Two of the four stats lead somewhere and two are just numbers, so the links
+   need to say so. A dotted underline reads as "there is more here" without
+   shouting like a normal link, and the whole item — number included — picks up
+   the accent on hover and focus so the target is obviously the entire stat. */
+.stats a {
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.stats a:hover,
+.stats a:focus-visible {
+  color: var(--accent);
+  text-decoration-style: solid;
+  text-decoration-color: var(--accent);
+}
+
+.stats a:hover b,
+.stats a:focus-visible b {
+  color: var(--accent);
 }
 
 .people {
@@ -1045,20 +1373,23 @@ textarea {
 /* Small screens --------------------------------------------------------- */
 
 @media (max-width: 34rem) {
+  .site-header__bar {
+    gap: var(--space-2);
+  }
+
   .site-nav {
-    justify-content: center;
+    gap: var(--space-3);
+    font-size: var(--step--1);
   }
 
-  .site-nav__spacer {
+  .brand__name {
+    font-size: var(--step-1);
+  }
+
+  /* Avatar and chevron alone are enough on a phone; the name would push the
+     header onto another line. */
+  .user-trigger__name {
     display: none;
-  }
-
-  .btn__label {
-    display: none;
-  }
-
-  .btn--keep-label .btn__label {
-    display: inline;
   }
 
   .post-header h1 {

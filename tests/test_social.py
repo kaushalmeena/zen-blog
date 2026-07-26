@@ -75,6 +75,39 @@ def test_drafts_page_lists_only_own_drafts(client, sign_in, alice, bob, make_pos
     assert "Bob private draft" not in html
 
 
+def test_clickable_stats_are_links_and_the_rest_are_not(client, alice, make_post):
+    """Only followers/following navigate, so only those may look clickable."""
+    make_post(alice, title="Something to count")
+    html = squash(client.get("/u/alice/").data)
+    stats = html.split('<div class="stats">')[1].split("</div>")[0]
+
+    assert '<a href="/u/alice/followers/">' in stats
+    assert '<a href="/u/alice/following/">' in stats
+    # Post and like counts go nowhere, so they stay plain text.
+    assert stats.count("<a ") == 2
+
+
+def test_stat_links_are_visually_distinguished():
+    """The affordance is CSS, so assert the rules that provide it."""
+    from pathlib import Path
+
+    css = Path("blog/static/css/main.css").read_text()
+
+    link = css.split("\n.stats a {")[1].split("}")[0]
+    assert "text-decoration-style: dotted" in link
+    assert "cursor: pointer" in link
+
+    # Hover and keyboard focus both promote it to a solid accent underline.
+    hover = css.split(".stats a:hover,\n.stats a:focus-visible {")[1].split("}")[0]
+    assert "var(--accent)" in hover
+    assert "text-decoration-style: solid" in hover
+
+    # The static stats must not pick any of that up.
+    plain = css.split("\n.stats span {")[1].split("}")[0]
+    assert "text-decoration" not in plain
+    assert "cursor" not in plain
+
+
 def test_unknown_user_returns_404(client):
     assert client.get("/u/nobody/").status_code == 404
 

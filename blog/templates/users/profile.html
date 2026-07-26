@@ -25,8 +25,8 @@
 
   <div class="actions">
     {%- if current_user.is_authenticated and current_user.id == profile_user.id %}
-    <a class="btn btn--keep-label" href="{{ url_for('users.settings') }}">
-      {{ icon('settings') }}<span class="btn__label">edit profile</span>
+    <a class="btn" href="{{ url_for('users.settings') }}">
+      {{ icon('settings') }}<span>edit profile</span>
     </a>
     {%- elif current_user.is_authenticated %}
     {% include "partials/follow_button.html" %}

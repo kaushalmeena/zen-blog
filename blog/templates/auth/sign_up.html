@@ -13,8 +13,8 @@
   {{ field(form.confirm) }}
 
   <div class="form-actions">
-    <button class="btn btn--solid btn--keep-label" type="submit">
-      {{ icon('plus') }}<span class="btn__label">create account</span>
+    <button class="btn btn--solid" type="submit">
+      {{ icon('plus') }}<span>create account</span>
     </button>
     <span class="field__hint">
       Already registered? <a href="{{ url_for('auth.sign_in') }}">Sign in</a>.

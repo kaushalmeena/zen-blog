@@ -22,12 +22,10 @@
 <svg class="icon"{% if label %} role="img" aria-label="{{ label }}"{% else %} aria-hidden="true" focusable="false"{% endif %}><use href="{{ url_for('static', filename='img/icons.svg') }}#{{ name }}"></use></svg>
 {%- endmacro -%}
 
-{#- A nav button that marks itself as the current page. -#}
-{%- macro nav_link(endpoint, name, label, current, keep_label=False) -%}
-<a class="btn{% if keep_label %} btn--keep-label{% endif %}" href="{{ url_for(endpoint) }}"
-   {% if current %}aria-current="page"{% endif %}>
-  {{ icon(name) }}<span class="btn__label">{{ label }}</span>
-</a>
+{#- A plain text nav link. The current page is underlined, not boxed. -#}
+{%- macro nav_link(endpoint, label) -%}
+{%- set current = ' aria-current="page"' if request.endpoint == endpoint else '' -%}
+<a class="navlink" href="{{ url_for(endpoint) }}"{{ current|safe }}>{{ label }}</a>
 {%- endmacro -%}
 
 {#- Render a WTForms field with its label, errors and optional hint. -#}

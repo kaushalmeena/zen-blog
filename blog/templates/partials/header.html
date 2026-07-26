@@ -1,53 +1,38 @@
-{% from "partials/macros.html" import icon, nav_link, csrf %}
+{% from "partials/macros.html" import icon, nav_link %}
 <header class="site-header">
-  <a class="brand" href="{{ url_for('main.home') }}">
-    <img class="brand__mark" src="{{ url_for('static', filename='img/icon.svg') }}"
-         alt="" width="36" height="36" />
-    <span>
+  <div class="site-header__bar">
+    <a class="brand" href="{{ url_for('main.home') }}">
+      <img class="brand__mark" src="{{ url_for('static', filename='img/icon.svg') }}"
+           alt="" width="32" height="32" />
       <span class="brand__name">{{ site_name }}</span>
-      <span class="brand__tagline">{{ site_tagline }}</span>
-    </span>
-  </a>
+    </a>
+
+    <div class="site-header__actions">
+      {%- if current_user.is_authenticated %}
+      <a class="btn btn--primary" href="{{ url_for('posts.create') }}"
+         {% if request.endpoint == 'posts.create' %}aria-current="page"{% endif %}>
+        {{ icon('pencil') }}<span>write</span>
+      </a>
+      {# Theme options live inside the account menu for signed-in users. #}
+      {% include "partials/user_menu.html" %}
+      {%- else %}
+      {# Anonymous visitors have no account menu, so they keep the header toggle. #}
+      {% include "partials/theme_switch.html" %}
+      <a class="navlink" href="{{ url_for('auth.sign_in') }}"
+         {% if request.endpoint == 'auth.sign_in' %}aria-current="page"{% endif %}>sign in</a>
+      <a class="btn btn--primary" href="{{ url_for('auth.sign_up') }}"
+         {% if request.endpoint == 'auth.sign_up' %}aria-current="page"{% endif %}>sign up</a>
+      {%- endif %}
+    </div>
+  </div>
 
   <nav class="site-nav" aria-label="Main">
-    {{ nav_link('main.home', 'home', 'home', request.endpoint == 'main.home') }}
-    {{ nav_link('main.tags', 'tag', 'tags', request.endpoint == 'main.tags') }}
-
+    {{ nav_link('main.home', 'home') }}
+    {{ nav_link('main.tags', 'tags') }}
     {%- if current_user.is_authenticated %}
-    {{ nav_link('main.following', 'users', 'following', request.endpoint == 'main.following') }}
-    {{ nav_link('posts.saved', 'bookmark', 'saved', request.endpoint == 'posts.saved') }}
-    {{ nav_link('users.drafts', 'draft', 'drafts', request.endpoint == 'users.drafts') }}
-
-    <span class="site-nav__spacer"></span>
-
-    <a class="btn btn--primary btn--keep-label" href="{{ url_for('posts.create') }}"
-       {% if request.endpoint == 'posts.create' %}aria-current="page"{% endif %}>
-      {{ icon('pencil') }}<span class="btn__label">write</span>
-    </a>
-    <a class="btn" href="{{ url_for('users.me') }}" title="Your profile">
-      {{ identicon(current_user.username, 20) }}<span class="btn__label">{{ current_user.username }}</span>
-    </a>
-    <a class="btn" href="{{ url_for('users.settings') }}" title="Settings">{{ icon('settings', 'Settings') }}</a>
-    {% include "partials/theme_switch.html" %}
-    {#
-      Signing out changes state, so it is a POST form rather than a link: a
-      prefetch or an <img> pointing at a GET sign-out URL could otherwise end
-      someone's session for them.
-    #}
-    <form class="inline-form" method="post" action="{{ url_for('auth.sign_out') }}">
-      {{ csrf() }}
-      <button class="btn" type="submit" title="Sign out">
-        {{ icon('logout', 'Sign out') }}
-      </button>
-    </form>
-    {%- else %}
-    <span class="site-nav__spacer"></span>
-    {% include "partials/theme_switch.html" %}
-    {{ nav_link('auth.sign_in', 'login', 'sign in', request.endpoint == 'auth.sign_in', keep_label=True) }}
-    <a class="btn btn--primary btn--keep-label" href="{{ url_for('auth.sign_up') }}"
-       {% if request.endpoint == 'auth.sign_up' %}aria-current="page"{% endif %}>
-      {{ icon('plus') }}<span class="btn__label">sign up</span>
-    </a>
+    {{ nav_link('main.following', 'following') }}
+    {{ nav_link('posts.saved', 'saved') }}
+    {{ nav_link('users.drafts', 'drafts') }}
     {%- endif %}
   </nav>
 </header>

@@ -1,5 +1,7 @@
 """The cookie-backed light/dark switch."""
 
+from pathlib import Path
+
 import pytest
 
 from blog.theming import COOKIE_NAME
@@ -25,19 +27,72 @@ def test_choice_survives_navigation(client, alice, make_post):
         assert 'data-theme="dark"' in client.get(path).data.decode(), path
 
 
-def test_switch_cycles_through_all_three_states(client):
-    """One button, three states: auto to light to dark and back."""
+def test_anonymous_visitors_get_a_header_toggle(client):
+    """They have no account menu, so the switch has to stay in the header."""
+    html = client.get("/").data.decode()
+    assert 'class="theme-switch theme-switch--to-dark"' in html
+    assert "account-menu" not in html
 
-    def offered():
-        html = client.get("/").data.decode()
-        start = html.index('action="/theme/"')
-        return html[start : start + 400].split('name="theme" value="')[1].split('"')[0]
 
-    assert offered() == "light"
-    client.post("/theme/", data={"theme": "light"})
-    assert offered() == "dark"
+def test_signed_in_users_get_the_options_in_the_account_menu(client, sign_in, alice):
+    sign_in("alice")
+    html = client.get("/").data.decode()
+
+    # The header toggle moves into the menu, which names all three states.
+    assert "theme-switch" not in html
+    for value in ("light", "dark", "auto"):
+        assert f'<input type="hidden" name="theme" value="{value}" />' in html
+
+
+def test_active_theme_is_ticked_in_the_menu(client, sign_in, alice):
+    sign_in("alice")
     client.post("/theme/", data={"theme": "dark"})
-    assert offered() == "auto"
+    html = " ".join(client.get("/").data.decode().split())
+
+    # The dark row is marked current; the others are not.
+    dark_row = html.split('name="theme" value="dark" />')[1].split("</form>")[0]
+    assert 'aria-current="true"' in dark_row
+    light_row = html.split('name="theme" value="light" />')[1].split("</form>")[0]
+    assert 'aria-current="true"' not in light_row
+
+
+def test_both_switch_directions_are_always_present(client):
+    """Switching is one click from any state.
+
+    The server cannot see the visitor's OS preference, so it cannot pick a single
+    correct target while the stored theme is `auto`. Both controls ship on every
+    page and CSS hides the one matching the current appearance — so going dark to
+    light is never two clicks.
+    """
+    html = client.get("/").data.decode()
+
+    assert 'class="theme-switch theme-switch--to-dark"' in html
+    assert 'class="theme-switch theme-switch--to-light"' in html
+    assert '<input type="hidden" name="theme" value="dark" />' in html
+    assert '<input type="hidden" name="theme" value="light" />' in html
+
+
+def test_css_hides_exactly_one_direction_per_state():
+    """The one-click promise lives in CSS, so assert the rules that deliver it."""
+    css = (Path("blog/static/css/main.css")).read_text()
+
+    # Light appearance: only the "go dark" control shows.
+    assert ".theme-switch--to-light {\n  display: none;\n}" in css
+    # Explicit dark: the pair flips.
+    assert ':root[data-theme="dark"] .theme-switch--to-light {\n  display: inline;\n}' in css
+    assert ':root[data-theme="dark"] .theme-switch--to-dark {\n  display: none;\n}' in css
+    # auto on a dark OS behaves like dark, which is the case that used to need
+    # two clicks.
+    assert ':root[data-theme="auto"] .theme-switch--to-light' in css
+    assert ':root[data-theme="auto"] .theme-switch--to-dark' in css
+
+
+def test_menu_names_each_theme_state(client, sign_in, alice):
+    sign_in("alice")
+    html = " ".join(client.get("/").data.decode().split())
+    menu = html.split('<p class="popover__label">theme</p>')[1]
+    for label in ("light", "dark", "system"):
+        assert f"<span>{label}</span>" in menu, label
 
 
 def test_unknown_theme_is_rejected(client):

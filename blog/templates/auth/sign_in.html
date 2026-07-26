@@ -13,8 +13,8 @@
   {{ checkbox(form.remember) }}
 
   <div class="form-actions">
-    <button class="btn btn--solid btn--keep-label" type="submit">
-      {{ icon('login') }}<span class="btn__label">sign in</span>
+    <button class="btn btn--solid" type="submit">
+      {{ icon('login') }}<span>sign in</span>
     </button>
     <span class="field__hint">
       No account? <a href="{{ url_for('auth.sign_up') }}">Sign up</a>.

@@ -13,12 +13,12 @@
   {{ form.csrf_token }}
   {{ field(form.body, autofocus=True) }}
   <div class="form-actions">
-    <button class="btn btn--solid btn--keep-label" type="submit">
-      {{ icon('check') }}<span class="btn__label">save</span>
+    <button class="btn btn--solid" type="submit">
+      {{ icon('check') }}<span>save</span>
     </button>
-    <a class="btn btn--keep-label"
+    <a class="btn"
        href="{{ url_for('posts.view', slug=comment.post.slug, _anchor='comment-' ~ comment.id) }}">
-      <span class="btn__label">cancel</span>
+      <span>cancel</span>
     </a>
   </div>
 </form>
