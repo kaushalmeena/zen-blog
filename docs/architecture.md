@@ -6,7 +6,7 @@ does not do. It is intentionally coarse: anything that would need editing for a
 routine change belongs in a docstring, not here.
 
 For how to run and deploy the project, see [README.md](../README.md). For the
-visual system and its tokens, see [DESIGN.md](DESIGN.md).
+visual system and its tokens, see [design.md](design.md).
 
 ## Bird's eye view
 
@@ -92,7 +92,7 @@ Coarse tour. Line counts are a rough guide to weight, not a target.
   `id` so the server can re-render exactly that element.
 - **`blog/static/styles/main.css`** — the entire design system in one file:
   tokens, both palettes, every component. No preprocessor, no build.
-  [`DESIGN.md`](DESIGN.md) covers the token naming convention and the
+  [`design.md`](design.md) covers the token naming convention and the
   intent behind the visual choices.
 - **`blog/rendering.py`** — Markdown to sanitized HTML, plus excerpts and reading
   time. The only place untrusted text becomes markup.

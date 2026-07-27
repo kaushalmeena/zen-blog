@@ -156,9 +156,9 @@ first), and `flask routes` prints the URL map.
 
 Further reading:
 
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — what lives where, the invariants the
+- [architecture.md](docs/architecture.md) — what lives where, the invariants the
   code relies on, and what it deliberately does not do.
-- [DESIGN.md](docs/DESIGN.md) — the visual system: tokens, palette, type, and the
+- [design.md](docs/design.md) — the visual system: tokens, palette, type, and the
   convention that names them.
 
 ## Deployment

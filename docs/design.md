@@ -4,7 +4,7 @@ The visual system: what it is trying to be, the tokens it is built from, and the
 naming convention those tokens follow. All of it lives in one file,
 `blog/static/styles/main.css`, with no preprocessor and no build step.
 
-For the system's architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).
+For the system's architecture, see [architecture.md](architecture.md).
 
 ## The idea
 
