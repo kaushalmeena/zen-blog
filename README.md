@@ -154,13 +154,6 @@ history have drifted apart; CI runs it on every push.
 Two more commands: `flask reset` drops and recreates every table (it asks
 first), and `flask routes` prints the URL map.
 
-Further reading:
-
-- [architecture.md](docs/architecture.md) — what lives where, the invariants the
-  code relies on, and what it deliberately does not do.
-- [design.md](docs/design.md) — the visual system: tokens, palette, type, and the
-  convention that names them.
-
 ## Deployment
 
 With Docker:
@@ -192,6 +185,20 @@ dependency, and a `postgres://` or `postgresql://` URL is accepted as given.
 | `DATABASE_URL` | SQLite in `instance/` | Any SQLAlchemy URL                                          |
 | `STATIC_MAX_AGE` | `0` dev / 1 year prod | Static cache lifetime; URLs are content-stamped, so long is safe |
 | `FLASK_APP`    | —                     | Set to `blog` to skip `--app blog`                          |
+
+## Documentation
+
+- **[architecture.md](docs/architecture.md)** — what lives where, the invariants
+  the code relies on, and what it deliberately does not do.
+- **[design.md](docs/design.md)** — the visual system: tokens, palette, type, and
+  the convention that names them.
+
+## Contributing
+
+Contributions are welcome! If you find a bug or have a feature request, please
+[open an issue](https://github.com/kaushalmeena/zen-blog/issues/new/choose)
+first to discuss it. For code changes, fork the repository, create a branch,
+and open a pull request.
 
 ## License
 
