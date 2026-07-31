@@ -188,10 +188,23 @@ dependency, and a `postgres://` or `postgresql://` URL is accepted as given.
 
 ## Documentation
 
-- **[architecture.md](docs/architecture.md)** — what lives where, the invariants
-  the code relies on, and what it deliberately does not do.
-- **[design.md](docs/design.md)** — the visual system: tokens, palette, type, and
-  the convention that names them.
+Full documentation is available in the [`/docs`](./docs) directory.
+
+**Getting Oriented:**
+
+- [Overview](./docs/overview.md) — the bird's eye view, and the entry points that boot the app.
+- [Code Map](./docs/code-map.md) — a tour of every module, with line counts as a rough guide to weight.
+
+**Core Concepts:**
+
+- [Request Lifecycle](./docs/request-lifecycle.md) — what happens between a request arriving and a response leaving.
+- [Invariants and Non-Goals](./docs/invariants.md) — the rules the code relies on, and what the project deliberately refuses to do.
+
+**Design System:**
+
+- [Foundations](./docs/foundations.md) — the idea the system is chasing, and the convention that names every token.
+- [Palette and Type](./docs/palette.md) — the colours, and the type scale built on system fonts.
+- [Spacing, Layout and Theming](./docs/layout.md) — the spacing scale, and how the theme switch works without JavaScript.
 
 ## Contributing
 
