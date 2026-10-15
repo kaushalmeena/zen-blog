@@ -1,7 +1,5 @@
 # The request lifecycle
 
-## The request lifecycle
-
 Worth understanding once, because it explains the shape of most views.
 
 1. A view does its work and then hands off to `blog/responses.py`.

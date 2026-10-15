@@ -1,7 +1,5 @@
 # Code map
 
-## Code map
-
 Coarse tour. Line counts are a rough guide to weight, not a target.
 
 ### The request layer
